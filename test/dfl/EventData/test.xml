@@ -1,0 +1,17 @@
+<PutDataRequest RequestId="739d2cf5-4100-4525-9823-2791e26fd931" MessageTime="2015-05-20T16:25:55.798+02:00" TransmissionComplete="true" TransmissionSuspended="false">
+	<Event EventTime="2015-05-16T16:32:40.480+02:00" EventId="7589330016000497" InternalMatchId="DFL-MAT-1234AB">
+		<Substitution Team="DFL-ABC-12345A" PlayerIn="DFL-OBJ-a00004" PlayerOut="DFL-OBJ-a00003" PlayingPosition="OLM"/>
+	</Event>
+	<Event EventTime="2015-05-16T16:32:22.943+02:00" EventId="7589330016000350" InternalMatchId="DFL-MAT-1234AB">
+		<KickoffWhistle GameSection="secondHalf"/>
+	</Event>
+	<Event EventTime="2015-05-16T16:15:44.247+02:00" EventId="7589330016000349" InternalMatchId="DFL-MAT-1234AB">
+		<FinalWhistle GameSection="firstHalf" FinalResult="1:1" BreakingOff="false"/>
+	</Event>
+	<Event EventTime="2015-05-16T15:30:41.247+02:00" EventId="7589330016000054" InternalMatchId="DFL-MAT-1234AB">
+		<KickoffWhistle GameSection="firstHalf"/>
+	</Event>
+	<Event EventTime="2015-05-16T17:19:28.943+02:00" EventId="7589330016000616" InternalMatchId="DFL-MAT-1234AB">
+		<FinalWhistle GameSection="secondHalf" FinalResult="2:1" BreakingOff="false"/>
+	</Event>	
+</PutDataRequest>

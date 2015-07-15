@@ -203,8 +203,8 @@ class MatchPositionParser(xml.sax.handler.ContentHandler):
                 z = float(attrs['Z'])
                 possession = float(attrs['BallPossession'])
                 ball_status = float(attrs['BallStatus'])
-                self.currentPos[self.frameCounter,] = 
-                    (frame,x,y,z,possession,ball_status)
+                self.currentPos[self.frameCounter,] = ( 
+                    frame,x,y,z,possession,ball_status)
             self.frameCounter += 1
 
     def endElement(self,name):

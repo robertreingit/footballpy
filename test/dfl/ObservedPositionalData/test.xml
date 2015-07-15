@@ -1,7 +1,7 @@
 <PutDataRequest RequestId="53696b12-df81-4765-a151-18ab36e380be" MessageTime="2015-05-17T01:24:39.999+02:00" TransmissionComplete="true" TransmissionSuspended="false">
 	<Positions EventTime="2015-05-16T17:13:11.240+02:00">
-		<MetaData MatchId="DFL-MAT-0002WQ" Type="pitch-size">
-			<PitchSize X="100.00" Y="68.00"/>
+		<MetaData MatchId="DFL-MAT-1234AB" Type="pitch-size">
+			<PitchSize X="105.00" Y="69.00"/>
 		</MetaData>
 		<FrameSet GameSection="firstHalf" MatchId="DFL-MAT-1234AB" TeamId="DFL-ABC-12345A" PersonId="DFL-OBJ-a00001">
 			<Frame N="10000" T="2015-05-16T15:30:40.320+02:00" X="0" Y="10.00" S="0.00" M="1"/>

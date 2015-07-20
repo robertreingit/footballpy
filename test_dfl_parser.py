@@ -13,6 +13,7 @@ versions of original files.
 import unittest
 import dfl_parser
 from datetime import datetime
+import numpy as np
 
 class TestMatchInformation(unittest.TestCase):
     """Unit test class for the dfl_parser
@@ -65,6 +66,45 @@ class TestMatchEvent(unittest.TestCase):
                 datetime(2015,5,16,15,30,41,247000))
         self.assertEqual(play_time['firstHalf'][1],
                 datetime(2015,5,16,16,15,44,247000))
+
+class TestMatchPosition(unittest.TestCase):
+    """Unit test class for the MatchPositionParser.
+    """
+    @classmethod
+    def setUpClass(cls, fname='./test/dfl/ObservedPositionalData/test.xml'):
+        mip = dfl_parser.MatchInformationParser()
+        fname_match = "./test/dfl/MatchInformation/test.xml"
+        mip.run(fname_match)
+        teams, match = mip.getTeamInformation()
+        mpp = dfl_parser.MatchPositionParser(match,teams)
+        mpp.run(fname)
+        cls._pos_data, cls._ball_data = mpp.getPositionInformation()
+
+    def test_number_of_player(self):
+        pos_data = TestMatchPosition._pos_data
+        guest_1st = pos_data['guest']['1st']
+        guest_2nd = pos_data['guest']['2nd']
+        home_1st = pos_data['home']['1st']
+        home_2nd = pos_data['home']['2nd']
+        self.assertEqual(len(guest_1st),3)
+        self.assertEqual(len(guest_2nd),4)
+        self.assertEqual(len(home_1st),3)
+        self.assertEqual(len(home_2nd),4)
+
+    def test_xy_data(self):
+        # Testing guest data
+        guest_1st = TestMatchPosition._pos_data['guest']['1st']
+        p_idxs = {data[0]: i for (i,data) in enumerate(guest_1st)}
+        pid_1 = p_idxs[u'DFL-OBJ-b00002']
+        self.assertEqual(guest_1st[pid_1][1].shape,(9,3))
+        self.assertTrue(np.all(guest_1st[pid_1][1][0,:3]==(10000.0,10.0,20.0)))
+        # Testing home data
+        home_2nd = TestMatchPosition._pos_data['home']['2nd']
+        p_idxs = {data[0]:i for (i,data) in enumerate(home_2nd)}
+        pid_2 = p_idxs[u'DFL-OBJ-a00004']
+        self.assertEqual(home_2nd[pid_2][1].shape,(4,3))
+        self.assertTrue(np.all(home_2nd[pid_2][1][2,:2]==(100007.0,57.0)))
+
 
 if __name__ == '__main__':
     unittest.main()

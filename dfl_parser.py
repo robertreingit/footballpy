@@ -226,7 +226,8 @@ class MatchPositionParser(xml.sax.handler.ContentHandler):
             else: # player data
                 secID = '1st' if section == 'firstHalf' else '2nd'
                 teamRole = 'home' if teamID == self.match['home'] else 'guest'
-                play_pos = teams[teamRole][[p['id'] for p in teams[teamRole]].index(self.currentID)]['position']
+                play_pos = (self.teams[teamRole][[p['id'] for p in 
+                    self.teams[teamRole]].index(self.currentID)]['position'])
                 entry = (self.currentID,np.copy(self.currentPos[:self.frameCounter,:3]),play_pos)
                 self.position_data[teamRole][secID].append(entry)
             # cleaning up

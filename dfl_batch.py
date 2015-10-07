@@ -16,7 +16,10 @@ import dfl_writer as wrt
 
 def matchdir(directory):
     """
-    Creates a directory for the converted match and adjusts cwd
+    Creates a directory for the converted match and adjusts cwd.
+
+	Args: Directory to create/change into.
+	Returns: Nothing
     """
     if not os.path.exists(directory):
         os.mkdir(directory)
@@ -27,15 +30,14 @@ def matchdir(directory):
 if __name__ == "__main__":
 
     # --> SPECIFY DATA PATHS HERE PLEASE <-- #
-    data_path = "/media/storage/dfl/Rohdaten/"
-    batch_path = data_path + "MatchInformation/BL/"
-    out_path = "/media/storage/dfl/Spiele/"
+    data_path = "rawdata"
+    batch_path = data_path + "/league/"
+    out_path = "outdata"
     
     # Pulling out the list of matches from one of the folders.
     batch = os.listdir(batch_path)
     
-    counter = 1
-    for fname in batch:
+    for counter,fname in enumerate(batch):
         print "CONVERTING MATCH %d of %d: %s\n\n" % (counter,len(batch),fname)
         fname_match = data_path + "MatchInformation/BL/" + fname
         fname_info = data_path + "Events/BL/" + fname
@@ -69,4 +71,3 @@ if __name__ == "__main__":
         matchdir(out_path+matchname)
         wrt.write_data_to_file(data_transformed,matchname)
         
-        counter += 1

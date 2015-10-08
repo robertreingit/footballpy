@@ -2,4 +2,4 @@ language: python
 python:
   - "2.7"
 
-script: test_dfl_parser
+script: test_dfl_parser.py

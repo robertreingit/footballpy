@@ -12,24 +12,31 @@ import numpy as np
     of each player.
 """
 __position_ranking = {
+	'A': {
     'TW':1, 'LV':2, 'IVL':3, 'IVZ':4, 'IVR':5, 'RV':6,
     'DML':7, 'DMZ':8, 'DMR':9,
     'LM':10, 'HL':11, 'MZ': 12, 'HR':13, 'RM':14,
     'OLM':15, 'ZO':16, 'ORM':17,
     'HST':18, 'LA':19, 'STL':20, 'STR':21, 'RA':22,
     'STZ':23
+	},
+	'B': {
+        'G': 1, 'D': 2, 'M': 3, 'A': 4
+	}
 }
 
-def sort_position_data(pos):
+def sort_position_data(pos,type='A'):
     """Sorts the position data according to player positions.
     
     Args:
         pos: The list with tuples containing the position data and the
         playing position.
+		type: The type of position rankings used by the tracking system.
     Returns:    
         The sorted list.
     """
-    return sorted(pos,key=lambda player: __position_ranking[player[2]])
+	ranking_type = __position_ranking[type]
+    return sorted(pos,key=lambda player: ranking_type[player[2]])
 
 def stitch_position_data(pos,ball):
     """Puts position data into a single array.

@@ -85,7 +85,7 @@ def determine_playing_direction(goalie):
     Args:
         goalie: x-y position of goalie
     Returns:
-        either 'l2r' = left to right or 'r2l' right to left.
+        either 'l2r': left to right or 'r2l': right to left.
     """
     return 'l2r' if np.average(goalie[:,0]) < 0 else 'r2l'
 

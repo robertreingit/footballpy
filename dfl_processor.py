@@ -35,7 +35,7 @@ def sort_position_data(pos,type='A'):
     Returns:    
         The sorted list.
     """
-	ranking_type = __position_ranking[type]
+    ranking_type = __position_ranking[type]
     return sorted(pos,key=lambda player: ranking_type[player[2]])
 
 def stitch_position_data(pos,ball):

@@ -12,6 +12,7 @@ versions of the original files.
 
 import unittest
 import dfl_processor
+import numpy as np
 
 class TestSortPosition(unittest.TestCase):
     """Unit test class for the dfl_parser.sort_position_data function.
@@ -25,4 +26,12 @@ class TestSortPosition(unittest.TestCase):
         dummyData = [('A',1,'M'),('B',2,'G'),('C',3,'A')]
         self.assertEqual([dummyData[p] for p in [1,0,2]],
                 dfl_processor.sort_position_data(dummyData,'B'))
+
+class TestDirectionTest(unittest.TestCase):
+    """Unit test class for the dfl_parser.switch_playing_direction function.
+    """
+    def test_l2r(self):
+        dummyData = np.zeros((10,3))
+        dummyData[:,0] = np.arange(10)-10
+        self.assertEqual(dfl_processor.determine_playing_direction(dummyData),'l2r')
 

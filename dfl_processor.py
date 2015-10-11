@@ -10,6 +10,10 @@ import numpy as np
 
 """ Ranking dictionary necessary to determine the column number
     of each player.
+    
+    The type system depends on the type of the raw data.
+    Type A: Elaborate positioning scheme
+    Type B: Simple scheme
 """
 __position_ranking = {
 	'A': {
@@ -30,8 +34,9 @@ def sort_position_data(pos,type='A'):
     
     Args:
         pos: The list with tuples containing the position data and the
-        playing position.
-		type: The type of position rankings used by the tracking system.
+        	playing position.
+	type: The type of position rankings used by the tracking system. 
+		Type A is default.
     Returns:    
         The sorted list.
     """
@@ -185,4 +190,3 @@ if __name__ == '__main__':
     bb = ball_data[section!='1st']
     ss = stitch_position_data(kks,bb)
     data_transformed = run(pos_data,ball_data,match)
-    plt.plot(kk[:,::2],kk[1::2])

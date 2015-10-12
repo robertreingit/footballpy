@@ -159,10 +159,10 @@ class FloodArray:
 
 
 def process_line(line):
-	""" Processes a single line from a put file.
-	Args:
-	Returns:
-	"""
+    """ Processes a single line from a put file.
+    Args:
+    Returns:
+    """
     frame_specs,players,ball = line.split('#')
     # processing player
     frame = float(frame_specs.split(',')[0])
@@ -182,6 +182,5 @@ def process_line(line):
     y = float(ys)
     z = float(zs)
     ball_res.push(np.array([frame,x,y,z]))
-
 
 

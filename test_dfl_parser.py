@@ -64,9 +64,9 @@ class TestMatchEvent(unittest.TestCase):
     def test_playing_time(self):
         play_time = TestMatchEvent._play_time
         self.assertEqual(play_time['firstHalf'][0],
-               dup.parse('2015-05-16T15:30:41.247+02:00'))
+               dup.parse('2015-05-16T15:30:40.320+02:00'))
         self.assertEqual(play_time['firstHalf'][1],
-               dup.parse('2015-05-16T16:15:44.247+02:00'))
+               dup.parse('2015-05-16T15:30:40.640+02:00'))
 
 class TestMatchPosition(unittest.TestCase):
     """Unit test class for the MatchPositionParser.
@@ -79,7 +79,7 @@ class TestMatchPosition(unittest.TestCase):
         teams, match = mip.getTeamInformation()
         mpp = dfl_parser.MatchPositionParser(match,teams)
         mpp.run(fname)
-        cls._pos_data, cls._ball_data = mpp.getPositionInformation()
+        cls._pos_data, cls._ball_data, timestamps = mpp.getPositionInformation()
 
     def test_number_of_player(self):
         pos_data = TestMatchPosition._pos_data
@@ -105,6 +105,26 @@ class TestMatchPosition(unittest.TestCase):
         pid_2 = p_idxs[u'DFL-OBJ-a00004']
         self.assertEqual(home_2nd[pid_2][1].shape,(4,3))
         self.assertTrue(np.all(home_2nd[pid_2][1][2,:2]==(100007.0,57.0)))
+
+class TestSanity(unittest.TestCase):
+    """Unit test for more general checks.
+    """
+    @classmethod
+    def setUpClass(cls):
+        mep = dfl_parser.MatchEventParser()
+        mep.run('./test/dfl/EventData/test.xml')
+        cls._play_time, cls._subs = mep.getEventInformation()
+        mip = dfl_parser.MatchInformationParser()
+        fname_match = "./test/dfl/MatchInformation/test.xml"
+        mip.run(fname_match)
+        teams, match = mip.getTeamInformation()
+        mpp = dfl_parser.MatchPositionParser(match,teams)
+        mpp.run('./test/dfl/ObservedPositionalData/test.xml')
+        cls._pos_data, cls._ball_data, cls._timestamps = mpp.getPositionInformation()
+
+    def test_time_sanity(self):
+        print(TestSanity._timestamps)
+        self.assertEqual(TestSanity._timestamps[0][0],TestSanity._play_time['firstHalf'][0])
 
 
 if __name__ == '__main__':

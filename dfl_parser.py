@@ -160,6 +160,8 @@ class MatchPositionParser(xml.sax.handler.ContentHandler):
     Attributes:
         currentID
         currentPos
+        timeStamps
+        tmpTimeStamp
         inFrameSet
         teamID
         gameSection
@@ -172,6 +174,8 @@ class MatchPositionParser(xml.sax.handler.ContentHandler):
     def __init__(self,match,teams,no_frames = 200000):
         self.currentID = ""
         self.currentPos = np.zeros((no_frames,6),dtype='float32')
+        self.timeStamps = [[],[]]
+        self.tmpTimeStamp = []
         self.inFrameSet = False
         self.frameCounter = 0
         self.teamID = ""
@@ -206,6 +210,10 @@ class MatchPositionParser(xml.sax.handler.ContentHandler):
                 ball_status = float(attrs['BallStatus'])
                 self.currentPos[self.frameCounter,] = ( 
                     frame,x,y,z,possession,ball_status)
+                # add timestamp information
+                timestamp = convertTime(attrs['T'])
+                self.tmpTimeStamp.append(timestamp)
+
             self.frameCounter += 1
 
     def endElement(self,name):
@@ -219,11 +227,16 @@ class MatchPositionParser(xml.sax.handler.ContentHandler):
                 if section == "firstHalf":
                     self.ball[0] = np.copy(
                             self.currentPos[:self.frameCounter,])
+                    self.timeStamps[0] = self.tmpTimeStamp
+
                 elif section == "secondHalf":
                     self.ball[1] = np.copy(
                             self.currentPos[:self.frameCounter,])
+                    self.timeStamps[1] = self.tmpTimeStamp
                 else:
                     raise LookupError
+                self.tmpTimeStamp = []
+
             else: # player data
                 secID = '1st' if section == 'firstHalf' else '2nd'
                 teamRole = 'home' if teamID == self.match['home'] else 'guest'
@@ -258,7 +271,7 @@ class MatchPositionParser(xml.sax.handler.ContentHandler):
         Returns:
             The player position data and the ball data.
         """
-        return self.position_data, self.ball
+        return self.position_data, self.ball, self.timeStamps
         
 #######################################
 if __name__ == "__main__":
@@ -282,5 +295,5 @@ if __name__ == "__main__":
     mpp = MatchPositionParser(match,teams)
     fname_pos = data_path + "/ObservedPositionalData/" + fname
     mpp.run(fname_pos)
-    pos_data,ball_data = mpp.getPositionInformation()
+    pos_data,ball_data, timestamps= mpp.getPositionInformation()
     

@@ -11,6 +11,7 @@ dfl_parser: Module which provides parsing function for Soccer
 """
 import xml.sax, xml.sax.handler
 import datetime as dt
+import dateutil.parser as dup
 import numpy as np
 
 class MatchInformationParser(xml.sax.handler.ContentHandler):
@@ -82,15 +83,15 @@ class MatchInformationParser(xml.sax.handler.ContentHandler):
 def convertTime(tstring):
     """ Converts time stamps into datetimes.
     
-    convertTime discard the local part (+02:00) though which,
-    is not a problem as all timestamps are treated equally.
+    convertTime converts the time string into a datetime.datetime
+    object with added timezone information.
     
     Args:
         tstring: timestamp string
     Returns:
         A datetime object representing the timestamp.
     """    
-    return dt.datetime.strptime(tstring[:-6],'%Y-%m-%dT%H:%M:%S.%f')
+    return dup.parse(tstring) 
 
 class Substitution:
     """

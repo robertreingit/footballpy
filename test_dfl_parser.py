@@ -13,6 +13,7 @@ versions of original files.
 import unittest
 import dfl_parser
 from datetime import datetime
+import dateutil.parser as dup
 import numpy as np
 
 class TestMatchInformation(unittest.TestCase):
@@ -63,9 +64,9 @@ class TestMatchEvent(unittest.TestCase):
     def test_playing_time(self):
         play_time = TestMatchEvent._play_time
         self.assertEqual(play_time['firstHalf'][0],
-                datetime(2015,5,16,15,30,41,247000))
+               dup.parse('2015-05-16T15:30:41.247+02:00'))
         self.assertEqual(play_time['firstHalf'][1],
-                datetime(2015,5,16,16,15,44,247000))
+               dup.parse('2015-05-16T16:15:44.247+02:00'))
 
 class TestMatchPosition(unittest.TestCase):
     """Unit test class for the MatchPositionParser.

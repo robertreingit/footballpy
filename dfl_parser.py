@@ -295,5 +295,5 @@ if __name__ == "__main__":
     mpp = MatchPositionParser(match,teams)
     fname_pos = data_path + "/ObservedPositionalData/" + fname
     mpp.run(fname_pos)
-    pos_data,ball_data, timestamps= mpp.getPositionInformation()
+    pos_data,ball_data,timestamps = mpp.getPositionInformation()
     

@@ -56,7 +56,7 @@ if __name__ == "__main__":
         print "Parsing position data"
         mpp = prs.MatchPositionParser(match,teams)
         mpp.run(fname_pos)
-        pos_data,ball_data = mpp.getPositionInformation()
+        pos_data,ball_data,time_stamps = mpp.getPositionInformation()
         
         # Runs the processor
         section = '2nd'

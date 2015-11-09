@@ -16,17 +16,17 @@ import numpy as np
     Type B: Simple scheme
 """
 __position_ranking = {
-	'A': {
+    'A': {
     'TW':1, 'LV':2, 'IVL':3, 'IVZ':4, 'IVR':5, 'RV':6,
     'DML':7, 'DMZ':8, 'DMR':9,
     'LM':10, 'HL':11, 'MZ': 12, 'HR':13, 'RM':14,
     'OLM':15, 'ZO':16, 'ORM':17,
     'HST':18, 'LA':19, 'STL':20, 'STR':21, 'RA':22,
     'STZ':23
-	},
-	'B': {
+    },
+    'B': {
         'G': 1, 'D': 2, 'M': 3, 'A': 4
-	}
+    }
 }
 
 def sort_position_data(pos,type='A'):
@@ -34,9 +34,9 @@ def sort_position_data(pos,type='A'):
     
     Args:
         pos: The list with tuples containing the position data and the
-        	playing position.
-	type: The type of position rankings used by the tracking system. 
-		Type A is default.
+            playing position.
+    type: The type of position rankings used by the tracking system. 
+        Type A is default.
     Returns:    
         The sorted list.
     """

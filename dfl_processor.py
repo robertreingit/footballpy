@@ -159,6 +159,17 @@ def rescale_playing_coords(position_coords,pitch_dim):
     position_coords[:,0::2] *= 10.0/pitch_length        # x-coordinates
     position_coords[:,1::2] *= 10.0/pitch_width         # y-coordinates
     
+def clamp_values(result,vmin=0.0, vmax=10.0):
+    """Clamps the position values to [0,10]
+
+    Args:
+    Returns:
+        None.
+    """
+    for entry in result:
+        for ht in result[entry]:
+            ht[ht<vmin] = vmin
+            ht[ht>vmax] = vmax
 
 def run(pos_data,ball_data,match):
     """Driver routine to run all processing steps.
@@ -196,6 +207,11 @@ def run(pos_data,ball_data,match):
         rescale_playing_coords(ball_data[i][:,1:3],match['stadium'])
     result['ball'][0] = ball_data[0][:,1:3]
     result['ball'][1] = ball_data[1][:,1:3]
+
+    #correct value ranges.
+    print 'clamping values.'
+    clamp_values(result)
+
     print 'done.'
     
     return result

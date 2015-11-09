@@ -25,8 +25,8 @@ __position_ranking = {
     'STZ':23
 	},
 	'B': {
-        'G': 1, 'D': 2, 'M': 3, 'A': 4
-	}
+        'G': 1, 'D': 2, 'M': 3, 'A': 4 
+    }
 }
 
 def sort_position_data(pos,type='A'):
@@ -43,7 +43,7 @@ def sort_position_data(pos,type='A'):
     ranking_type = __position_ranking[type]
     return sorted(pos,key=lambda player: ranking_type[player[2]])
 
-def stitch_position_data(pos,ball):
+def stitch_position_data(pos,ball,NO_PLAYERS=11):
     """Puts position data into a single array.
     
     stitch_position_data does not change the ordering of the data and
@@ -52,10 +52,13 @@ def stitch_position_data(pos,ball):
     Args:
         pos:
         ball:
+        NO_PLAYERS: default = 11
     Returns:
     """
     # magig numbers
-    NO_OUTPUT_PLAYERS = 11
+    _MISSING_ = -100000.0
+    _NO_DIM_ = 2
+    _POST_LOOK_ = 20
     # end magic numbers
     
     frames = ball[:,0]
@@ -63,22 +66,38 @@ def stitch_position_data(pos,ball):
     max_frame = max(frames)
     no_frames = ball.shape[0]
     if no_frames != (max_frame - min_frame + 1):
-        raise IndexError
+        raise IndexError("No of ball frames doesn't match")
         
-    no_player = len(pos)
-    input_fields = np.ones((no_frames,no_player*2), dtype='float32')*-100
+    if (len(pos) != NO_PLAYERS):
+        raise LookupError("No of players doesn't match")
+
+    # generate input with missing data marked by _MISSING_
+    input_fields = np.ones((no_frames,NO_PLAYERS + _NO_DIM_), dtype='float32') * _MISSING_
+
     # populate input fields
-    for pidx in range(no_player):
+    for pidx in range(NO_PLAYERS):
         frames_present = (frames>=pos[pidx][1][0,0]) & (frames<=pos[pidx][1][-1,0])
         # determine frame slice
         slice_idx = slice(pidx*2,pidx*2+2)
         input_fields[frames_present,slice_idx] = pos[pidx][1][:,1:3]
     
     # transferring present data from input field into output_field    
-    output_fields = np.ones((no_frames,NO_OUTPUT_PLAYERS*2), dtype='float32')*-1
+    output_fields = np.ones((no_frames,NO_PLAYERS*_NO_DIM_), dtype='float32') * _MISSING_
     for row in range(no_frames):
         # determine valid entries in current row
-        player_idx = input_fields[row,:]>-100
+        player_idx = input_fields[row,:] > _MISSING_
+
+        # HACK
+        # if there are too many entries see whether it's alright on 
+        # the current row + _POST_LOOK_, so probably overlap during substitution.
+        # Proper solution: Should look into substitution objects and match accordingly.
+        if (sum(player_idx) != NO_PLAYERS * _NO_DIM_):
+            player_idx_post = input_fields[row+_POST_LOOK_,:] > -100
+            if (sum(player_idx_post) == NO_PLAYERS * _NO_DIM_):
+                player_idx = player_idx_post
+            else:
+                raise LookupError('Too many players found for frame.')
+
         output_fields[row,slice(0,sum(player_idx))] = input_fields[row,player_idx]
     return output_fields
     

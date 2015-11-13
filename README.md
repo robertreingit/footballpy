@@ -8,6 +8,6 @@ might change in the future.
 
 # Support file types:
 
-[x] DFL format
-[] raw format (soon)
-[] Impire format (soon)
+- [x] DFL format
+- [ ] raw format (soon)
+- [ ] Impire format (soon)

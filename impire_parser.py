@@ -135,20 +135,6 @@ def convertTime(tstring):
     """    
     return dup.parse(tstring) 
 
-class Substitution:
-    """
-    A simple wrapper object for substitution events.
-    """
-    def __init__(self,time,teamID, pin,pout,position):
-        self.time = time
-        self.teamID = teamID
-        self.pin = pin
-        self.pout = pout
-        self.position = position
-    
-    def __repr__(self):
-        return ('%s: %s= ->%s - %s->, %s' %  
-    (self.time, self.teamID, self.pin, self.pout, self.position))
 
 
 class MatchEventParser(xml.sax.handler.ContentHandler):
@@ -196,125 +182,45 @@ def calculate_frame_estimate(playing_time,padding_time = 5*60, freq = 25):
     return int(no_frames)
 
         
-class MatchPositionParser(xml.sax.handler.ContentHandler):
+def read_in_position_data(fname):
+    """Reads in a pos file and extract the ball/player data
+    Args:
+    Returns:
     """
-    A parser for the position data.
-    Attributes:
-        currentID
-        currentPos
-        timeStamps
-        tmpTimeStamp
-        inFrameSet
-        teamID
-        gameSection
-        isBall
-        positionData
-        ball
-        match
-        teams
+
+    # MAGIC NUMBER
+    _MISSING_ = -10000.0
+    NO_PLAYER = 11
+    NO_DIM = 3      # FRAME, X, Z
+    NO_DIM_BALL = 6     # FRAME, X, Y, Z, POSSESSION, STATUS
+
+    no_frames = sum([1 for f in open(fname)])
+
+    home_team = np.ones((NO_PLAYER,no_frames,NO_DIM)) * _MISSING_
+    guest_team = home_team.copy()
+    ball = np.ones((no_frames,6)) * _MISSING_
+
+    for i,frame in enumerate(open(fname)):
+        #0: Frame, 1: Home, 2: Guest, 3: Referee, 4: Ball
+        hash_split = frame.split('#')
+        # get frame index
+        frame = int(hash_split[0][:-1].split(',')[0])
+        # process home team
+        for j,player in enumerate(hash_split[1][:-1].split(';')):
+            player_data = player.split(',')
+            player_id = int(player_data[0])
+            player_x = float(player_data[1])
+            player_y = float(player_data[2])
+            home_team[j,i,:] = [player_id, player_x, player_y]
+
+    return home_team
+
+def sort_position_data(pos):
+    """Sorts the position data according to player and period.
     """
-    def __init__(self,match,teams,no_frames = 200000):
-        self.currentID = ""
-        self.currentPos = np.zeros((no_frames,6),dtype='float32')
-        self.timeStamps = [[],[]]
-        self.tmpTimeStamp = []
-        self.inFrameSet = False
-        self.frameCounter = 0
-        self.teamID = ""
-        self.gameSection = ""
-        self.isBall = False
-        self.position_data = {'home': {'1st':[], '2nd':[]},
-                          'guest': {'1st':[], '2nd':[]}}
-        self.ball = [0]*2
-        self.match = match
-        self.teams = teams
+    # TODO
 
-    def startElement(self,name,attrs):
-        if name == "FrameSet":
-            self.inFrameSet = True
-            self.frameCounter = 0
-            self.currentID = attrs['PersonId']
-            self.gameSection = attrs["GameSection"]
-            self.teamID = attrs['TeamId']
-            if self.teamID == "Ball":
-                self.isBall = True
-                print "Ball"
-            print self.currentID
-        elif (name == "Frame") & self.inFrameSet:
-            x = float(attrs['X'])
-            y = float(attrs['Y'])
-            frame = float(attrs['N'])
-            if not self.isBall:
-                self.currentPos[self.frameCounter,:3] = (frame,x,y)
-            else: # ball data
-                z = float(attrs['Z'])
-                possession = float(attrs['BallPossession'])
-                ball_status = float(attrs['BallStatus'])
-                self.currentPos[self.frameCounter,] = ( 
-                    frame,x,y,z,possession,ball_status)
-                # add timestamp information
-                timestamp = convertTime(attrs['T'])
-                self.tmpTimeStamp.append(timestamp)
 
-            self.frameCounter += 1
-
-    def endElement(self,name):
-        if name == "FrameSet":
-            print "Processed %d frames" % (self.frameCounter)
-            self.inFrameSet = False
-            # get team: A or B            
-            section = self.gameSection
-            teamID = self.teamID
-            if self.isBall: # ball data
-                if section == "firstHalf":
-                    self.ball[0] = np.copy(
-                            self.currentPos[:self.frameCounter,])
-                    self.timeStamps[0] = self.tmpTimeStamp
-
-                elif section == "secondHalf":
-                    self.ball[1] = np.copy(
-                            self.currentPos[:self.frameCounter,])
-                    self.timeStamps[1] = self.tmpTimeStamp
-                else:
-                    raise LookupError
-                self.tmpTimeStamp = []
-
-            else: # player data
-                secID = '1st' if section == 'firstHalf' else '2nd'
-                teamRole = 'home' if teamID == self.match['home'] else 'guest'
-                play_pos = (self.teams[teamRole][[p['id'] for p in 
-                    self.teams[teamRole]].index(self.currentID)]['position'])
-                entry = (self.currentID,np.copy(self.currentPos[:self.frameCounter,:3]),play_pos)
-                self.position_data[teamRole][secID].append(entry)
-            # cleaning up
-            self.gameSection = "NaN"
-            self.frameCounter = 0
-            self.teamID = ''
-            if self.isBall:                
-                self.isBall = False
-
-    def run(self,fname):
-        """Starts parsing fname.
-
-        Args:
-            fname is the name of the file.
-        Returns:
-            Nothing
-        """
-        parser = xml.sax.make_parser()
-        parser.setContentHandler(self)
-        parser.parse(fname)
-        print 'finished parsing position data'
-    
-    def getPositionInformation(self):
-        """Extractor function to retrieve position data.
-        Args:
-            None
-        Returns:
-            The player position data and the ball data.
-        """
-        return self.position_data, self.ball, self.timeStamps
-        
 #######################################
 if __name__ == "__main__":
     
@@ -327,8 +233,8 @@ if __name__ == "__main__":
     fname_match = data_path + 'vistrack-actions-130330.xml'
     mip.run(fname_match)
     teams, match = mip.getTeamInformation()
-    add_stadium_information(match,stadium_specs)
     
+    home = read_in_position_data('test/impire/123456_test.pos')
     """
     print "Parsing event data"
     mep = MatchEventParser()

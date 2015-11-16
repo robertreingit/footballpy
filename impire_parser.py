@@ -200,6 +200,14 @@ def read_in_position_data(fname):
     guest_team = home_team.copy()
     ball = np.ones((no_frames,6)) * _MISSING_
 
+    def process_player(player):
+        """Extracts information from player-pos string"""
+        data = player.split(',')
+        pid = int(data[0])      # player identifier
+        x = float(data[1])      # x-position
+        y = float(data[2])      # y-position
+        return [pid,x,y]
+
     for i,frame in enumerate(open(fname)):
         #0: Frame, 1: Home, 2: Guest, 3: Referee, 4: Ball
         hash_split = frame.split('#')
@@ -207,18 +215,29 @@ def read_in_position_data(fname):
         frame = int(hash_split[0][:-1].split(',')[0])
         # process home team
         for j,player in enumerate(hash_split[1][:-1].split(';')):
-            player_data = player.split(',')
-            player_id = int(player_data[0])
-            player_x = float(player_data[1])
-            player_y = float(player_data[2])
-            home_team[j,i,:] = [player_id, player_x, player_y]
+            home_team[j,i,:] = process_player(player)
+        # process guest team
+        for j,player in enumerate(hash_split[2][:-1].split(';')):
+            guest_team[j,i,:] = process_player(player)
+        # ball: frame, x, y, z, possession, status
+        ball_data = hash_split[4][:-1].split(',')
+        x = float(ball_data[0])
+        y = float(ball_data[1])
+        z = float(ball_data[2])
+        poss = float(ball_data[5])
+        status = float(ball_data[4])
+        ball[i,:] = [frame,x,y,z,poss,status]
 
-    return home_team
+    return home_team, guest_team, ball
 
 def sort_position_data(pos):
     """Sorts the position data according to player and period.
     """
-    # TODO
+    unique_player = np.unique(pos[:,:,0])
+    res = []
+    for pid in unique_player:
+        res.append(pos[pos[:,:,0]==pid])
+    return res
 
 
 #######################################
@@ -234,7 +253,9 @@ if __name__ == "__main__":
     mip.run(fname_match)
     teams, match = mip.getTeamInformation()
     
-    home = read_in_position_data('test/impire/123456_test.pos')
+    home,guest,ball = read_in_position_data('test/impire/123456.pos')
+    home_s = sort_position_data(home)
+
     """
     print "Parsing event data"
     mep = MatchEventParser()

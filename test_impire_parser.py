@@ -17,10 +17,18 @@ import impire_parser
 class TestMatchPosition(unittest.TestCase):
     """Unit test class for the MatchPositionParser.
     """
+    @classmethod
+    def setUpClass(cls):
+        cls.test_file = 'test/impire/123456.pos'
+
+    def test_read_in_position(self):
+        home,tmp2,tmp2 = impire_parser.read_in_position_data(TestMatchPosition.test_file)
+        self.assertTrue(home.shape[0] == 11)
+
 
     def test_sort_raw_data(self):
         """Tests whether the raw data is sorted properly."""
-        home,tmp,tmp2 = impire_parser.read_in_position_data('test/impire/123456.pos')
+        home,tmp,tmp2 = impire_parser.read_in_position_data(TestMatchPosition.test_file)
         home_s = impire_parser.sort_position_data(home)
         test_array = np.arange(7) + 1.0
         target_array = [d for d in home_s if np.all(d[:,0]==15.0)][0][:,1]

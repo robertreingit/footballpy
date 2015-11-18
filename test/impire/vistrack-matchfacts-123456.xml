@@ -1,0 +1,584 @@
+<?xml version="1.0" encoding="UTF-8" standalone='no'?>
+<!DOCTYPE sports-content SYSTEM "../specification/dtd/sportsml-core.dtd" >
+<!--
+    Copyright (c) 2003 - 2011 proFILE Computersysteme GmbH.
+    All Rights Reserved.
+    proFILE MAKES NO REPRESENTATIONS OR WARRANTIES ABOUT THE SUITABILITY OF
+    THE SOFTWARE, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+    IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
+    OR NON-INFRINGEMENT. proFILE SHALL NOT BE LIABLE FOR ANY DAMAGES SUFFERED
+    BY LICENSEE AS A RESULT OF USING, MODIFYING OR DISTRIBUTING THIS SOFTWARE
+    OR ITS DERIVATIVES.
+-->
+<sports-content xmlns:imp="http://web.impire.de/SportsML/v1.5/doc/index.html">
+    <sports-metadata date-time="20301011T000000+0100"
+                     doc-id="match_facts_20301011T000000+0100_51_date20111126T000000+0100_spnr123456"
+                     language="de-DE">
+        <sports-title> Match Facts StarWarsliga</sports-title>
+        <sports-content-codes>
+            <sports-content-code code-type="league"
+                                 code-key="soccer.l_51"
+                                 code-source="impire.tv"
+                                 code-name="Bundesliga"/>
+            <sports-content-code code-type="team"
+                                 code-key="soccer.t_12"
+                                 code-source="impire.tv"
+                                 code-name="FC Tatooine"/>
+            <sports-content-code code-type="team"
+                                 code-key="soccer.t_34"
+                                 code-source="impire.tv"
+                                 code-name="VfL Dagoba"/>
+        </sports-content-codes>
+    </sports-metadata>
+    <tournament>
+        <tournament-metadata tournament-name="Fussball Bundesliga"
+                             tournament-key="51"
+                             tournament-source="impire.tv"
+                             date-coverage-type="season-full"
+                             date-coverage-value="20301011T000000+0100"
+                         />
+        <tournament-division>
+            <tournament-division-metadata division-name="Hinrunde"
+                                          division-key="1"
+                                          division-source="impire.tv"/>
+            <tournament-round round-number="14"
+                              round-name="round_14"
+                              round-key="14"
+                              round-source="impire.tv">
+                <sports-event>
+                    <event-metadata id="E_123456"
+                                    event-key="123456"
+                                    event-status="post-event"
+                                    start-date-time="20301111T153000+0100"
+                                    start-weekday="saturday"
+                                    heat-number="14"
+                                    date-coverage-type="event"
+                                    date-coverage-value="20301126T153000+0100"
+                                    site-attendance="32130"
+                                    imp:soldout="0"
+                                    imp:live-period="2"
+                                    imp:has-overtime="0"
+                                    imp:has-overtime2="0"
+                                    imp:has-penalty-shootout="0"
+                                    >
+                        <event-metadata-soccer period-value="2"
+                                               minutes-elapsed="90"
+                                               period-minute-elapsed="45"
+                                               >
+                            <time-adjustment period-extra-time-elapsed="0500"/>
+                        </event-metadata-soccer>
+                    </event-metadata>
+                    <team>
+                        <team-metadata id="O_12"
+                                       team-key="12"
+                                       alignment="home"
+                                       imp:uniform-color-name="blue;"
+                                       imp:uniform-color-hex="#0000ff">
+                            <name full="FC Tatooine"
+                                  nickname="Tatooine"/>
+                        </team-metadata>
+                        <team-stats score="2">
+                                <sub-score period-value="period-1" score="0"/>
+                                <sub-score period-value="period-2" score="2"/>
+                        </team-stats>
+                        <player>
+                            <player-metadata id="P_123456_10000"
+                                             player-key="10000"
+                                             position-regular="goalie" 
+                                             position-event="goalie" 
+                                             imp:yellow-cards="0"
+                                             status="starter"
+                                             uniform-number="30">
+                                <name full="Anakin Skywalker" 
+                                      nickname="A. Skywalker"
+                                      last="Skywalker"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_123456_10001"
+                                             player-key="10001"
+                                             position-regular="defenseman" 
+                                             position-event="defenseman" 
+                                             imp:yellow-cards="3"
+                                             status="starter"
+                                             uniform-number="4">
+                                <name full="Luke Skywalker" 
+                                      nickname="L. Skywalker"
+                                      last="Skywalker"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_123456_10002"
+                                             player-key="10002"
+                                             position-regular="defenseman" 
+                                             position-event="defenseman" 
+                                             imp:yellow-cards="2"
+                                             status="starter"
+                                             uniform-number="15">
+                                <name full="Leia Organa" 
+                                      nickname="L. Organa"
+                                      last="Organa"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_123456_10003"
+                                             player-key="10003"
+                                             position-regular="defenseman" 
+                                             position-event="defenseman" 
+                                             imp:yellow-cards="0"
+                                             status="starter"
+                                             uniform-number="2">
+                                <name full="Obi-Wan Kenobi" 
+                                      nickname="O. Kenobi"
+                                      last="Kenobi"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_123456_10004"
+                                             player-key="10004"
+                                             position-regular="mid-fielder" 
+                                             position-event="mid-fielder" 
+                                             imp:yellow-cards="0"
+                                             status="starter"
+                                             uniform-number="26">
+                                <name full="Darth Sidious" 
+                                      nickname="D. Sidious"
+                                      last="Sidious"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_123456_10005"
+                                             player-key="10005"
+                                             position-regular="mid-fielder" 
+                                             position-event="mid-fielder" 
+                                             imp:yellow-cards="3"
+                                             status="starter"
+                                             uniform-number="24">
+                                <name full="Han Solo" 
+                                      nickname="H. Solo"
+                                      last="Solo"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_123456_10006"
+                                             player-key="10006"
+                                             position-regular="mid-fielder" 
+                                             position-event="mid-fielder" 
+                                             imp:yellow-cards="2"
+                                             status="starter"
+                                             uniform-number="7">
+                                <name full="Boba Fett" 
+                                      nickname="B. Fett"
+                                      last="Fett"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_123456_10007"
+                                             player-key="10007"
+                                             position-regular="mid-fielder" 
+                                             position-event="mid-fielder" 
+                                             imp:yellow-cards="4"
+                                             status="starter"
+                                             uniform-number="18">
+                                <name full="Count Doku" 
+                                      nickname="C. Doku"
+                                      last="Doku"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_123456_10008"
+                                             player-key="10008"
+                                             position-regular="mid-fielder" 
+                                             position-event="mid-fielder" 
+                                             imp:yellow-cards="2"
+                                             status="starter"
+                                             uniform-number="13">
+                                <name full="Lando Calrissian" 
+                                      nickname="L. Calrissian"
+                                      last="Calrissian"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_123456_10009"
+                                             player-key="10009"
+                                             position-regular="mid-fielder" 
+                                             position-event="mid-fielder" 
+                                             imp:yellow-cards="3"
+                                             status="starter"
+                                             uniform-number="10">
+                                <name full="Wilhuff Tarkin" 
+                                      nickname="Wilhuff Tarkin"
+                                      last="Tarkin"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_123456_10010"
+                                             player-key="10010"
+                                             position-regular="forward" 
+                                             position-event="forward"
+                                             imp:yellow-cards="0"
+                                             status="starter"
+                                             uniform-number="33">
+                                <name full="Aayla S&#xF6;cura" 
+                                      nickname="A. S&#xF6;cura"
+                                      last="S&#xF6;cura"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_123456_10011"
+                                             player-key="10011"
+                                             position-regular="goalie" 
+                                             status="bench"
+                                             uniform-number="37">
+                                <name full="Adi Gallia" 
+                                      nickname="A. Gallia"
+                                      last="Gallia"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_123456_10012"
+                                             player-key="10012"
+                                             position-regular="defenseman" 
+                                             status="bench"
+                                             uniform-number="3">
+                                <name full="Admiral Ackbar" 
+                                      nickname="A. Ackbar"
+                                      last="Ackbar"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_123456_10013"
+                                             player-key="10013"
+                                             position-regular="mid-fielder" 
+                                             status="bench"
+                                             uniform-number="28">
+                                <name full="Bail Organa" 
+                                      nickname="Bail Organa"
+                                      last="Organa"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_123456_10014"
+                                             player-key="10014"
+                                             position-regular="mid-fielder" 
+                                             position-event="mid-fielder" 
+                                             imp:yellow-cards="1"
+                                             status="bench"
+                                             uniform-number="23">
+                                <name full="Barriss Offee" 
+                                      nickname="B. Offee"
+                                      last="Offee"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_123456_10015"
+                                             player-key="10015"
+                                             position-regular="forward" 
+                                             status="bench"
+                                             uniform-number="11">
+                                <name full="Beru Lars" 
+                                      nickname="B. Lars"
+                                      last="Lars"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_123456_10016"
+                                             player-key="10016"
+                                             position-regular="forward" 
+                                             position-event="forward" 
+                                             imp:yellow-cards="0"
+                                             status="bench"
+                                             uniform-number="22">
+                                <name full="Bib Fortuna" 
+                                      nickname="B. Fortuna"
+                                      last="Fortuna"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_123456_10017"
+                                             player-key="10017"
+                                             position-regular="forward" 
+                                             status="bench"
+                                             uniform-number="19">
+                                <name full="Boss Nass" 
+                                      nickname="B. Nass"
+                                      last="Nass"/>
+                            </player-metadata>
+                        </player>
+                        <associate>
+                            <associate-metadata id="PA_123456_10018"
+                                                associate-key="10018"
+                                                position="coach">
+                                <name full="Captain Raymus Antilles" nickname="R. Antilles"/>
+                            </associate-metadata>
+                        </associate>
+                    </team>
+                    <team>
+                        <team-metadata id="O_34"
+                                       team-key="34"
+                                       alignment="away"
+                                       imp:uniform-color-name="gr&#xFC;n"
+                                       imp:uniform-color-hex="#008000">
+                            <name full="VfL Dagoba"
+                                  nickname="Dagoba"/>
+                        </team-metadata>
+                        <team-stats score="0">
+                                <sub-score period-value="period-1" score="0"/>
+                                <sub-score period-value="period-2" score="0"/>
+                        </team-stats>
+                        <player>
+                            <player-metadata id="P_123456_11000"
+                                             player-key="11000"
+                                             position-regular="goalie" 
+                                             position-event="goalie" 
+                                             imp:yellow-cards="1"
+                                             status="starter"
+                                             uniform-number="1">
+                                <name full="Captian Needa" 
+                                      nickname="C. Needa"
+                                      last="Needa"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_123456_11001"
+                                             player-key="11001"
+                                             position-regular="defenseman" 
+                                             position-event="defenseman" 
+                                             imp:yellow-cards="1"
+                                             status="starter"
+                                             uniform-number="4">
+                                <name full="Captain Pan&#xE4;ka" 
+                                      nickname="C. Pan&#xE4;ka"
+                                      last="Pan&#xE4;ka"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_123456_11002"
+                                             player-key="11002"
+                                             position-regular="defenseman" 
+                                             position-event="defenseman" 
+                                             imp:yellow-cards="0"
+                                             status="starter"
+                                             uniform-number="17">
+                                <name full="Cin Drallig" 
+                                      nickname="C. Drallig"
+                                      last="Drallig"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_123456_11003"
+                                             player-key="11003"
+                                             position-regular="mid-fielder" 
+                                             position-event="mid-fielder" 
+                                             imp:yellow-cards="2"
+                                             status="starter"
+                                             uniform-number="25">
+                                <name full="Cliegg Lars" 
+                                      nickname="Cliegg Lars"
+                                      last="Lars"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_123456_11004"
+                                             player-key="11004"
+                                             position-regular="mid-fielder" 
+                                             position-event="mid-fielder" 
+                                             imp:yellow-cards="0"
+                                             status="starter"
+                                             uniform-number="5">
+                                <name full="Darth Maul" 
+                                      nickname="Darth Maul"
+                                      last="Maul"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_123456_11005"
+                                             player-key="11005"
+                                             position-regular="mid-fielder" 
+                                             position-event="mid-fielder" 
+                                             imp:yellow-cards="3"
+                                             status="starter"
+                                             uniform-number="7">
+                                <name full="Ezra Bridger" 
+                                      nickname="Ezra Bridger"
+                                      last="Bridger"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_123456_11006"
+                                             player-key="11006"
+                                             position-regular="mid-fielder" 
+                                             position-event="mid-fielder" 
+                                             imp:yellow-cards="2"
+                                             status="starter"
+                                             uniform-number="24">
+                                <name full="General Grievious" 
+                                      nickname="G. Grievious"
+                                      last="Grievious"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_123456_11007"
+                                             player-key="11007"
+                                             position-regular="mid-fielder" 
+                                             position-event="mid-fielder" 
+                                             imp:yellow-cards="2"
+                                             status="starter"
+                                             uniform-number="13">
+                                <name full="Jango Fett" 
+                                      nickname="J. Fett"
+                                      last="Fett"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_123456_11008"
+                                             player-key="11008"
+                                             position-regular="mid-fielder" 
+                                             position-event="mid-fielder" 
+                                             imp:yellow-cards="2"
+                                             status="starter"
+                                             uniform-number="15">
+                                <name full="Jar Jar Binks" 
+                                      nickname="J. Binks"
+                                      last="Binks"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_123456_11009"
+                                             player-key="11009"
+                                             position-regular="mid-fielder" 
+                                             position-event="mid-fielder" 
+                                             imp:yellow-cards="1"
+                                             status="starter"
+                                             uniform-number="11">
+                                <name full="Kanan Jarrus" 
+                                      nickname="K. Jarrus"
+                                      last="Jarrus"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_123456_11010"
+                                             player-key="11010"
+                                             position-regular="forward" 
+                                             position-event="forward" 
+                                             imp:yellow-cards="3"
+                                             status="starter"
+                                             uniform-number="18">
+                                <name full="Kit Fisto" 
+                                      nickname="K. Fisto"
+                                      last="Fisto"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_123456_11011"
+                                             player-key="11011"
+                                             position-regular="goalie" 
+                                             status="bench"
+                                             uniform-number="12">
+                                <name full="Mace Windu" 
+                                      nickname="M. Windu"
+                                      last="Windu"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_123456_11012"
+                                             player-key="11012"
+                                             position-regular="defenseman" 
+                                             status="bench"
+                                             uniform-number="23">
+                                <name full="Mon Mothma" 
+                                      nickname="M. Mothma"
+                                      last="Mothma"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_123456_11013"
+                                             player-key="11013"
+                                             position-regular="mid-fielder" 
+                                             position-event="mid-fielder" 
+                                             imp:yellow-cards="0"
+                                             status="bench"
+                                             uniform-number="27">
+                                <name full="Nute Gunray" 
+                                      nickname="N. Gunray"
+                                      last="Gunray"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_123456_11014"
+                                             player-key="11014"
+                                             position-regular="mid-fielder" 
+                                             status="bench"
+                                             uniform-number="2">
+                                <name full="Shaak Ti" 
+                                      nickname="S. Ti"
+                                      last="Ti"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_123456_11015"
+                                             player-key="11015"
+                                             position-regular="mid-fielder" 
+                                             position-event="mid-fielder" 
+                                             imp:yellow-cards="0"
+                                             status="bench"
+                                             uniform-number="6">
+                                <name full="Shmi Skywalker" 
+                                      nickname="S. Skywalker"
+                                      last="Skywalker"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_123456_11016"
+                                             player-key="11016"
+                                             position-regular="forward" 
+                                             position-event="forward" 
+                                             imp:yellow-cards="0"
+                                             status="bench"
+                                             uniform-number="9">
+                                <name full="Wedge Antilles" 
+                                      nickname="W. Antilles"
+                                      last="Antilles"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_123456_11017"
+                                             player-key="11017"
+                                             position-regular="forward" 
+                                             status="bench"
+                                             uniform-number="19">
+                                <name full="Darth Bane" 
+                                      nickname="D. Bane"
+                                      last="Bane"/>
+                            </player-metadata>
+                        </player>
+                        <associate>
+                            <associate-metadata id="PA_123456_11018"
+                                                associate-key="11018"
+                                                position="coach">
+                                <name full="Darth Plagueis" nickname="D. Plagueis"/>
+                            </associate-metadata>
+                        </associate>
+                    </team>
+                    <officials>
+                        <official>
+                            <official-metadata official-key="P_123456_30000"
+                                               position="referee">
+                                <name full="Gilad Pellaeon"
+                                      nickname="G. Pellaeon"
+                                      city="Pellaeon"/>
+                                <home-location city="Kerken"
+                                               country="GER"/>
+                                <sports-property formal-name="nationality" value="Deutschland"/>
+                            </official-metadata>
+                        </official>
+                    </officials>
+                    <event-actions>                        
+                    </event-actions>
+                </sports-event>
+            </tournament-round>
+        </tournament-division>
+     </tournament>
+</sports-content>
+
+

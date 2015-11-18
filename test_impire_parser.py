@@ -19,20 +19,31 @@ class TestMatchPosition(unittest.TestCase):
     """
     @classmethod
     def setUpClass(cls):
-        cls.test_file = 'test/impire/123456.pos'
+        cls.pos_file = 'test/impire/123456.pos'
+        cls.match_file = 'test/impire/vistrack-matchfacts-123456.xml'
 
     def test_read_in_position(self):
-        home,tmp2,tmp2 = impire_parser.read_in_position_data(TestMatchPosition.test_file)
+        home,tmp2,tmp2 = impire_parser.read_in_position_data(TestMatchPosition.pos_file)
         self.assertTrue(home.shape[0] == 11)
 
 
     def test_sort_raw_data(self):
         """Tests whether the raw data is sorted properly."""
-        home,tmp,tmp2 = impire_parser.read_in_position_data(TestMatchPosition.test_file)
+        home,tmp,tmp2 = impire_parser.read_in_position_data(TestMatchPosition.pos_file)
         home_s = impire_parser.sort_position_data(home)
         test_array = np.arange(7) + 1.0
         target_array = [d for d in home_s if np.all(d[:,0]==15.0)][0][:,1]
         self.assertTrue(np.all(target_array == test_array))
+
+    def test_team_load(self):
+        """Tests teams loading."""
+        mip = impire_parser.MatchInformationParser()
+        mip.run(TestMatchPosition.match_file)
+        teams, match = mip.getTeamInformation()
+        self.assertTrue(len(teams['home']) == 18)
+        self.assertTrue(len(teams['guest']) == 18)
+        self.assertTrue(len([p for p in teams['home'] if p['id'] == '10000']) == 1)
+
 
 
 if __name__ == '__main__':

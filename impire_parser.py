@@ -16,19 +16,6 @@ import dateutil.parser as dup
 import numpy as np
 import pdb
 
-def read_stadium_specs():
-    """Reads the stadium width and lenght from a csv file."""
-    stadium_specs = '../data/game_stadium_keys.csv'
-    fid = open(stadium_specs)
-    header = fid.readline().rstrip().split(';')
-    entries = [[] for x in range(len(header))]
-    stadium_specs = [game.rstrip() for game in fid.readlines()]
-    for game in stadium_specs:
-        for (idx,entry) in enumerate(game.split(';')):
-            entries[idx].append(entry)
-    specs = dict(zip(header,entries))
-    return specs 
-
 def add_stadium_information(match,specs):
     """ Adds stadium width and the length to match data
 
@@ -118,6 +105,8 @@ class MatchInformationParser(xml.sax.handler.ContentHandler):
         """Runs the parse on fname."""
         parser = xml.sax.make_parser()
         parser.setContentHandler(self)
+        # prevent external DTD load
+        parser.setFeature(xml.sax.handler.feature_external_ges,False)
         parser.parse(fname)
         print 'finished parsing match information'
 
@@ -239,21 +228,32 @@ def sort_position_data(pos):
         res.append(pos[pos[:,:,0]==pid])
     return res
 
+def read_stadium_dimensions_from_pos(fname):
+    """Gets the stadium specifications from the pos file."""
+    fid = open(fname,'r')
+    line = fid.readline()
+    fid.close()
+    specs_string = line.split('#')[5].rstrip()[:-1].split(',')
+    length = float(specs_string[1])
+    width = float(specs_string[2])
+    return dict(length=length ,width=width)
+
 
 #######################################
 if __name__ == "__main__":
     
-    data_path = "../data/2011-12 BL 14.Sp. Augsburg vs. Wolfsburg/"
-    fname = 'test.xml'
-    stadium_specs = read_stadium_specs()
+    data_path = 'test/impire/'
+    fname_specs = 'vistrack-matchfacts-123456.xml'
+    fname_pos =  '123456.pos'
     
     print "Parsing match information"
     mip = MatchInformationParser()
-    fname_match = data_path + 'vistrack-actions-130330.xml'
+    fname_match = data_path + fname_specs
     mip.run(fname_match)
     teams, match = mip.getTeamInformation()
+    match['stadium'] = read_stadium_dimensions_from_pos(data_path + fname_pos)
     
-    home,guest,ball = read_in_position_data('test/impire/123456.pos')
+    home,guest,ball = read_in_position_data(data_path + fname_pos)
     home_s = sort_position_data(home)
 
     """

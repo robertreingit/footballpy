@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-test_dfl_parser: unittests for the dfl_parser_functions
+test_impire_parser: unittests for the impire_parser_functions
 
 The tests relies on the specific test files which are pruned
 versions of original files.

@@ -53,6 +53,8 @@ class TestMatchPosition(unittest.TestCase):
         self.assertTrue(len(teams['home']) == 18)
         self.assertTrue(len(teams['guest']) == 18)
         self.assertTrue(len([p for p in teams['home'] if p['id'] == '10000']) == 1)
+	self.assertTrue((next(p for p in teams['guest'] if p['id'] == '11003')
+		['name'] == 'Cliegg Lars'))
 
 
 

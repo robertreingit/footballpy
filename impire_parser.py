@@ -185,9 +185,10 @@ def read_in_position_data(fname):
 
     no_frames = sum([1 for f in open(fname)])
 
-    home_team = np.ones((NO_PLAYER,no_frames,NO_DIM)) * _MISSING_
+    home_team = np.ones((no_frames,NO_PLAYER,NO_DIM)) * _MISSING_
     guest_team = home_team.copy()
     ball = np.ones((no_frames,6)) * _MISSING_
+    half_time_id = np.ones(no_frames) * _MISSING_
 
     def process_player(player):
         """Extracts information from player-pos string"""
@@ -200,14 +201,17 @@ def read_in_position_data(fname):
     for i,frame in enumerate(open(fname)):
         #0: Frame, 1: Home, 2: Guest, 3: Referee, 4: Ball
         hash_split = frame.split('#')
+        frame_specs = hash_split[0][:-1].split(',')
         # get frame index
-        frame = int(hash_split[0][:-1].split(',')[0])
+        frame = int(frame_specs[0])
+        # half time index
+        half_time_id[i] = int(frame_specs[2])
         # process home team
         for j,player in enumerate(hash_split[1][:-1].split(';')):
-            home_team[j,i,:] = process_player(player)
+            home_team[i,j,:] = process_player(player)
         # process guest team
         for j,player in enumerate(hash_split[2][:-1].split(';')):
-            guest_team[j,i,:] = process_player(player)
+            guest_team[i,j,:] = process_player(player)
         # ball: frame, x, y, z, possession, status
         ball_data = hash_split[4][:-1].split(',')
         x = float(ball_data[0])
@@ -217,7 +221,7 @@ def read_in_position_data(fname):
         status = float(ball_data[4])
         ball[i,:] = [frame,x,y,z,poss,status]
 
-    return home_team, guest_team, ball
+    return home_team, guest_team, ball, half_time_id
 
 def sort_position_data(pos):
     """Sorts the position data according to player and period.
@@ -253,7 +257,7 @@ if __name__ == "__main__":
     teams, match = mip.getTeamInformation()
     match['stadium'] = read_stadium_dimensions_from_pos(data_path + fname_pos)
     
-    home,guest,ball = read_in_position_data(data_path + fname_pos)
+    home,guest,ball,half_time_id = read_in_position_data(data_path + fname_pos)
     home_s = sort_position_data(home)
 
     """

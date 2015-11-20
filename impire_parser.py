@@ -11,8 +11,6 @@ impire_parser : Module which provides parsing function for Soccer
 @version 0.1
 """
 import xml.sax, xml.sax.handler
-import datetime as dt
-import dateutil.parser as dup
 import numpy as np
 
 class MatchInformationParser(xml.sax.handler.ContentHandler):
@@ -96,19 +94,6 @@ class MatchInformationParser(xml.sax.handler.ContentHandler):
         parser.parse(fname)
         print 'finished parsing match information'
 
-
-def convertTime(tstring):
-    """ Converts time stamps into datetimes.
-    
-    convertTime converts the time string into a datetime.datetime
-    object with added timezone information.
-    
-    Args:
-        tstring: timestamp string
-    Returns:
-        A datetime object representing the timestamp.
-    """    
-    return dup.parse(tstring) 
 
 def read_in_position_data(fname):
     """Reads in a pos file and extract the ball/player data

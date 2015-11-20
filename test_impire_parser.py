@@ -74,6 +74,12 @@ class TestMatchPosition(unittest.TestCase):
         self.assertTrue((next(p for p in teams['guest'] if p['id'] == '11003')
             ['name'] == 'Cliegg Lars'))
 
+    def test_stadium_specs(self):
+        """Tests whether the stadium specs load function works"""
+        stadium = impire_parser.read_stadium_dimensions_from_pos(TestMatchPosition.pos_file)
+        self.assertEqual(stadium, {'length':105.0, 'width':68.0})
+
+
 
 if __name__ == '__main__':
     unittest.main()

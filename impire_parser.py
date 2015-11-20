@@ -162,6 +162,18 @@ def read_in_position_data(fname):
 
     return home_team, guest_team, ball, half_time_id
 
+def split_positions_into_game_halves(pos,ht):
+    """ splits the data frames into first and second halves.
+    Args:
+        pos = position data from read_in_position_data
+        ht = half time index form read_in_position_data
+    Returns:
+        pos_1, pos_2 = position data from game halves.
+    """
+    pos_1 = pos[ht==1,:,:]
+    pos_2 = pos[ht==2,:,:]
+    return pos_1, pos_2
+
 def sort_position_data(pos):
     """Sorts the position data according to player and period.
     """
@@ -197,7 +209,10 @@ if __name__ == "__main__":
     match['stadium'] = read_stadium_dimensions_from_pos(data_path + fname_pos)
     
     home,guest,ball,half_time_id = read_in_position_data(data_path + fname_pos)
-    home_s = sort_position_data(home)
+    home_1, home_2 = split_positions_into_game_halves(home,half_time_id)
+    home_1s = sort_position_data(home_1)
+    home_2s = sort_position_data(home_2)
+    
 
     """
     print "Parsing event data"

@@ -14,20 +14,6 @@ import xml.sax, xml.sax.handler
 import datetime as dt
 import dateutil.parser as dup
 import numpy as np
-import pdb
-
-def add_stadium_information(match,specs):
-    """ Adds stadium width and the length to match data
-
-    Args:
-    Returns:
-    """
-    id_game = specs['event_key'].index(match['match-id'])
-    if id_game < 0:
-        raise LookupError("Couldn't find match")
-    stadium = {'length': specs['Length'][id_game],
-            'width': specs['Width'][id_game]}
-    match['stadium'] = stadium
 
 class MatchInformationParser(xml.sax.handler.ContentHandler):
     """A XML parser for DFL match information files.
@@ -124,53 +110,6 @@ def convertTime(tstring):
     """    
     return dup.parse(tstring) 
 
-
-
-class MatchEventParser(xml.sax.handler.ContentHandler):
-    """
-    Parses the event data for substitutions.
-    """
-    def __init__(self):
-        self.eventTime = ""
-        self.playing_time = { 
-                "firstHalf": ["",""], "secondHalf": ["",""] }
-        self.subs = []
-        
-    def startElement(self,name,attrs):
-        if name == "Event":
-            self.eventTime = attrs["EventTime"]
-        elif name == "Substitution":
-            teamID = attrs['Team']
-            pin = attrs['PlayerIn']
-            pout = attrs['PlayerOut']
-            position = attrs['PlayingPosition']
-            stime = convertTime(self.eventTime)
-            sub = Substitution(stime,teamID,pin,pout,position)
-            self.subs.append(sub)            
-        elif name == "KickoffWhistle":
-            section = attrs['GameSection']
-            self.playing_time[section][0] = convertTime(
-                    self.eventTime)
-        elif name == "FinalWhistle":
-            section = attrs['GameSection']
-            self.playing_time[section][1] = convertTime(self.eventTime)
-    
-    def run(self,fname):
-        parser = xml.sax.make_parser()
-        parser.setContentHandler(self)
-        parser.parse(fname)
-        print 'finished parsing event data'
-    
-    def getEventInformation(self):
-        return self.playing_time, self.subs
-        
-def calculate_frame_estimate(playing_time,padding_time = 5*60, freq = 25):
-    secs_1st = (playing_time['firstHalf'][1] - playing_time['firstHalf'][0]).seconds
-    secs_2nd = (playing_time['secondHalf'][1] - playing_time['secondHalf'][0]).seconds
-    no_frames = (secs_1st + secs_2nd + padding_time) * freq
-    return int(no_frames)
-
-        
 def read_in_position_data(fname):
     """Reads in a pos file and extract the ball/player data
     Args:

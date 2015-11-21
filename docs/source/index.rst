@@ -17,6 +17,9 @@ Contents:
 .. automodule:: dfl_processor
    :members:
 
+.. automodule:: impire_parser
+   :members:
+
 Indices and tables
 ==================
 

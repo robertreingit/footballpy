@@ -101,7 +101,7 @@ def read_in_position_data(fname):
     Returns:
     """
 
-    # MAGIC NUMBER
+    # MAGIC NUMBERS
     _MISSING_ = -10000.0
     NO_PLAYER = 11
     NO_DIM = 3      # FRAME, X, Z
@@ -115,12 +115,19 @@ def read_in_position_data(fname):
     half_time_id = np.ones(no_frames) * _MISSING_
 
     def process_player(player):
-        """Extracts information from player-pos string"""
+        """Extracts information from player-pos string.
+	
+	Simple routines to just split up the string.
+	Args:
+        player: String from pos file.
+	Returns:
+        Tuples with player id, x and y position.
+	"""
         data = player.split(',')
         pid = int(data[0])      # player identifier
         x = float(data[1])      # x-position
         y = float(data[2])      # y-position
-        return [pid,x,y]
+        return (pid,x,y)
 
     for i,frame in enumerate(open(fname)):
         #0: Frame, 1: Home, 2: Guest, 3: Referee, 4: Ball

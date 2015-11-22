@@ -121,7 +121,7 @@ def read_in_position_data(fname):
 	Args:
         player: String from pos file.
 	Returns:
-        Tuples with player id, x and y position.
+        Tuple with player id, x and y position.
 	"""
         data = player.split(',')
         pid = int(data[0])      # player identifier
@@ -156,11 +156,11 @@ def read_in_position_data(fname):
 
 def split_positions_into_game_halves(pos,ht):
     """ splits the data frames into first and second halves.
-    Args:
-        pos = position data from read_in_position_data
-        ht = half time index form read_in_position_data
-    Returns:
-        pos_1, pos_2 = position data from game halves.
+        Args:
+            pos:  position data from read_in_position_data
+            ht: half time index form read_in_position_data
+        Returns:
+            pos_1, pos_2 = position data from game halves.
     """
     pos_1 = pos[ht==1,:,:]
     pos_2 = pos[ht==2,:,:]
@@ -168,6 +168,11 @@ def split_positions_into_game_halves(pos,ht):
 
 def sort_position_data(pos):
     """Sorts the position data according to player and period.
+
+        Args:
+            pos: The position data as obtained from read_in_position
+        Returns:
+            A list with position data from each player.
     """
     unique_player = np.unique(pos[:,:,0])
     res = []
@@ -176,7 +181,13 @@ def sort_position_data(pos):
     return res
 
 def read_stadium_dimensions_from_pos(fname):
-    """Gets the stadium specifications from the pos file."""
+    """Gets the stadium specifications from the pos file.
+    
+        Args:
+            fname: name of position file including path.
+        Returns:
+            Structs with width and length entries.
+    """
     fid = open(fname,'r')
     line = fid.readline()
     fid.close()
@@ -206,16 +217,3 @@ if __name__ == "__main__":
     home_2s = sort_position_data(home_2)
     
 
-    """
-    print "Parsing event data"
-    mep = MatchEventParser()
-    fname_info = data_path + "EventData/" + fname
-    mep.run(fname_info)
-    play_time, subs = mep.getEventInformation()
-    
-    print "Parsing position data"
-    mpp = MatchPositionParser(match,teams)
-    fname_pos = data_path + "/ObservedPositionalData/" + fname
-    mpp.run(fname_pos)
-    pos_data,ball_data,timestamps = mpp.getPositionInformation()
-    """ 

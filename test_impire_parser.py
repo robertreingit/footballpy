@@ -35,15 +35,15 @@ class TestMatchPosition(unittest.TestCase):
 
     def test_half_time_split(self):
         """Tests the splitting of the position data into two halves."""
-        home,tmp2,tmp3,ht = impire_parser.read_in_position_data(TestMatchPosition.pos_file)
-        home_1,home_2 = impire_parser.split_positions_into_game_halves(home,ht)
-        self.assertTrue(home_1.shape == (4,11,3))
-        self.assertTrue(home_2.shape == (3,11,3))
+        home,tmp2,ball,ht = impire_parser.read_in_position_data(TestMatchPosition.pos_file)
+        home_1,home_2 = impire_parser.split_positions_into_game_halves(home,ht,ball)
+        self.assertTrue(home_1.shape == (4,11,4))
+        self.assertTrue(home_2.shape == (3,11,4))
 
     def test_sort_raw_data(self):
         """Tests whether the raw data is sorted properly."""
         home,tmp,tmp2,tmp3 = impire_parser.read_in_position_data(TestMatchPosition.pos_file)
-        home_s = impire_parser.sort_position_data(home)
+        home_s = impire_parser.sort_position_data(home,0)
         test_array = np.arange(7) + 1.0
         target_array = [d for d in home_s if np.all(d[:,0]==15.0)][0][:,1]
         self.assertTrue(np.all(target_array == test_array))
@@ -51,17 +51,19 @@ class TestMatchPosition(unittest.TestCase):
     def test_sort_raw_data2(self):
         """Tests sequence of raw data."""
         data = impire_parser.read_in_position_data(TestMatchPosition.pos_file)
-        home_s = impire_parser.sort_position_data(data[0])
+        home_s = impire_parser.sort_position_data(data[0],0)
         self.assertTrue(home_s[9][0,1] == -11.0)
 
     def test_split_and_sort(self):
         """Test processing chain after sorting."""
-        home,tmp2,tmp3,ht = impire_parser.read_in_position_data(TestMatchPosition.pos_file)
-        home_1,home_2 = impire_parser.split_positions_into_game_halves(home,ht)
+        home,tmp2,ball,ht = impire_parser.read_in_position_data(TestMatchPosition.pos_file)
+        home_1,home_2 = impire_parser.split_positions_into_game_halves(home,ht,ball)
         home_1s = impire_parser.sort_position_data(home_1)
-        test_data = next(p for p in home_1s if p[0,0] == 2)
-        self.assertTrue(np.all(test_data[:,0] == 2.0))
-        self.assertTrue(test_data[0,1] == -11.9269)
+
+        self.assertTrue(np.all(map(lambda x: x.shape == (4,4), home_1s)))
+        test_data = next(p for p in home_1s if p[0,1] == 2)
+        self.assertTrue(np.all(test_data[:,1] == 2.0))
+        self.assertTrue(test_data[0,2] == -11.9269)
 
     def test_team_load(self):
         """Tests teams loading."""

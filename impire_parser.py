@@ -154,7 +154,7 @@ def read_in_position_data(fname):
 
     return home_team, guest_team, ball, half_time_id
 
-def split_positions_into_game_halves(pos,ht):
+def split_positions_into_game_halves(pos,ht,ball):
     """ splits the data frames into first and second halves.
         Args:
             pos:  position data from read_in_position_data
@@ -162,11 +162,19 @@ def split_positions_into_game_halves(pos,ht):
         Returns:
             pos_1, pos_2 = position data from game halves.
     """
-    pos_1 = pos[ht==1,:,:]
-    pos_2 = pos[ht==2,:,:]
-    return pos_1, pos_2
+    res = []
+    no_player,no_dim = pos.shape[1:]
+    for ht_id in [1,2]:
+        ht_idx = ht == ht_id
+        no_ht = sum(ht_idx)
+        frames = ball[ht_idx,0]
+        frames.shape = (no_ht,1,1)
+        tmp_pos = np.concatenate((frames.repeat(no_player,1),pos[ht==ht_id,:,:]),2).copy()
+        res.append(tmp_pos)
 
-def sort_position_data(pos):
+    return res
+
+def sort_position_data(pos,id=1):
     """Sorts the position data according to player and period.
 
         Args:
@@ -174,10 +182,10 @@ def sort_position_data(pos):
         Returns:
             A list with position data from each player.
     """
-    unique_player = np.unique(pos[:,:,0])
+    unique_player = np.unique(pos[:,:,id])
     res = []
     for pid in unique_player:
-        res.append(pos[pos[:,:,0]==pid])
+        res.append(pos[pos[:,:,id]==pid])
     return res
 
 def read_stadium_dimensions_from_pos(fname):
@@ -196,6 +204,22 @@ def read_stadium_dimensions_from_pos(fname):
     width = float(specs_string[2])
     return dict(length=length ,width=width)
 
+def combine_position_with_role(pos,team):
+    """Combines the position data with the players role and pid data.
+
+        Args:
+            pos: Position data as obtained thorugh the read_in_position_data_chain.
+            team: Team specifications as obtained from MatchInformationParser.
+        Returns:
+    """
+    # build simple dictionary from trikot to role
+    trikot_to_role = {}
+    for player in team:
+        trikot_to_role[player['trikot']] = player['position']
+
+    
+
+
 
 #######################################
 if __name__ == "__main__":
@@ -212,7 +236,7 @@ if __name__ == "__main__":
     match['stadium'] = read_stadium_dimensions_from_pos(data_path + fname_pos)
     
     home,guest,ball,half_time_id = read_in_position_data(data_path + fname_pos)
-    home_1, home_2 = split_positions_into_game_halves(home,half_time_id)
+    home_1, home_2 = split_positions_into_game_halves(home,half_time_id,ball)
     home_1s = sort_position_data(home_1)
     home_2s = sort_position_data(home_2)
     

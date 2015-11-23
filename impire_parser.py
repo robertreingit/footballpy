@@ -214,11 +214,17 @@ def combine_position_with_role(pos,team):
     """
     # build simple dictionary from trikot to role
     trikot_to_role = {}
+    trikot_to_pid = {}
     for player in team:
         trikot_to_role[player['trikot']] = player['position']
-
-    
-
+        trikot_to_pid[player['trikot']] = player['id']
+    res = []
+    for player in pos:
+        trikot = int(player[1,1])
+        res.append((trikot_to_pid[trikot],
+                    player[:,(0,2,3)],
+                    trikot_to_role[trikot]))
+    return res
 
 
 #######################################

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=C0324
 """
 impire_parser : Module which provides parsing function for Soccer
             position data based on the impire format.
@@ -169,7 +170,8 @@ def split_positions_into_game_halves(pos,ht,ball):
         no_ht = sum(ht_idx)
         frames = ball[ht_idx,0]
         frames.shape = (no_ht,1,1)
-        tmp_pos = np.concatenate((frames.repeat(no_player,1),pos[ht==ht_id,:,:]),2).copy()
+        tmp_pos = np.concatenate((frames.repeat(no_player,1),
+                        pos[ht==ht_id,:,:]),2).copy()
         res.append(tmp_pos)
 
     return res

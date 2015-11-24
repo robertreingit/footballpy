@@ -246,4 +246,5 @@ if __name__ == "__main__":
     home_1s = sort_position_data(home_1)
     home_2s = sort_position_data(home_2)
     
+    pos_data_home_1 = combine_position_with_role(home_1s,teams['home'])
 

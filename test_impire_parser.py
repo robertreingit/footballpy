@@ -81,6 +81,24 @@ class TestMatchPosition(unittest.TestCase):
         stadium = impire_parser.read_stadium_dimensions_from_pos(TestMatchPosition.pos_file)
         self.assertEqual(stadium, {'length':105.0, 'width':68.0})
 
+    def test_pos_role_combination(self):
+        """Tests whether the merging of position data and role works."""
+        mip = impire_parser.MatchInformationParser()
+        mip.run(TestMatchPosition.match_file)
+        teams, match = mip.getTeamInformation()
+        home,guest,ball,half_time_id = impire_parser.read_in_position_data(TestMatchPosition.pos_file)
+        home_1, home_2 = impire_parser.split_positions_into_game_halves(home,half_time_id,ball)
+        home_1s = impire_parser.sort_position_data(home_1)
+        pos_data_home_1 = impire_parser.combine_position_with_role(home_1s,teams['home'])
+        # Han Solo is the test case: Trikot: 24, ID: 10005
+        test_case = filter(lambda x: x[0] == '10005', pos_data_home_1)[0]
+        self.assertTrue(np.all(test_case[1][2,:] == (2,-0.0825,-0.4624)))
+        # Cin Drallig - Trikot: 17, ID: 11002
+        guest_1, guest_2 = impire_parser.split_positions_into_game_halves(guest,half_time_id,ball)
+        guest_2s = impire_parser.sort_position_data(guest_2)
+        pos_data_guest_2 = impire_parser.combine_position_with_role(guest_2s, teams['guest'])
+        test_case = filter(lambda x: x[0] == '11002', pos_data_guest_2)[0]
+        self.assertTrue(np.all(test_case[1][1,:] == (37043,-0.2715,0.1733)))
 
 
 if __name__ == '__main__':

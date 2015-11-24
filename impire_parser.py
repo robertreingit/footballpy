@@ -38,7 +38,7 @@ class MatchInformationParser(xml.sax.handler.ContentHandler):
         elif name == "team":
             self.inTeam = True
 
-        elif name=='team-metadata' and self.inTeam:
+        elif name =='team-metadata' and self.inTeam:
             role = attrs['alignment']
             teamID = attrs['team-key']
             if role == "home":
@@ -74,7 +74,7 @@ class MatchInformationParser(xml.sax.handler.ContentHandler):
                 self.teams['guest'].append(self.currentPlayer.copy())
             self.currentPlayer = None
 
-    def endElement(self,name):
+    def endElement(self, name):
         """Gets called for every closing tag."""
         if name == "team":
             self.inTeam = False
@@ -85,12 +85,12 @@ class MatchInformationParser(xml.sax.handler.ContentHandler):
         """Extractor function."""
         return self.teams, self.match
     
-    def run(self,fname):
+    def run(self, fname):
         """Runs the parse on fname."""
         parser = xml.sax.make_parser()
         parser.setContentHandler(self)
         # prevent external DTD load
-        parser.setFeature(xml.sax.handler.feature_external_ges,False)
+        parser.setFeature(xml.sax.handler.feature_external_ges, False)
         parser.parse(fname)
         print 'finished parsing match information'
 
@@ -109,20 +109,20 @@ def read_in_position_data(fname):
 
     no_frames = sum([1 for f in open(fname)])
 
-    home_team = np.ones((no_frames,NO_PLAYER,NO_DIM)) * _MISSING_
+    home_team = np.ones((no_frames,NO_PLAYER, NO_DIM)) * _MISSING_
     guest_team = home_team.copy()
-    ball = np.ones((no_frames,6)) * _MISSING_
+    ball = np.ones((no_frames, 6)) * _MISSING_
     half_time_id = np.ones(no_frames) * _MISSING_
 
     def process_player(player):
         """Extracts information from player-pos string.
 	
-	Simple routines to just split up the string.
-	Args:
-        player: String from pos file.
-	Returns:
-        Tuple with player id, x and y position.
-	"""
+            Simple routines to just split up the string.
+            Args:
+                player: String from pos file.
+            Returns:
+                Tuple with player id, x and y position.
+        """
         data = player.split(',')
         pid = int(data[0])      # player identifier
         x = float(data[1])      # x-position
@@ -138,7 +138,7 @@ def read_in_position_data(fname):
         # half time index
         half_time_id[i] = int(frame_specs[2])
         # process home team
-        for j,player in enumerate(hash_split[1][:-1].split(';')):
+        for j, player in enumerate(hash_split[1][:-1].split(';')):
             home_team[i,j,:] = process_player(player)
         # process guest team
         for j,player in enumerate(hash_split[2][:-1].split(';')):
@@ -163,7 +163,7 @@ def split_positions_into_game_halves(pos,ht,ball):
             pos_1, pos_2 = position data from game halves.
     """
     res = []
-    no_player,no_dim = pos.shape[1:]
+    no_player = pos.shape[1:][0]
     for ht_id in [1,2]:
         ht_idx = ht == ht_id
         no_ht = sum(ht_idx)
@@ -204,7 +204,7 @@ def read_stadium_dimensions_from_pos(fname):
     width = float(specs_string[2])
     return dict(length=length ,width=width)
 
-def combine_position_with_role(pos,team):
+def combine_position_with_role(pos, team):
     """Combines the position data with the players role and pid data.
 
         Args:

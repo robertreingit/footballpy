@@ -54,8 +54,9 @@ def stitch_position_data(pos,ball,NO_PLAYERS=11):
         ball:
         NO_PLAYERS: default = 11
     Returns:
+        output_fields: 
     """
-    # magig numbers
+    # magic numbers
     _MISSING_ = -100000.0
     _NO_DIM_ = 2
     _POST_LOOK_ = 20
@@ -88,8 +89,9 @@ def stitch_position_data(pos,ball,NO_PLAYERS=11):
         player_idx = input_fields[row,:] > _MISSING_
 
         # HACK
-        # if there are too many entries see whether it's alright on 
-        # the current row + _POST_LOOK_, so probably overlap during substitution.
+        # if there are too many entries see whether the correct number of players < 11
+        # is on the current row + _POST_LOOK_ position. In this case there is 
+        # probably an overlap during substitution.
         # Proper solution: Should look into substitution objects and match accordingly.
         if (sum(player_idx) != NO_PLAYERS * _NO_DIM_):
             player_idx_post = input_fields[row+_POST_LOOK_,:] > -100

@@ -228,6 +228,45 @@ def combine_position_with_role(pos, team):
                     trikot_to_role[trikot]))
     return res
 
+def run(data_path, fname_specs, fname_pos):
+    """Driver function to run data loading.
+    
+        Args:
+            data_path: path to folder with files
+            fname_specs: matchfacts file
+            fname_pos: position data file.
+        Returns:
+    """
+    # sanity check
+    fname_1 = fname_specs.split('-')[2].split('.')[0]
+    fname_2 = fname_pos.split('.')
+    if fname_1 is not fname_2:
+        raise ValueError('fname_specs and fname_pos refer to different games.')
+
+    mip = MatchInformationParser()
+    mip.run(data_path + fname_specs)
+    teams, match = mip.getTeamInformation()
+    match['stadium'] = read_stadium_dimensions_from_pos(data_path + fname_pos)
+    home, guest, ball, half_time_id = read_in_position_data(data_path + fname_pos)
+
+    def process_teams(team,type):
+        """Just to work through the team data."""
+        periods = split_positions_into_game_halves(team,half_time_id,ball)
+        periods_sorted = [sort_position_data(p) for p in periods]
+        position_arr = [combine_position_data(ps,teams[type]) for p in periods_sorted]
+        return position_arr
+
+    home_data = process_teams(home,'home')
+    guest_data = process_teams(guest,'home')
+    ball_1 = ball[half_time_id==1,:]
+    ball_2 = ball[half_time_id==2,:]
+    result = dict(
+            home = {'1st' : home_data[0], '2nd' : home_data[1]},
+            guest = {'1st' : guest_data[0], '2nd' : guest_dasta[1]},
+            ball = {'1st' : ball_1, '2nd' : ball_2})
+    return result
+
+
 
 #######################################
 if __name__ == "__main__":

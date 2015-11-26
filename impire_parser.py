@@ -13,6 +13,7 @@ impire_parser : Module which provides parsing function for Soccer
 """
 import xml.sax, xml.sax.handler
 import numpy as np
+import pdb
 
 class MatchInformationParser(xml.sax.handler.ContentHandler):
     """A XML parser for DFL match information files.
@@ -239,8 +240,8 @@ def run(data_path, fname_specs, fname_pos):
     """
     # sanity check
     fname_1 = fname_specs.split('-')[2].split('.')[0]
-    fname_2 = fname_pos.split('.')
-    if fname_1 is not fname_2:
+    fname_2 = fname_pos.split('.')[0]
+    if fname_1 != fname_2:
         raise ValueError('fname_specs and fname_pos refer to different games.')
 
     mip = MatchInformationParser()
@@ -253,18 +254,18 @@ def run(data_path, fname_specs, fname_pos):
         """Just to work through the team data."""
         periods = split_positions_into_game_halves(team,half_time_id,ball)
         periods_sorted = [sort_position_data(p) for p in periods]
-        position_arr = [combine_position_data(ps,teams[type]) for p in periods_sorted]
+        position_arr = [combine_position_with_role(ps,teams[type]) for ps in periods_sorted]
         return position_arr
 
     home_data = process_teams(home,'home')
-    guest_data = process_teams(guest,'home')
+    guest_data = process_teams(guest,'guest')
     ball_1 = ball[half_time_id==1,:]
     ball_2 = ball[half_time_id==2,:]
-    result = dict(
+    pos_data = dict(
             home = {'1st' : home_data[0], '2nd' : home_data[1]},
-            guest = {'1st' : guest_data[0], '2nd' : guest_dasta[1]},
-            ball = {'1st' : ball_1, '2nd' : ball_2})
-    return result
+            guest = {'1st' : guest_data[0], '2nd' : guest_data[1]})
+    ball = [ball_1, ball_2]
+    return pos_data, ball
 
 
 
@@ -288,4 +289,4 @@ if __name__ == "__main__":
     home_2s = sort_position_data(home_2)
     
     pos_data_home_1 = combine_position_with_role(home_1s,teams['home'])
-
+    pos_data, ball = run(data_path, fname_specs, fname_pos)

@@ -23,9 +23,13 @@ __position_ranking = {
     'OLM':15, 'ZO':16, 'ORM':17,
     'HST':18, 'LA':19, 'STL':20, 'STR':21, 'RA':22,
     'STZ':23
-	},
-	'B': {
+    },
+    'B': {
         'G': 1, 'D': 2, 'M': 3, 'A': 4 
+    },
+    'C': {
+        'goalie': 1, 'defenseman': 2, 'mid-fielder': 3, 
+        'forward': 4
     }
 }
 
@@ -73,7 +77,7 @@ def stitch_position_data(pos,ball,NO_PLAYERS=11):
         raise LookupError("No of players doesn't match")
 
     # generate input with missing data marked by _MISSING_
-    input_fields = np.ones((no_frames,NO_PLAYERS + _NO_DIM_), dtype='float32') * _MISSING_
+    input_fields = np.ones((no_frames,NO_PLAYERS * _NO_DIM_), dtype='float32') * _MISSING_
 
     # populate input fields
     for pidx in range(NO_PLAYERS):
@@ -173,11 +177,12 @@ def clamp_values(result,vmin=0.0, vmax=10.0):
             ht[ht<vmin] = vmin
             ht[ht>vmax] = vmax
 
-def run(pos_data,ball_data,match):
+def run(pos_data,ball_data,match,ranking_type='A'):
     """Driver routine to run all processing steps.
     
-    Args:
-    Returns:
+        Args:
+            ranking_type: Specifies which postion_ranking system should be used.
+        Returns:
     """
     roles = ['home','guest']
     sections = ['1st','2nd']
@@ -191,7 +196,7 @@ def run(pos_data,ball_data,match):
         home_direction = 'r2l'
         for role in roles:
             print 'Processing: %s-%s...' % (role,sec)
-            sorted_pos_data = sort_position_data(pos_data[role][sec])
+            sorted_pos_data = sort_position_data(pos_data[role][sec], ranking_type)
             stitched_data = stitch_position_data(sorted_pos_data,ball_data[sec!='1st'])
             if role == 'home':
                 home_direction = determine_playing_direction(stitched_data[:,0:2])

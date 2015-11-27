@@ -265,7 +265,7 @@ def run(data_path, fname_specs, fname_pos):
             home = {'1st' : home_data[0], '2nd' : home_data[1]},
             guest = {'1st' : guest_data[0], '2nd' : guest_data[1]})
     ball = [ball_1, ball_2]
-    return pos_data, ball
+    return pos_data, ball, match, teams
 
 
 
@@ -289,4 +289,4 @@ if __name__ == "__main__":
     home_2s = sort_position_data(home_2)
     
     pos_data_home_1 = combine_position_with_role(home_1s,teams['home'])
-    pos_data, ball = run(data_path, fname_specs, fname_pos)
+    pos_data, ball, match, teams = run(data_path, fname_specs, fname_pos)

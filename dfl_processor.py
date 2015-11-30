@@ -73,14 +73,15 @@ def stitch_position_data(pos,ball,NO_PLAYERS=11):
     if no_frames != (max_frame - min_frame + 1):
         raise IndexError("No of ball frames doesn't match")
         
-    if (len(pos) != NO_PLAYERS):
-        raise LookupError("No of players doesn't match")
+    no_players_input = len(pos)
+#    if (len(pos) != NO_PLAYERS):
+#        raise LookupError("No of players doesn't match")
 
     # generate input with missing data marked by _MISSING_
     input_fields = np.ones((no_frames,NO_PLAYERS * _NO_DIM_), dtype='float32') * _MISSING_
 
     # populate input fields
-    for pidx in range(NO_PLAYERS):
+    for pidx in range(no_players_input):
         frames_present = (frames>=pos[pidx][1][0,0]) & (frames<=pos[pidx][1][-1,0])
         # determine frame slice
         slice_idx = slice(pidx*2,pidx*2+2)
@@ -228,7 +229,7 @@ if __name__ == '__main__':
 #teams, match, pos_data,ball_data
     section = '2nd'
     kk = pos_data['home'][section]    
-    kks = sort_position_data(kk)
-    bb = ball_data[section!='1st']
+    kks = sort_position_data(kk,'C')
+    bb = ball[section!='1st']
     ss = stitch_position_data(kks,bb)
-    data_transformed = run(pos_data,ball_data,match)
+    #data_transformed = run(pos_data,ball_data,match)

@@ -14,7 +14,7 @@ unique positions of a global array containing missing values.
 import numpy as np
 import pdb
 
-def expand_indexed_ragged_array(ra, row_id, missing_id = -1.234567):
+def expand_indexed_ragged_array(ra, row_id, accessor = lambda x: x, missing_id = -1.234567):
     """Expands an ragged array into one large normal array.
 
     The function assumes that each array contains a time index
@@ -22,6 +22,8 @@ def expand_indexed_ragged_array(ra, row_id, missing_id = -1.234567):
 
     Args:
         ra: ragged array: a list with numpy array entries
+        accessor: function to obtain values from list. 
+                  Default is idenitity function.
         row_id: index into rows
         missing_id = magical number to identify
     Return:
@@ -29,17 +31,18 @@ def expand_indexed_ragged_array(ra, row_id, missing_id = -1.234567):
     #pdb.set_trace()
     no_arrays = len(ra)
     no_row_ids = len(row_id)
-    max_no_rows = np.max([a.shape[0] for a in ra])
-    max_no_cols = np.max([a.shape[1] for a in ra])
+    max_no_rows = np.max([accessor(a).shape[0] for a in ra])
+    max_no_cols = np.max([accessor(a).shape[1] for a in ra])
     if no_row_ids != max_no_rows:
         raise LookupError("row_id doesn't fit ragged array")
 
     step = max_no_cols - 1
     result = np.ones((max_no_rows,no_arrays*step)) * missing_id
     for i,ar in enumerate(ra):
+        tmp_data = accessor(ar)
         slice_col = slice(i*step,i*step+step)
-        slice_row = (row_id >= ar[0,0]) & (row_id <= ar[-1,0])
-        result[slice_row,slice_col] = ar[:,1:]
+        slice_row = (row_id >= tmp_data[0,0]) & (row_id <= tmp_data[-1,0])
+        result[slice_row,slice_col] = tmp_data[:,1:]
 
     return result
 
@@ -50,4 +53,4 @@ if __name__ == '__main__':
     a3 = 3*np.ones((2,2)); a3[:,0] = np.arange(4,6)
     index = np.arange(6)
     test_data = [a1,a2,a3]
-    expanded_array = expand_ragged_array(test_data,index)
+    expanded_array = expand_indexed_ragged_array(test_data,index)

@@ -18,6 +18,7 @@ class TestExpandRaggedArray(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        """Generate some simple test data."""
         # Some simple test data
         a1 = np.ones((4,2)); a1[:,0] = np.arange(4)
         a2 = 2*np.ones((6,2)); a2[:,0] = np.arange(6)
@@ -34,6 +35,7 @@ class TestExpandRaggedArray(unittest.TestCase):
                                     [mis_id,2.,3.0]])
 
     def test_pitch_specs(self):
+        """Tests simple example."""
         obtained_result = ra.expand_indexed_ragged_array(
                 TestExpandRaggedArray.test_data,
                 TestExpandRaggedArray.index,
@@ -50,4 +52,3 @@ class TestExpandRaggedArray(unittest.TestCase):
                 TestExpandRaggedArray.mis_id)
         self.assertTrue(np.all(obtained_result == self.expected_result))
 
-        

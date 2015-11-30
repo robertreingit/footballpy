@@ -7,6 +7,7 @@ Created on Thu Jun 18 23:54:17 2015
 @version: 0.1
 """
 import numpy as np
+import pdb
 
 """ Ranking dictionary necessary to determine the column number
     of each player.
@@ -60,6 +61,7 @@ def stitch_position_data(pos,ball,NO_PLAYERS=11):
     Returns:
         output_fields: 
     """
+    pdb.set_trace()
     # magic numbers
     _MISSING_ = -100000.0
     _NO_DIM_ = 2

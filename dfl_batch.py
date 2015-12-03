@@ -11,7 +11,7 @@ dfl_batch: does the whole trick with a batch of files
 import os
 import dfl_parser as prs
 import dfl_processor as prc
-import dfl_writer as wrt
+import SOCCER as wrt
 
 
 def matchdir(directory):
@@ -25,6 +25,7 @@ def matchdir(directory):
         os.mkdir(directory)
     os.chdir(directory)
         
+
 ###############################################################################
 
 if __name__ == "__main__":

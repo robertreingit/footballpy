@@ -13,6 +13,7 @@ import xml.sax, xml.sax.handler
 import datetime as dt
 import dateutil.parser as dup
 import numpy as np
+import ragged_array as ra
 
 class MatchInformationParser(xml.sax.handler.ContentHandler):
     """A XML parser for DFL match information files.
@@ -93,6 +94,7 @@ def convertTime(tstring):
     """    
     return dup.parse(tstring) 
 
+
 class Substitution:
     """
     A simple wrapper object for substitution events.
@@ -146,7 +148,8 @@ class MatchEventParser(xml.sax.handler.ContentHandler):
     
     def getEventInformation(self):
         return self.playing_time, self.subs
-        
+
+
 def calculate_frame_estimate(playing_time,padding_time = 5*60, freq = 25):
     secs_1st = (playing_time['firstHalf'][1] - playing_time['firstHalf'][0]).seconds
     secs_2nd = (playing_time['secondHalf'][1] - playing_time['secondHalf'][0]).seconds
@@ -263,7 +266,8 @@ class MatchPositionParser(xml.sax.handler.ContentHandler):
         parser.setContentHandler(self)
         parser.parse(fname)
         print 'finished parsing position data'
-    
+
+
     def getPositionInformation(self):
         """Extractor function to retrieve position data.
         Args:

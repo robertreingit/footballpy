@@ -34,6 +34,7 @@ __position_ranking = {
     }
 }
 
+
 def sort_position_data(pos,type='A'):
     """Sorts the position data according to player positions.
     
@@ -48,6 +49,7 @@ def sort_position_data(pos,type='A'):
     ranking_type = __position_ranking[type]
     return sorted(pos,key=lambda player: ranking_type[player[2]])
 
+
 def stitch_position_data(pos,ball,NO_PLAYERS=11):
     """Puts position data into a single array.
     
@@ -61,7 +63,6 @@ def stitch_position_data(pos,ball,NO_PLAYERS=11):
     Returns:
         output_fields: 
     """
-    pdb.set_trace()
     # magic numbers
     _MISSING_ = -100000.0
     _NO_DIM_ = 2
@@ -80,7 +81,7 @@ def stitch_position_data(pos,ball,NO_PLAYERS=11):
 #        raise LookupError("No of players doesn't match")
 
     # generate input with missing data marked by _MISSING_
-    input_fields = np.ones((no_frames,NO_PLAYERS * _NO_DIM_), dtype='float32') * _MISSING_
+    input_fields = np.ones((no_frames,no_players_input * _NO_DIM_), dtype='float32') * _MISSING_
 
     # populate input fields
     for pidx in range(no_players_input):
@@ -109,7 +110,8 @@ def stitch_position_data(pos,ball,NO_PLAYERS=11):
 
         output_fields[row,slice(0,sum(player_idx))] = input_fields[row,player_idx]
     return output_fields
-    
+
+
 def determine_playing_direction(goalie):
     """ Determiners the team playing direction.
     
@@ -121,6 +123,7 @@ def determine_playing_direction(goalie):
         either 'l2r': left to right or 'r2l': right to left.
     """
     return 'l2r' if np.average(goalie[:,0]) < 0 else 'r2l'
+
 
 def switch_playing_direction(position_coords):
     """Switches the position coordinates.
@@ -142,6 +145,7 @@ def switch_playing_direction(position_coords):
     """
     # just mirrors the x-coordinate in place
     position_coords[:,0::2] *= -1
+
 
 def rescale_playing_coords(position_coords,pitch_dim):
     """Relocates the origin to left-bottom and rescales to [0,10] height/width.
@@ -167,7 +171,8 @@ def rescale_playing_coords(position_coords,pitch_dim):
     # rescale to [0,10]
     position_coords[:,0::2] *= 10.0/pitch_length        # x-coordinates
     position_coords[:,1::2] *= 10.0/pitch_width         # y-coordinates
-    
+
+
 def clamp_values(result,vmin=0.0, vmax=10.0):
     """Clamps the position values to [0,10]
 
@@ -179,6 +184,7 @@ def clamp_values(result,vmin=0.0, vmax=10.0):
         for ht in result[entry]:
             ht[ht<vmin] = vmin
             ht[ht>vmax] = vmax
+
 
 def run(pos_data,ball_data,match,ranking_type='A'):
     """Driver routine to run all processing steps.
@@ -221,9 +227,7 @@ def run(pos_data,ball_data,match,ranking_type='A'):
     #correct value ranges.
     print 'clamping values.'
     clamp_values(result)
-
     print 'done.'
-    
     return result
             
     
@@ -231,7 +235,7 @@ if __name__ == '__main__':
 #teams, match, pos_data,ball_data
     section = '2nd'
     kk = pos_data['home'][section]    
-    kks = sort_position_data(kk,'C')
-    bb = ball[section!='1st']
+    kks = sort_position_data(kk)
+    bb = ball_data[section!='1st']
     ss = stitch_position_data(kks,bb)
-    #data_transformed = run(pos_data,ball_data,match)
+    data_transformed = run(pos_data,ball_data,match)

@@ -108,7 +108,7 @@ class Substitution:
     
     def __repr__(self):
         return ('%s: %s= ->%s - %s->, %s' %  
-    (self.time, self.teamID, self.pin, self.pout, self.position))
+            (self.time, self.teamID, self.pin, self.pout, self.position))
 
 
 class MatchEventParser(xml.sax.handler.ContentHandler):

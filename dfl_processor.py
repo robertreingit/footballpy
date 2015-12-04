@@ -6,8 +6,9 @@ Created on Thu Jun 18 23:54:17 2015
 @license: MIT
 @version: 0.1
 """
+
 import numpy as np
-import pdb
+import ragged_array as ra
 
 """ Ranking dictionary necessary to determine the column number
     of each player.
@@ -65,7 +66,7 @@ def stitch_position_data(pos,ball,NO_PLAYERS=11):
     """
     # magic numbers
     _MISSING_ = -100000.0
-    _NO_DIM_ = 2
+    _NO_DIM_ = 2 # x- and y-coordinates
     _POST_LOOK_ = 20
     # end magic numbers
     
@@ -77,9 +78,8 @@ def stitch_position_data(pos,ball,NO_PLAYERS=11):
         raise IndexError("No of ball frames doesn't match")
         
     no_players_input = len(pos)
-#    if (len(pos) != NO_PLAYERS):
-#        raise LookupError("No of players doesn't match")
 
+    """
     # generate input with missing data marked by _MISSING_
     input_fields = np.ones((no_frames,no_players_input * _NO_DIM_), dtype='float32') * _MISSING_
 
@@ -89,6 +89,9 @@ def stitch_position_data(pos,ball,NO_PLAYERS=11):
         # determine frame slice
         slice_idx = slice(pidx*2,pidx*2+2)
         input_fields[frames_present,slice_idx] = pos[pidx][1][:,1:3]
+    """
+    input_fields = ra.expand_indexed_ragged_array(pos, frames, 
+            lambda x: x[1], _MISSING_)
     
     # transferring present data from input field into output_field    
     output_fields = np.ones((no_frames,NO_PLAYERS*_NO_DIM_), dtype='float32') * _MISSING_

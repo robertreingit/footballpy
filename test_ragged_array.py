@@ -59,4 +59,59 @@ class TestIndexedRaggedArray(unittest.TestCase):
         obtained = ra.condense_expanded_ragged_array(test_data)
         self.assertTrue(np.all(obtained == expect))
 
+    def test_drop_function1(self):
+        """Tests simple case."""
+        mis_id = self.mis_id
+        test_data = np.array([[1.,.2,mis_id],
+            [1.,2.,mis_id],
+            [1.,2.,3.],
+            [mis_id,2.,3.]])
+        expect = test_data.copy()
+        expect[2,2] = mis_id
+        obtained = ra.drop_expanded_ragged_entries(test_data, 2)
+        self.assertTrue(np.all(obtained == expect))
 
+    def test_drop_function2(self):
+        """Tests simple case."""
+        mis_id = self.mis_id
+        test_data = np.array([[1.,.2,mis_id],
+            [1.,2.,3.],
+            [1.,2.,3.],
+            [mis_id,2.,3.]])
+        expect = test_data.copy()
+        expect[2,2] = mis_id
+        expect[1,2] = mis_id
+        obtained = ra.drop_expanded_ragged_entries(test_data, 2)
+        self.assertTrue(np.all(obtained == expect))
+
+    def test_drop_function3(self):
+        """Tests simple case."""
+        mis_id = self.mis_id
+        test_data = np.array([[1.,.2,mis_id,mis_id],
+            [1.,2.,mis_id,mis_id],
+            [1.,mis_id,3.,4.],
+            [mis_id,2.,3.,4.],
+            [mis_id,2.,3.,4.]])
+        expect = np.array([[1.,.2,mis_id,mis_id],
+            [1.,2.,mis_id,mis_id],
+            [1.,mis_id,3.,mis_id],
+            [mis_id,2.,3.,mis_id],
+            [mis_id,2.,3.,mis_id]])
+        obtained = ra.drop_expanded_ragged_entries(test_data, 2)
+        self.assertTrue(np.all(obtained == expect))
+
+    def test_drop_function3(self):
+        """Tests simple case."""
+        mis_id = self.mis_id
+        test_data = np.array([[1.,.2,mis_id,mis_id],
+            [1.,2.,mis_id,mis_id],
+            [mis_id,mis_id,3.,4.],
+            [mis_id,mis_id,3.,4.],
+            [mis_id,mis_id,3.,4.]])
+        expect = np.array([[1.,.2,mis_id,mis_id],
+            [1.,2.,mis_id,mis_id],
+            [mis_id,mis_id,3.,4.],
+            [mis_id,mis_id,3.,4.],
+            [mis_id,mis_id,3.,4.]])
+        obtained = ra.drop_expanded_ragged_entries(test_data, 2)
+        self.assertTrue(np.all(obtained == expect))

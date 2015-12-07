@@ -84,6 +84,51 @@ def condense_expanded_ragged_array(ra, no_cols = -1, missing_id = __MISSING_ID__
 
     return ca
 
+def drop_expanded_ragged_entries(ra, no_cols, missing_id = __MISSING_ID__ ):
+    """Drop all entries in a row which are superflous according to no_cols.
+
+    If the number of valid entries in the first row exceeds the no_cols
+    the first no_cols entries in order are used and the last valid entries - no_cols
+    are dropped. Further onwards always the row preceeding the current row is used for
+    comparison. If less valid entries than no_cols are found an exception is thrown.
+
+    Args:
+        ra: expanded ragged array
+        no_cols: number of target columns
+        missing_id: missing entries identifier
+    Returns:
+        ra_clean:
+    """
+    no_rows, no_ex_cols = ra.shape
+    ra_clean = np.ones(ra.shape) * missing_id
+    valid_entries = ra[0,] != missing_id
+    if sum(valid_entries) > no_cols:
+        tmp = np.zeros((1,no_ex_cols),dtype=bool)
+        tmp[np.where(valid_entries)[:no_cols]] = True
+        valid_entries = tmp
+    elif sum(valid_entries) < no_cols:
+        raise IndexError('Not enough entries on first row')
+
+    ra_clean[0,valid_entries] = ra[0,valid_entries]
+    for i,row in enumerate(ra[1:,]):
+        old_valid = valid_entries
+        valid_entries = row != missing_id
+        no_entries = sum(valid_entries)
+        if no_entries > no_cols:
+            probable_entries = old_valid & valid_entries
+            if sum(probable_entries) == no_cols:
+                valid_entries = probable_entries
+            else:
+                no_superflous = no_entries - no_cols
+                new_entries = np.where(np.invert(old_valid) & valid_entries)[0][:no_superflous]
+                probable_entries[new_entries] = True
+                valid_entries = probable_entries
+        elif no_entries < no_cols:
+            raise IndexError('Not enough entries')
+        ra_clean[i+1,np.where(valid_entries)] = row[valid_entries]
+
+    return ra_clean
+
 
 if __name__ == '__main__':
     a1 = np.ones((4,2)); a1[:,0] = np.arange(4)
@@ -93,3 +138,6 @@ if __name__ == '__main__':
     test_data = [a1,a2,a3]
     exa = expand_indexed_ragged_array(test_data,index)
     ca = condense_expanded_ragged_array(exa)
+    test_data2 = exa.copy()
+    test_data2[3,2] = 3.
+    ca_clean = drop_expanded_ragged_entries(test_data2,2)

@@ -131,3 +131,29 @@ class TestIndexedRaggedArray(unittest.TestCase):
             [mis_id,mis_id,mis_id,4.]])
         obtained = ra.drop_expanded_ragged_entries(test_data, 2)
         self.assertTrue(np.all(obtained == expect))
+
+    def test_drop_function5(self):
+        """Soccer data example."""
+        mis_id = self.mis_id
+        test_data = np.array([
+            [1.,.2,mis_id,mis_id,5.,6.,7.,8.],
+            [1.,.2,mis_id,mis_id,5.,6.,7.,8.],
+            [1.,.2,mis_id,mis_id,5.,6.,7.,8.],
+            [1.,.2,mis_id,mis_id,5.,6.,7.,8.],
+            [1.,.2,mis_id,mis_id,5.,6.,7.,8.],
+            [1.,.2,3.,4.,5.,6.,7.,8.],
+            [1.,.2,3.,4.,5.,6.,mis_id,mis_id],
+            [1.,.2,3.,4.,5.,6.,mis_id,mis_id],
+            [1.,.2,3.,4.,5.,6.,mis_id,mis_id]])
+        expect = np.array([
+            [1.,.2,mis_id,mis_id,5.,6.,7.,8.],
+            [1.,.2,mis_id,mis_id,5.,6.,7.,8.],
+            [1.,.2,mis_id,mis_id,5.,6.,7.,8.],
+            [1.,.2,mis_id,mis_id,5.,6.,7.,8.],
+            [1.,.2,mis_id,mis_id,5.,6.,7.,8.],
+            [1.,.2,mis_id,mis_id,5.,6.,7.,8.],
+            [1.,.2,3.,4.,5.,6.,mis_id,mis_id],
+            [1.,.2,3.,4.,5.,6.,mis_id,mis_id],
+            [1.,.2,3.,4.,5.,6.,mis_id,mis_id]])
+        obtained = ra.drop_expanded_ragged_entries(test_data, 6)
+        self.assertTrue(np.all(obtained == expect))

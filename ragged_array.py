@@ -90,14 +90,14 @@ def drop_expanded_ragged_entries(ra, no_cols, missing_id = __MISSING_ID__ ):
     If the number of valid entries in the first row exceeds the no_cols
     the first no_cols entries in order are used and the last valid entries - no_cols
     are dropped. Further onwards always the row preceeding the current row is used for
-    comparison. If less valid entries than no_cols are found an exception is thrown.
+    comparison. If less valid entries than no_cols are found all valied entries are written.
 
     Args:
         ra: expanded ragged array
         no_cols: number of target columns
         missing_id: missing entries identifier
     Returns:
-        ra_clean:
+        ra_clean: expanded ragged array containing at most no_cols entries on each row.
     """
     no_rows, no_ex_cols = ra.shape
     ra_clean = np.ones(ra.shape) * missing_id
@@ -123,8 +123,8 @@ def drop_expanded_ragged_entries(ra, no_cols, missing_id = __MISSING_ID__ ):
                 new_entries = np.where(np.invert(old_valid) & valid_entries)[0][:no_superflous]
                 probable_entries[new_entries] = True
                 valid_entries = probable_entries
-        elif no_entries < no_cols:
-            raise IndexError('Not enough entries')
+#        elif no_entries < no_cols:
+#            raise IndexError('Not enough entries')
         ra_clean[i+1,np.where(valid_entries)] = row[valid_entries]
 
     return ra_clean

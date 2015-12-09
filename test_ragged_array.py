@@ -72,7 +72,7 @@ class TestIndexedRaggedArray(unittest.TestCase):
         self.assertTrue(np.all(obtained == expect))
 
     def test_drop_function2(self):
-        """Tests simple case."""
+        """Tests continuous entries."""
         mis_id = self.mis_id
         test_data = np.array([[1.,.2,mis_id],
             [1.,2.,3.],
@@ -85,7 +85,7 @@ class TestIndexedRaggedArray(unittest.TestCase):
         self.assertTrue(np.all(obtained == expect))
 
     def test_drop_function3(self):
-        """Tests simple case."""
+        """Tests continuous and offsets entries."""
         mis_id = self.mis_id
         test_data = np.array([[1.,.2,mis_id,mis_id],
             [1.,2.,mis_id,mis_id],
@@ -101,7 +101,7 @@ class TestIndexedRaggedArray(unittest.TestCase):
         self.assertTrue(np.all(obtained == expect))
 
     def test_drop_function3(self):
-        """Tests simple case."""
+        """Tests complete change of entry positions."""
         mis_id = self.mis_id
         test_data = np.array([[1.,.2,mis_id,mis_id],
             [1.,2.,mis_id,mis_id],
@@ -113,5 +113,21 @@ class TestIndexedRaggedArray(unittest.TestCase):
             [mis_id,mis_id,3.,4.],
             [mis_id,mis_id,3.,4.],
             [mis_id,mis_id,3.,4.]])
+        obtained = ra.drop_expanded_ragged_entries(test_data, 2)
+        self.assertTrue(np.all(obtained == expect))
+
+    def test_drop_function4(self):
+        """Tests case with fewer entries."""
+        mis_id = self.mis_id
+        test_data = np.array([[1.,.2,mis_id,mis_id],
+            [1.,2.,mis_id,mis_id],
+            [mis_id,2.,3.,4.],
+            [mis_id,mis_id,mis_id,4.],
+            [mis_id,mis_id,mis_id,4.]])
+        expect = np.array([[1.,.2,mis_id,mis_id],
+            [1.,2.,mis_id,mis_id],
+            [mis_id,2.,3.,mis_id],
+            [mis_id,mis_id,mis_id,4.],
+            [mis_id,mis_id,mis_id,4.]])
         obtained = ra.drop_expanded_ragged_entries(test_data, 2)
         self.assertTrue(np.all(obtained == expect))

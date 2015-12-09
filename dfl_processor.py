@@ -16,6 +16,7 @@ import ragged_array as ra
     The type system depends on the type of the raw data.
     Type A: Elaborate positioning scheme
     Type B: Simple scheme
+    Type C: Amisco-scheme
 """
 __position_ranking = {
     'A': {
@@ -38,6 +39,11 @@ __position_ranking = {
 
 def sort_position_data(pos,type='A'):
     """Sorts the position data according to player positions.
+
+    As the final matrix should contain the player according to their
+    position starting from left to right from back to front the indexed
+    ragged array list should be sorted such that the entries match
+    this format.
     
     Args:
         pos: The list with tuples containing the position data and the
@@ -58,14 +64,14 @@ def stitch_position_data(pos,ball,NO_PLAYERS=11):
     stitches the position data together as given. Therefore, if the playing
     position must be controlled sort_position_data must be called first.
     Args:
-        pos:
-        ball:
+        pos: position data list (indexed ragged array)
+        ball: list with two matrices (1st and 2nd half)
         NO_PLAYERS: default = 11
     Returns:
         output_fields: 
     """
     # magic numbers
-    _MISSING_ = -100000.0
+    _MISSING_ = -2.0**13
     _NO_DIM_ = 2 # x- and y-coordinates
     _POST_LOOK_ = 20
     # end magic numbers
@@ -79,47 +85,20 @@ def stitch_position_data(pos,ball,NO_PLAYERS=11):
         
     no_players_input = len(pos)
 
-    """
-    # generate input with missing data marked by _MISSING_
-    input_fields = np.ones((no_frames,no_players_input * _NO_DIM_), dtype='float32') * _MISSING_
-
-    # populate input fields
-    for pidx in range(no_players_input):
-        frames_present = (frames>=pos[pidx][1][0,0]) & (frames<=pos[pidx][1][-1,0])
-        # determine frame slice
-        slice_idx = slice(pidx*2,pidx*2+2)
-        input_fields[frames_present,slice_idx] = pos[pidx][1][:,1:3]
-    """
     input_fields = ra.expand_indexed_ragged_array(pos, frames, 
             lambda x: x[1], _MISSING_)
+    input_fields_clean = ra.drop_expanded_ragged_entries(input_fields,NO_PLAYERS*_NO_DIM_,_MISSING_)
+    output_fields = ra.condense_expanded_ragged_array(input_fields, missing_id = _MISSING_)
     
-    # transferring present data from input field into output_field    
-    output_fields = np.ones((no_frames,NO_PLAYERS*_NO_DIM_), dtype='float32') * _MISSING_
-    for row in range(no_frames):
-        # determine valid entries in current row
-        player_idx = input_fields[row,:] > _MISSING_
-
-        # HACK
-        # if there are too many entries see whether the correct number of players < 11
-        # is on the current row + _POST_LOOK_ position. In this case there is 
-        # probably an overlap during substitution.
-        # Proper solution: Should look into substitution objects and match accordingly.
-        if (sum(player_idx) != NO_PLAYERS * _NO_DIM_):
-            player_idx_post = input_fields[row+_POST_LOOK_,:] > -100
-            if (sum(player_idx_post) == NO_PLAYERS * _NO_DIM_):
-                player_idx = player_idx_post
-            else:
-                raise LookupError('Too many players found for frame.')
-
-        output_fields[row,slice(0,sum(player_idx))] = input_fields[row,player_idx]
     return output_fields
 
 
 def determine_playing_direction(goalie):
-    """ Determiners the team playing direction.
+    """ Determines the teams' playing direction.
     
-    determine_playing_direction determines the playing direction using
+    Determines the playing direction using
     the average position of the goalie.
+
     Args:
         goalie: x-y position of goalie
     Returns:
@@ -145,6 +124,7 @@ def switch_playing_direction(position_coords):
     Args:
         position_coords: x-y position coordinates of the players.
     Returns:
+        Nothing, the matrix coordinates are flipped in place.
     """
     # just mirrors the x-coordinate in place
     position_coords[:,0::2] *= -1
@@ -164,7 +144,10 @@ def rescale_playing_coords(position_coords,pitch_dim):
         |             |
         -----------------
     Args:
+        position_coords:
+        pitch_dim:
     Returns:
+        Nothing, the matrix coordinates are scaled in place.
     """
     pitch_width = pitch_dim['width']
     pitch_length = pitch_dim['length']
@@ -180,8 +163,11 @@ def clamp_values(result,vmin=0.0, vmax=10.0):
     """Clamps the position values to [0,10]
 
     Args:
+        result:
+        vmin: minimum value
+        vmax = maximum value
     Returns:
-        None.
+        None. Matrix is clamped in place.
     """
     for entry in result:
         for ht in result[entry]:

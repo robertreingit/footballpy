@@ -56,31 +56,28 @@ def expand_indexed_ragged_array(ra, row_id, accessor = lambda x: x, missing_id =
     return result
 
 
-def condense_expanded_ragged_array(ra, no_cols = -1, missing_id = __MISSING_ID__):
+def condense_expanded_ragged_array(ra, missing_id = __MISSING_ID__):
     """Condenses an expanded ragged array into a simple dense array.
 
-    The functions assumes that 
+    The functions determines the maximum number of entries across rows, which
+    determines the number of columns for the output matrix. Missing entries
+    in a row a filled with missing_id. Found valid entries are mapped from
+    left to rigth into the result matrix.
 
     Args:
         ra: expanded ragged array as obtained from expand_indexed_ragged_array
-        no_cols: specifies the number of the columns of the condensed array. Default
-            is -1 which indicates for the function that the number should be determined
-            from the data. Uses the first three rows.
+        missing_id: indicator for missing values. Per default the module definition
+        is used.
     Returns:
         ca: simple dense numpy arrray.
     """
     no_rows = ra.shape[0]
-    if no_cols < 1:
-        check_rows_no = min(3,no_rows)
-        no_col_items = np.sum(ra[:3,] != missing_id,1)
-        if np.any(no_col_items[1:] != no_col_items[0]):
-            raise IndexError("Couldn't determine number of columns!")
-        no_cols = no_col_items[0]
+    no_cols_max = np.max(np.sum(ra != missing_id,1))
 
-    ca = np.ones((no_rows,no_cols))
+    ca = missing_id * np.ones((no_rows,no_cols_max))
     for i,row in enumerate(ra):
         idx = row != missing_id
-        ca[i,] = row[idx,]
+        ca[i,slice(0,sum(idx))] = row[idx,]
 
     return ca
 
@@ -89,8 +86,8 @@ def drop_expanded_ragged_entries(ra, no_cols, missing_id = __MISSING_ID__ ):
 
     If the number of valid entries in the first row exceeds the no_cols
     the first no_cols entries in order are used and the last valid entries - no_cols
-    are dropped. Further onwards always the row preceeding the current row is used for
-    comparison. If less valid entries than no_cols are found all valied entries are written.
+    are dropped. From row 2 onwards always the n-1th-row is used to determine the entries
+    at row n. If less valid entries than no_cols are found all valied entries are written.
 
     Args:
         ra: expanded ragged array
@@ -114,6 +111,7 @@ def drop_expanded_ragged_entries(ra, no_cols, missing_id = __MISSING_ID__ ):
         old_valid = valid_entries
         valid_entries = row != missing_id
         no_entries = sum(valid_entries)
+        # check if more entries than desired are available
         if no_entries > no_cols:
             probable_entries = old_valid & valid_entries
             if sum(probable_entries) == no_cols:
@@ -123,8 +121,6 @@ def drop_expanded_ragged_entries(ra, no_cols, missing_id = __MISSING_ID__ ):
                 new_entries = np.where(np.invert(old_valid) & valid_entries)[0][:no_superflous]
                 probable_entries[new_entries] = True
                 valid_entries = probable_entries
-#        elif no_entries < no_cols:
-#            raise IndexError('Not enough entries')
         ra_clean[i+1,np.where(valid_entries)] = row[valid_entries]
 
     return ra_clean
@@ -141,3 +137,4 @@ if __name__ == '__main__':
     test_data2 = exa.copy()
     test_data2[3,2] = 3.
     ca_clean = drop_expanded_ragged_entries(test_data2,2)
+

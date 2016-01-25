@@ -2,10 +2,12 @@
 """
 ragged_array: some functionality for indexed ragged arrays.
 
-A indexed ragged array as an array which consist of arrays of differnt
-lengths buth which contain an index such that the positon of each 
-individual array can be located such that they can be mapped into
-unique positions of a global array containing missing values.
+A indexed ragged array is a list which consist of objects containing
+somewhere numpy arrays with different row lengths.
+Each of these numpy arrays contains an index in the first column
+such that the positon of each individual array can be located.
+Resulting in a unique positions in a global array containing missing values.
+Kind of similar to a sparse array.
 
 @author: rein
 @license: MIT
@@ -14,11 +16,15 @@ unique positions of a global array containing missing values.
 import numpy as np
 import pdb
 
-def expand_indexed_ragged_array(ra, row_id, accessor = lambda x: x, missing_id = -1.234567):
+__MISSING_ID__ = -1.234567
+
+def expand_indexed_ragged_array(ra, row_id, accessor = lambda x: x, missing_id = __MISSING_ID__):
     """Expands an ragged array into one large normal array.
 
-    The function assumes that each array contains a time index
-    in the first column and spans only consecutive times points.
+    The function assumes that each individual array contains a time index
+    in the first column and spans only consecutive times points. The objects
+    contained in the list a more complex an accessor functions must be
+    provided which can extract the array. Default is the identity function.
 
     Args:
         ra: ragged array: a list with numpy array entries
@@ -26,8 +32,11 @@ def expand_indexed_ragged_array(ra, row_id, accessor = lambda x: x, missing_id =
                   Default is idenitity function.
         row_id: index into rows
         missing_id = magical number to identify
-    Return:
+    Returns:
+        An numpy array with the entries from the ragged array in the according
+        time index positions.
     """
+
     #pdb.set_trace()
     no_arrays = len(ra)
     no_row_ids = len(row_id)
@@ -46,11 +55,86 @@ def expand_indexed_ragged_array(ra, row_id, accessor = lambda x: x, missing_id =
 
     return result
 
-   
+
+def condense_expanded_ragged_array(ra, missing_id = __MISSING_ID__):
+    """Condenses an expanded ragged array into a simple dense array.
+
+    The functions determines the maximum number of entries across rows, which
+    determines the number of columns for the output matrix. Missing entries
+    in a row a filled with missing_id. Found valid entries are mapped from
+    left to rigth into the result matrix.
+
+    Args:
+        ra: expanded ragged array as obtained from expand_indexed_ragged_array
+        missing_id: indicator for missing values. Per default the module definition
+        is used.
+    Returns:
+        ca: simple dense numpy arrray.
+    """
+    no_rows = ra.shape[0]
+    no_cols_max = np.max(np.sum(ra != missing_id,1))
+
+    ca = missing_id * np.ones((no_rows,no_cols_max))
+    for i,row in enumerate(ra):
+        idx = row != missing_id
+        ca[i,slice(0,sum(idx))] = row[idx,]
+
+    return ca
+
+def drop_expanded_ragged_entries(ra, no_cols, missing_id = __MISSING_ID__ ):
+    """Drop all entries in a row which are superflous according to no_cols.
+
+    If the number of valid entries in the first row exceeds the no_cols
+    the first no_cols entries in order are used and the last valid entries - no_cols
+    are dropped. From row 2 onwards always the n-1th-row is used to determine the entries
+    at row n. If less valid entries than no_cols are found all valied entries are written.
+
+    Args:
+        ra: expanded ragged array
+        no_cols: number of target columns
+        missing_id: missing entries identifier
+    Returns:
+        ra_clean: expanded ragged array containing at most no_cols entries on each row.
+    """
+    no_rows, no_ex_cols = ra.shape
+    ra_clean = np.ones(ra.shape) * missing_id
+    valid_entries = ra[0,] != missing_id
+    if sum(valid_entries) > no_cols:
+        tmp = np.zeros((1,no_ex_cols),dtype=bool)
+        tmp[np.where(valid_entries)[:no_cols]] = True
+        valid_entries = tmp
+    elif sum(valid_entries) < no_cols:
+        raise IndexError('Not enough entries on first row')
+
+    ra_clean[0,valid_entries] = ra[0,valid_entries]
+    for i,row in enumerate(ra[1:,]):
+        old_valid = valid_entries
+        valid_entries = row != missing_id
+        no_entries = sum(valid_entries)
+        # check if more entries than desired are available
+        if no_entries > no_cols:
+            probable_entries = old_valid & valid_entries
+            if sum(probable_entries) == no_cols:
+                valid_entries = probable_entries
+            else:
+                no_superflous = no_entries - no_cols
+                new_entries = np.where(np.invert(old_valid) & valid_entries)[0][:no_superflous]
+                probable_entries[new_entries] = True
+                valid_entries = probable_entries
+        ra_clean[i+1,np.where(valid_entries)] = row[valid_entries]
+
+    return ra_clean
+
+
 if __name__ == '__main__':
     a1 = np.ones((4,2)); a1[:,0] = np.arange(4)
     a2 = 2*np.ones((6,2)); a2[:,0] = np.arange(6)
     a3 = 3*np.ones((2,2)); a3[:,0] = np.arange(4,6)
     index = np.arange(6)
     test_data = [a1,a2,a3]
-    expanded_array = expand_indexed_ragged_array(test_data,index)
+    exa = expand_indexed_ragged_array(test_data,index)
+    ca = condense_expanded_ragged_array(exa)
+    test_data2 = exa.copy()
+    test_data2[3,2] = 3.
+    ca_clean = drop_expanded_ragged_entries(test_data2,2)
+

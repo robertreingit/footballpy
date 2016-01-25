@@ -53,7 +53,6 @@ class MatchInformationParser(xml.sax.handler.ContentHandler):
                 raise NameError("Couldn't determine role")
         elif name == 'player':
             self.inPlayer = True
-
         elif name == "player-metadata" and self.inTeam:
             pid = attrs['player-key']
             trikot = int(attrs['uniform-number'])
@@ -66,7 +65,6 @@ class MatchInformationParser(xml.sax.handler.ContentHandler):
                         "trikot": trikot,
                         "position": position
                     }
-
         elif name == 'name' and self.inPlayer:
             name = attrs['nickname']
             self.currentPlayer['name'] = name
@@ -102,7 +100,6 @@ def read_in_position_data(fname):
     Args:
     Returns:
     """
-
     # MAGIC NUMBERS
     _MISSING_ = -10000.0
     NO_PLAYER = 11
@@ -156,6 +153,7 @@ def read_in_position_data(fname):
 
     return home_team, guest_team, ball, half_time_id
 
+
 def split_positions_into_game_halves(pos,ht,ball):
     """ splits the data frames into first and second halves.
         Args:
@@ -177,6 +175,7 @@ def split_positions_into_game_halves(pos,ht,ball):
 
     return res
 
+
 def sort_position_data(pos,id=1):
     """Sorts the position data according to player and period.
 
@@ -190,6 +189,7 @@ def sort_position_data(pos,id=1):
     for pid in unique_player:
         res.append(pos[pos[:,:,id]==pid])
     return res
+
 
 def read_stadium_dimensions_from_pos(fname):
     """Gets the stadium specifications from the pos file.
@@ -206,6 +206,7 @@ def read_stadium_dimensions_from_pos(fname):
     length = float(specs_string[1])
     width = float(specs_string[2])
     return dict(length=length ,width=width)
+
 
 def combine_position_with_role(pos, team):
     """Combines the position data with the players role and pid data.
@@ -228,6 +229,7 @@ def combine_position_with_role(pos, team):
                     player[:,(0,2,3)],
                     trikot_to_role[trikot]))
     return res
+
 
 def run(data_path, fname_specs, fname_pos):
     """Driver function to run data loading.
@@ -290,3 +292,4 @@ if __name__ == "__main__":
     
     pos_data_home_1 = combine_position_with_role(home_1s,teams['home'])
     pos_data, ball, match, teams = run(data_path, fname_specs, fname_pos)
+

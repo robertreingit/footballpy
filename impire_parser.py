@@ -277,7 +277,7 @@ if __name__ == "__main__":
     data_path = 'test/impire/'
     fname_specs = 'vistrack-matchfacts-123456.xml'
     fname_pos =  '123456.pos'
-    
+   
     print "Parsing match information"
     mip = MatchInformationParser()
     fname_match = data_path + fname_specs

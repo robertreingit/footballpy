@@ -11,6 +11,8 @@ impire_parser : Module which provides parsing function for Soccer
 @license: MIT
 @version 0.1
 """
+
+from __future__ import print_function
 import xml.sax, xml.sax.handler
 import numpy as np
 import pdb
@@ -92,7 +94,7 @@ class MatchInformationParser(xml.sax.handler.ContentHandler):
         # prevent external DTD load
         parser.setFeature(xml.sax.handler.feature_external_ges, False)
         parser.parse(fname)
-        print 'finished parsing match information'
+        print('finished parsing match information')
 
 
 def read_in_position_data(fname):
@@ -278,7 +280,7 @@ if __name__ == "__main__":
     fname_specs = 'vistrack-matchfacts-123456.xml'
     fname_pos =  '123456.pos'
    
-    print "Parsing match information"
+    print("Parsing match information")
     mip = MatchInformationParser()
     fname_match = data_path + fname_specs
     mip.run(fname_match)

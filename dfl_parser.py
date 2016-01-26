@@ -9,6 +9,8 @@ dfl_parser: Module which provides parsing function for Soccer
 @license: MIT
 @version 0.1
 """
+
+from __future__ import print_function
 import xml.sax, xml.sax.handler
 import datetime as dt
 import dateutil.parser as dup
@@ -78,7 +80,7 @@ class MatchInformationParser(xml.sax.handler.ContentHandler):
         parser = xml.sax.make_parser()
         parser.setContentHandler(self)
         parser.parse(fname)
-        print 'finished parsing match information'
+        print('finished parsing match information')
 
 
 def convertTime(tstring):
@@ -144,7 +146,7 @@ class MatchEventParser(xml.sax.handler.ContentHandler):
         parser = xml.sax.make_parser()
         parser.setContentHandler(self)
         parser.parse(fname)
-        print 'finished parsing event data'
+        print('finished parsing event data')
     
     def getEventInformation(self):
         return self.playing_time, self.subs
@@ -199,8 +201,8 @@ class MatchPositionParser(xml.sax.handler.ContentHandler):
             self.teamID = attrs['TeamId']
             if self.teamID == "Ball":
                 self.isBall = True
-                print "Ball"
-            print self.currentID
+                print("Ball")
+            print(self.currentID)
         elif (name == "Frame") & self.inFrameSet:
             x = float(attrs['X'])
             y = float(attrs['Y'])
@@ -221,7 +223,7 @@ class MatchPositionParser(xml.sax.handler.ContentHandler):
 
     def endElement(self,name):
         if name == "FrameSet":
-            print "Processed %d frames" % (self.frameCounter)
+            print("Processed %d frames" % (self.frameCounter))
             self.inFrameSet = False
             # get team: A or B            
             section = self.gameSection
@@ -265,7 +267,7 @@ class MatchPositionParser(xml.sax.handler.ContentHandler):
         parser = xml.sax.make_parser()
         parser.setContentHandler(self)
         parser.parse(fname)
-        print 'finished parsing position data'
+        print('finished parsing position data')
 
 
     def getPositionInformation(self):
@@ -283,19 +285,19 @@ if __name__ == "__main__":
     data_path = "./test/dfl/"
     fname = 'test.xml'
     
-    print "Parsing match information"
+    print("Parsing match information")
     mip = MatchInformationParser()
     fname_match = data_path + "MatchInformation/" + fname
     mip.run(fname_match)
     teams, match = mip.getTeamInformation()
     
-    print "Parsing event data"
+    print("Parsing event data")
     mep = MatchEventParser()
     fname_info = data_path + "EventData/" + fname
     mep.run(fname_info)
     play_time, subs = mep.getEventInformation()
     
-    print "Parsing position data"
+    print("Parsing position data")
     mpp = MatchPositionParser(match,teams)
     fname_pos = data_path + "/ObservedPositionalData/" + fname
     mpp.run(fname_pos)

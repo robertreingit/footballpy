@@ -11,7 +11,7 @@ versions of the original files.
 """
 
 import unittest
-import dfl_processor
+import footballpy.processing.dfl_processor as dfl_processor
 import numpy as np
 
 class TestSortPosition(unittest.TestCase):

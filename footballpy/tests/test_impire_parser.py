@@ -12,15 +12,15 @@ versions of original files.
 
 import unittest
 import numpy as np
-import impire_parser
+import footballpy.fs.loader.impire as impire_parser
 
 class TestMatchPosition(unittest.TestCase):
     """Unit test class for the MatchPositionParser.
     """
     @classmethod
     def setUpClass(cls):
-        cls.pos_file = 'test/impire/123456.pos'
-        cls.match_file = 'test/impire/vistrack-matchfacts-123456.xml'
+        cls.pos_file = './footballpy/testfiles/impire/123456.pos'
+        cls.match_file = './footballpy/testfiles/impire/vistrack-matchfacts-123456.xml'
 
     def test_read_in_position(self):
         """Asserts basic read-in functionality."""

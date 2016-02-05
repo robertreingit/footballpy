@@ -15,7 +15,7 @@ import xml.sax, xml.sax.handler
 import datetime as dt
 import dateutil.parser as dup
 import numpy as np
-import ragged_array as ra
+#import ragged_array as ra
 
 class MatchInformationParser(xml.sax.handler.ContentHandler):
     """A XML parser for DFL match information files.

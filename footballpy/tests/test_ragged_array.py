@@ -9,7 +9,7 @@ test_ragged_array: unittests for the ragged_array module
 """
 
 import unittest
-import ragged_array as ra
+import footballpy.processing.ragged_array as ra
 import numpy as np
 
 class TestIndexedRaggedArray(unittest.TestCase):

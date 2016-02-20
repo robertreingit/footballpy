@@ -7,6 +7,7 @@ Created on Thu Jun 18 23:54:17 2015
 @version: 0.1
 """
 
+from __future__ import print_function
 import numpy as np
 import ragged_array as ra
 
@@ -193,7 +194,7 @@ def run(pos_data,ball_data,match,ranking_type='A'):
     for sec in sections:
         home_direction = 'r2l'
         for role in roles:
-            print 'Processing: %s-%s...' % (role,sec)
+            print('Processing: %s-%s...' % (role,sec))
             sorted_pos_data = sort_position_data(pos_data[role][sec], ranking_type)
             stitched_data = stitch_position_data(sorted_pos_data,ball_data[sec!='1st'])
             if role == 'home':
@@ -203,10 +204,10 @@ def run(pos_data,ball_data,match,ranking_type='A'):
                 l2r_section = 0 if sec=='1st' else 1
             rescale_playing_coords(stitched_data,match['stadium'])
             result[role][0 if sec=='1st' else 1] = stitched_data
-            print 'done'
+            print('done')
     
     # processing ball data
-    print 'Processing ball...'
+    print('Processing ball...')
     switch_playing_direction(ball_data[l2r_section][:,1:3])
     for i in [0,1]:
         rescale_playing_coords(ball_data[i][:,1:3],match['stadium'])
@@ -214,9 +215,9 @@ def run(pos_data,ball_data,match,ranking_type='A'):
     result['ball'][1] = ball_data[1][:,1:3]
 
     #correct value ranges.
-    print 'clamping values.'
+    print('clamping values.')
     clamp_values(result)
-    print 'done.'
+    print('done.')
     return result
             
     

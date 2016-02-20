@@ -11,7 +11,7 @@ versions of original files.
 """
 
 import unittest
-import dfl_parser
+import footballpy.fs.loader.dfl as dfl_parser
 from datetime import datetime
 import dateutil.parser as dup
 import numpy as np
@@ -20,7 +20,7 @@ class TestMatchInformation(unittest.TestCase):
     """Unit test class for the dfl_parser
     """
     @classmethod
-    def setUpClass(cls, fname='./test/dfl/MatchInformation/test.xml'):
+    def setUpClass(cls, fname='./footballpy/testfiles/dfl/MatchInformation/test.xml'):
         mip = dfl_parser.MatchInformationParser()
         mip.run(fname)
         cls._teams,cls._match = mip.getTeamInformation()
@@ -56,7 +56,7 @@ class TestMatchEvent(unittest.TestCase):
     """Unit test class for the MatchEventParser.
     """
     @classmethod
-    def setUpClass(cls, fname='./test/dfl/EventData/test.xml'):
+    def setUpClass(cls, fname='./footballpy/testfiles/dfl/EventData/test.xml'):
         mep = dfl_parser.MatchEventParser()
         mep.run(fname)
         cls._play_time, cls._subs = mep.getEventInformation()
@@ -72,9 +72,9 @@ class TestMatchPosition(unittest.TestCase):
     """Unit test class for the MatchPositionParser.
     """
     @classmethod
-    def setUpClass(cls, fname='./test/dfl/ObservedPositionalData/test.xml'):
+    def setUpClass(cls, fname='./footballpy/testfiles/dfl/ObservedPositionalData/test.xml'):
         mip = dfl_parser.MatchInformationParser()
-        fname_match = "./test/dfl/MatchInformation/test.xml"
+        fname_match = "./footballpy/testfiles/dfl/MatchInformation/test.xml"
         mip.run(fname_match)
         teams, match = mip.getTeamInformation()
         mpp = dfl_parser.MatchPositionParser(match,teams)
@@ -112,14 +112,14 @@ class TestSanity(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         mep = dfl_parser.MatchEventParser()
-        mep.run('./test/dfl/EventData/test.xml')
+        mep.run('./footballpy/testfiles/dfl/EventData/test.xml')
         cls._play_time, cls._subs = mep.getEventInformation()
         mip = dfl_parser.MatchInformationParser()
-        fname_match = "./test/dfl/MatchInformation/test.xml"
+        fname_match = "./footballpy/testfiles/dfl/MatchInformation/test.xml"
         mip.run(fname_match)
         teams, match = mip.getTeamInformation()
         mpp = dfl_parser.MatchPositionParser(match,teams)
-        mpp.run('./test/dfl/ObservedPositionalData/test.xml')
+        mpp.run('./footballpy/testfiles/dfl/ObservedPositionalData/test.xml')
         cls._pos_data, cls._ball_data, cls._timestamps = mpp.getPositionInformation()
 
     def test_time_sanity(self):

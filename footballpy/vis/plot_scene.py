@@ -11,6 +11,15 @@ import copy
 colors = ['r','b']
 
 def circle(x0,y0,r):
+    """Calculates the x-y-coordinates for a circle at x0,y0 with radius R.
+
+    Args:
+        x0: x-coordinate circle center
+        y0: y-coordinate circle center
+        r: radis of circle
+    Returns:
+        List with x and y values.
+    """
     t = np.arange(0,np.pi*2.0,0.01)
     x = x0 + r * np.sin(t)
     y = y0 + r * np.cos(t)

@@ -5,6 +5,7 @@ A plotting function to plot a specific soccer scene.
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 import numpy as np
+import copy
 
 
 colors = ['r','b']
@@ -54,18 +55,18 @@ def plot_players(pos_data,frames):
                     player[1][:,0] <= frames[-1])
             if np.sum(idx) == frames.size:
                 idxf = np.where(idx)
-                plt.plot(player[1][frames,1],
-                        player[1][frames,2],
+                plt.plot(player[1][idx,1],
+                        player[1][idx,2],
                         colors[i],alpha=.8)
-                plt.plot(player[1][frames[0],1],
-                        player[1][frames[0],2],
+                plt.plot(player[1][idxf[0][0],1],
+                        player[1][idxf[0][0],2],
                             color=colors[i], marker='o', markersize=8,
                             alpha=.5)
-                plt.plot(player[1][frames[-1],1],
-                        player[1][frames[-1],2],
+                plt.plot(player[1][idxf[0][-1],1],
+                        player[1][idxf[0][-1],2],
                             color=colors[i], marker='o', markersize=8)
-                plt.text(player[1][frames[0],1],
-                        player[1][frames[0],2],
+                plt.text(player[1][idxf[0][0],1],
+                        player[1][idxf[0][0],2],
                         player[0])
 
 def plot_ball(ball_data,frames):

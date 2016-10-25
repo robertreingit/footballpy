@@ -100,7 +100,13 @@ class MatchInformationParser(xml.sax.handler.ContentHandler):
 def read_in_position_data(fname):
     """Reads in a pos file and extract the ball/player data
     Args:
+		fname: name of the position data file.
     Returns:
+		List with four entries:
+		[0] = data for home team
+		[1] = data for guest team
+		[2] = data for ball
+		[3] = half time index
     """
 
     # MAGIC NUMBERS

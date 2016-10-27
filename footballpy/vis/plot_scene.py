@@ -128,6 +128,26 @@ def plot(pos, ball, stadium, frames, rescale=False ):
     plt.axis('off')
     plt.show()
 
+def plot_segment(segment, stadium):
+    """Plots a formation segment onto a pitch.
+
+        Formation segment as being constructed by the formation_quantifier
+        function meaning mainly a position matrix of on team.
+
+        Args:
+            segment: A numpy matrix containing the segment data
+            stadium: dictionary containing the stadium dimensions.
+        Returns:
+            NULL. Only sideeffect.
+    """
+    plt.clf()
+    plot_stadium(**stadium)
+    plt.plot(segment[:,4:26:2],segment[:,5:26:2])
+    plt.plot(segment[0,4],segment[0,5],'ro',markersize=10)
+    plt.plot(segment[0,6:26:2],segment[0,7:26:2],'o')
+    plt.show()
+
+
 if __name__ == '__main__':
     mm = copy.deepcopy(dict(home=pos_data['home']['1st'],
         guest=pos_data['guest']['1st']))

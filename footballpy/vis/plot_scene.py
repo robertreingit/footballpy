@@ -42,18 +42,18 @@ def plot_stadium(width, length):
 
     Returns: None
     """
-    w = width / 2
-    l = length / 2
+    w = width / 2.0
+    l = length / 2.0
     current_axis = plt.gca()
-    current_axis.add_patch(Rectangle((-l,-w),2.0*l,2.0*w, facecolor='#00FF00'))
-    plt.plot([-l,l,l,-l,-l],[-w,-w,w,w,-w],'k-',lw=2)
-    plt.plot([0,0],[-w,w],'k-',lw=2)
-    [mx,my] = circle(0,0,9.15)
-    plt.plot(mx,my,'k-',lw=2)
-    plt.plot([-l,-l+5.5,-l+5.5,-l],[9.16,9.16,-9.16,-9.16],'k-',lw=2)
-    plt.plot([-l,-l+16.5,-l+16.5,-l],[20.16,20.16,-20.16,-20.16],'k-',lw=2)
-    plt.plot([l,l-5.5,l-5.5,l],[9.16,9.16,-9.16,-9.16],'k-',lw=2)
-    plt.plot([l,l-16.5,l-16.5,l],[20.16,20.16,-20.16,-20.16],'k-',lw=2)
+    current_axis.add_patch(Rectangle((-l,-w), 2.0*l, 2.0*w, facecolor='#00FF00'))
+    plt.plot([-l, l, l, -l, -l], [-w, -w, w, w, -w], 'k-', lw=2)
+    plt.plot([0, 0], [-w, w], 'k-', lw=2)
+    [mx,my] = circle(0, 0, 9.15)
+    plt.plot(mx, my,'k-',lw=2)
+    plt.plot([-l, -l+5.5, -l+5.5, -l], [9.16, 9.16, -9.16, -9.16],'k-',lw=2)
+    plt.plot([-l, -l+16.5, -l+16.5,-l],[20.16,20.16,-20.16,-20.16],'k-',lw=2)
+    plt.plot([l, l-5.5, l-5.5, l],[9.16,9.16,-9.16,-9.16],'k-',lw=2)
+    plt.plot([l, l-16.5, l-16.5, l],[20.16,20.16,-20.16,-20.16],'k-',lw=2)
 
 def plot_players(pos_data,frames):
     """

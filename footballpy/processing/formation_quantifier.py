@@ -57,8 +57,8 @@ def rescale_global_matrix(pos_data, stadium):
             The same numpy matrix with the x-y-position scaled.
     """
     new_pos_data = pos_data.copy()
-    new_pos_data[:,5:26:2] *= stadium['length']/2.0
-    new_pos_data[:,6:26:2] *= stadium['width']/2.0
+    new_pos_data[:,4:26:2] *= stadium['length']/2.0
+    new_pos_data[:,5:26:2] *= stadium['width']/2.0
     return new_pos_data
 
 

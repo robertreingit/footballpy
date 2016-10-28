@@ -8,9 +8,9 @@ import numpy as np
 import copy
 
 
-colors = ['r','b']
+colors = ['r', 'b']
 
-def circle(x0,y0,r):
+def circle(x0, y0, r):
     """Calculates the x-y-coordinates for a circle at x0,y0 with radius R.
 
     Args:
@@ -20,14 +20,14 @@ def circle(x0,y0,r):
     Returns:
         List with x and y values.
     """
-    t = np.arange(0,np.pi*2.0,0.01)
+    t = np.arange(0, np.pi*2.0, 0.01)
     x = x0 + r * np.sin(t)
     y = y0 + r * np.cos(t)
-    return [x,y]
+    return [x, y]
 
 def determine_ball_impacts(ball):
-    ball_acc = np.sqrt(np.sum(np.diff(ball,2,0)**2,axis=1))
-    return np.where(ball_acc>0.01)
+    ball_acc = np.sqrt(np.sum(np.diff(ball, 2, 0)**2, axis=1))
+    return np.where(ball_acc > 0.01)
 
 def plot_stadium(width, length):
     """ Plots a canonical stadium.
@@ -45,44 +45,54 @@ def plot_stadium(width, length):
     w = width / 2.0
     l = length / 2.0
     current_axis = plt.gca()
-    current_axis.add_patch(Rectangle((-l,-w), 2.0*l, 2.0*w, facecolor='#00FF00'))
+    current_axis.add_patch(Rectangle((-l, -w), 2.0*l, 2.0*w, 
+        facecolor='#00FF00'))
     plt.plot([-l, l, l, -l, -l], [-w, -w, w, w, -w], 'k-', lw=2)
     plt.plot([0, 0], [-w, w], 'k-', lw=2)
     [mx,my] = circle(0, 0, 9.15)
-    plt.plot(mx, my,'k-',lw=2)
-    plt.plot([-l, -l+5.5, -l+5.5, -l], [9.16, 9.16, -9.16, -9.16],'k-',lw=2)
-    plt.plot([-l, -l+16.5, -l+16.5,-l],[20.16,20.16,-20.16,-20.16],'k-',lw=2)
-    plt.plot([l, l-5.5, l-5.5, l],[9.16,9.16,-9.16,-9.16],'k-',lw=2)
-    plt.plot([l, l-16.5, l-16.5, l],[20.16,20.16,-20.16,-20.16],'k-',lw=2)
+    plt.plot(mx, my, 'k-', lw=2)
+    plt.plot([-l, -l+5.5, -l+5.5, -l],
+            [9.16, 9.16, -9.16, -9.16], 'k-', lw=2)
+    plt.plot([-l, -l+16.5, -l+16.5,-l],
+            [20.16, 20.16, -20.16, -20.16], 'k-', lw=2)
+    plt.plot([l, l-5.5, l-5.5, l],
+            [9.16, 9.16, -9.16, -9.16], 'k-', lw=2)
+    plt.plot([l, l-16.5, l-16.5, l],
+            [20.16, 20.16, -20.16, -20.16], 'k-', lw=2)
 
 def plot_players(pos_data,frames):
     """
     """
     for i,team in enumerate(['home','guest']):
         for player in pos_data[team]:
-            idx = np.logical_and(player[1][:,0] >= frames[0],
-                    player[1][:,0] <= frames[-1])
+            idx = np.logical_and(player[1][:, 0] >= frames[0],
+                    player[1][:, 0] <= frames[-1])
             if np.sum(idx) == frames.size:
                 idxf = np.where(idx)
-                plt.plot(player[1][idx,1],
-                        player[1][idx,2],
-                        colors[i],alpha=.8)
-                plt.plot(player[1][idxf[0][0],1],
-                        player[1][idxf[0][0],2],
+                plt.plot(player[1][idx, 1],
+                        player[1][idx, 2],
+                        colors[i], alpha=.8)
+                plt.plot(player[1][idxf[0][0], 1],
+                        player[1][idxf[0][0], 2],
                             color=colors[i], marker='o', markersize=8,
                             alpha=.5)
-                plt.plot(player[1][idxf[0][-1],1],
-                        player[1][idxf[0][-1],2],
+                plt.plot(player[1][idxf[0][-1], 1],
+                        player[1][idxf[0][-1], 2],
                             color=colors[i], marker='o', markersize=8)
-                plt.text(player[1][idxf[0][0],1],
-                        player[1][idxf[0][0],2],
+                plt.text(player[1][idxf[0][0], 1],
+                        player[1][idxf[0][0], 2],
                         player[0])
 
-def plot_ball(ball_data,frames):
+def plot_ball(ball_data, frames):
+    """Quick and dirty function to plot the ball position.
+        Args:
+            ball_data: position data for the ball
+            frames: frames to be plotted.
+        Returns:
+            Nothing, only side-effects.
     """
-    """
-    plt.plot(ball_data[frames,1], ball_data[frames,2],'k',lw=2)
-    plt.plot(ball_data[-1,1],ball_data[-1,2],'ko')
+    plt.plot(ball_data[frames,1], ball_data[frames,2], 'k', lw=2)
+    plt.plot(ball_data[-1,1],ball_data[-1,2], 'ko')
 
 def rescale_data(pos, ball, stadium):
     """
@@ -102,7 +112,7 @@ def rescale_data(pos, ball, stadium):
     ball[:,2] *= w
 
 
-def plot(pos, ball, stadium, frames, rescale=False ):
+def plot(pos, ball, stadium, frames, rescale=False):
     """Convenience function to plot a soccer scene.
 
     Depends on the matplotlib library.

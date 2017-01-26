@@ -48,6 +48,25 @@ def insert_player(game_id, player_id, xy):
     for row in xy:
         __session__.execute(query, (game_id, player_id, int(row[0]), row[1], row[2]))
 
+def get_player_position_data(game_id, player_id):
+    """ Experimental function to retrieve position data for one player.
+        Args:
+        Returns:
+            An numpy array with the position data.
+    """
+    query = """
+        SELECT frame, x_pos, y_pos FROM position_data
+        WHERE game_id = %s
+        AND player_id = %s;
+    """
+    res = __session__.execute(query, (game_id, player_id))
+    # as the size of the array is not known in advance
+    # storing the individual rows into a list which
+    # is subsequently cast into a numpy array.
+    arr = []
+    for row in res:
+        arr.append(row)
+    return np.array(arr)
 
 def close():
     """ Closes the cluster connection.
@@ -57,8 +76,9 @@ def close():
 
 
 if __name__ == '__main__':
-    init()
+    #init()
     #insert_player('123','456',np.array([[0, 1.0, 2.0],[1, 10.0, 20.0]]))
-    insert_player(str(game_id), player_id, player_xy)
-    close()
+    #insert_player(str(game_id), player_id, player_xy)
+    #close()
+    p_data = get_player_position_data(game_id, player_id)
 

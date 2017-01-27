@@ -89,6 +89,7 @@ class MatchInformationParser(xml.sax.handler.ContentHandler):
 
     def run(self, fname):
         """Runs the parse on fname."""
+        print('Start reading in match information')
         parser = xml.sax.make_parser()
         parser.setContentHandler(self)
         # prevent external DTD load
@@ -108,6 +109,8 @@ def read_in_position_data(fname):
 		[2] = data for ball
 		[3] = half time index
     """
+
+    print('Start reading in position data...')
 
     # MAGIC NUMBERS
     _MISSING_ = -10000.0
@@ -160,6 +163,7 @@ def read_in_position_data(fname):
         status = float(ball_data[4])
         ball[i,:] = [frame,x,y,z,poss,status]
 
+    print('finished.')
     return home_team, guest_team, ball, half_time_id
 
 def split_positions_into_game_halves(pos,ht,ball):

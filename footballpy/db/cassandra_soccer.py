@@ -52,7 +52,7 @@ def insert_player(game_id, half, team_id, player_id, xy):
     """
     for row in xy:
         __session__.execute(query, 
-            (game_id, half_id, team_id, player_id, int(row[0]), row[1], row[2]))
+            (game_id, half, team_id, player_id, int(row[0]), row[1], row[2]))
 
 def get_player_position_data(game_id, half, team_id, player_id):
     """ Experimental function to retrieve position data for one player.

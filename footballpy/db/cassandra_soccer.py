@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 """
 cassandra:  Module providing interface to talk to a local Apache Cassandra instance. 
             At the moment experimental, doesn't do much usefull.
@@ -23,32 +24,37 @@ def init():
     query2 = """
         CREATE TABLE position_data (
             game_id text,
+            half int,
+            team_id text,
             player_id text,
             frame int,
             x_pos float,
             y_pos float,
-            PRIMARY KEY ((game_id),player_id, frame)
+            PRIMARY KEY ((game_id), half, team_id, player_id, frame)
         );
         """
     __session__.execute(query1)
     __session__.execute(query2)
 
-def insert_player(game_id, player_id, xy):
+def insert_player(game_id, half, team_id, player_id, xy):
     """Puts all the data from one player into the table.
     """
     query = """
         INSERT INTO position_data (
             game_id,
+            half,
+            team_id,
             player_id,
             frame,
             x_pos,
             y_pos)
-        VALUES (%s, %s, %s, %s, %s)
+        VALUES (%s, %s, %s, %s, %s, %s, %s)
     """
     for row in xy:
-        __session__.execute(query, (game_id, player_id, int(row[0]), row[1], row[2]))
+        __session__.execute(query, 
+            (game_id, half_id, team_id, player_id, int(row[0]), row[1], row[2]))
 
-def get_player_position_data(game_id, player_id):
+def get_player_position_data(game_id, half, team_id, player_id):
     """ Experimental function to retrieve position data for one player.
         Args:
         Returns:
@@ -57,9 +63,11 @@ def get_player_position_data(game_id, player_id):
     query = """
         SELECT frame, x_pos, y_pos FROM position_data
         WHERE game_id = %s
+        AND half = %s
+        AND team_id = %s
         AND player_id = %s;
     """
-    res = __session__.execute(query, (game_id, player_id))
+    res = __session__.execute(query, (game_id, half, team_id, player_id))
     # as the size of the array is not known in advance
     # storing the individual rows into a list which
     # is subsequently cast into a numpy array.
@@ -76,9 +84,10 @@ def close():
 
 
 if __name__ == '__main__':
-    #init()
+    init()
     #insert_player('123','456',np.array([[0, 1.0, 2.0],[1, 10.0, 20.0]]))
     #insert_player(str(game_id), player_id, player_xy)
-    #close()
-    p_data = get_player_position_data(game_id, player_id)
+    insert_player( game_id, half, team_id, player_id, player_xy)
+    close()
+    #p_data = get_player_position_data(game_id, player_id)
 

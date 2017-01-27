@@ -244,6 +244,15 @@ def run(data_path, fname_specs, fname_pos):
             fname_specs: matchfacts file
             fname_pos: position data file.
         Returns:
+          pos_data: position data struct with keys ['home','guest']
+                    with sub struct ['1st','2nd'] for game halves
+                    containing list with player entries.
+                    [0]: player id
+                    [1]: numpy array with frame, x, y data
+                    [1]: player role
+          ball: numpy array containing the ball data
+          match: 
+          teams: 
     """
     # sanity check
     fname_1 = fname_specs.split('-')[2].split('.')[0]

@@ -14,6 +14,19 @@ __TEST_KEYSPACE__ = 'soccer_test'
 __cluster__ = Cluster()
 __session__ = __cluster__.connect(__TEST_KEYSPACE__)
 
+__pi_query__ = """
+    INSERT INTO position_data (
+        game_id,
+        half,
+        team_id,
+        player_id,
+        frame,
+        x_pos,
+        y_pos)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+"""
+__position_insertion_prepared__ = __session__.prepare(__pi_query__)
+
 def init():
     """ Drops the test table in test keyspace and creates a
         new one.
@@ -39,19 +52,8 @@ def init():
 def insert_player(game_id, half, team_id, player_id, xy):
     """Puts all the data from one player into the table.
     """
-    query = """
-        INSERT INTO position_data (
-            game_id,
-            half,
-            team_id,
-            player_id,
-            frame,
-            x_pos,
-            y_pos)
-        VALUES (%s, %s, %s, %s, %s, %s, %s)
-    """
     for row in xy:
-        __session__.execute(query, 
+        __session__.execute(__position_insertion_prepared__, 
             (game_id, half, team_id, player_id, int(row[0]), row[1], row[2]))
 
 def get_player_position_data(game_id, half, team_id, player_id):

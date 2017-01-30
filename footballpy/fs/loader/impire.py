@@ -11,19 +11,25 @@ impire_parser : Module which provides parsing function for Soccer
 @license: MIT
 @version 0.1
 """
-import xml.sax, xml.sax.handler
+from xml.sax import make_parser, ContentHandler
+from xml.sax.handler import feature_external_ges
 import numpy as np
 # import pdb
 
-class MatchInformationParser(xml.sax.handler.ContentHandler):
+class MatchInformationParser(ContentHandler):
     """A XML parser for DFL match information files.
     
     Pulls out the pitch dimensions, and player information.
     Args:
+        None
+    Returns:
+        None
+        
     """
 
     def __init__(self):
         """Initialization of attributes."""
+        ContentHandler.__init__(self) 
         self.inTeam = False
         self.inHomeTeam = False
         self.inPlayer = False
@@ -90,10 +96,10 @@ class MatchInformationParser(xml.sax.handler.ContentHandler):
     def run(self, fname):
         """Runs the parse on fname."""
         print('Start reading in match information')
-        parser = xml.sax.make_parser()
+        parser = make_parser()
         parser.setContentHandler(self)
         # prevent external DTD load
-        parser.setFeature(xml.sax.handler.feature_external_ges, False)
+        parser.setFeature(feature_external_ges, False)
         parser.parse(fname)
         print('finished parsing match information')
 

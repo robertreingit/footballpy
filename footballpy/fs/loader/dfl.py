@@ -270,6 +270,7 @@ class MatchPositionParser(ContentHandler):
         """
         parser = make_parser()
         parser.setContentHandler(self)
+        print('Start parsing position data')
         parser.parse(fname)
         print('finished parsing position data')
 

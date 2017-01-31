@@ -1,8 +1,8 @@
 # -*- encoding: utf-8 -*-
 """
 cassandra:  Module providing interface to talk to a local Apache Cassandra instance. 
-            At the moment experimental, doesn't do much usefull.
-
+            At the moment experimental, doesn't do much usefull. Don't use it for
+            anything crucial!!!
 @author: rein
 @license: MIT
 @version 0.1
@@ -25,7 +25,7 @@ __pi_query__ = """
         y_pos)
     VALUES (?, ?, ?, ?, ?, ?, ?)
 """
-__position_insertion_prepared__ = __session__.prepare(__pi_query__)
+__position_insertion_prepared__ = None
 
 def init():
     """ Drops the test table in test keyspace and creates a
@@ -48,10 +48,13 @@ def init():
         """
     __session__.execute(query1)
     __session__.execute(query2)
+    global __position_insertion_prepared__
+    __position_insertion_prepared__ = __session__.prepare(__pi_query__)
 
 def insert_player(game_id, half, team_id, player_id, xy):
     """Puts all the data from one player into the table.
     """
+    print('Inserting player with %d rows' % xy.shape[0])
     for row in xy:
         __session__.execute(__position_insertion_prepared__, 
             (game_id, half, team_id, player_id, int(row[0]), row[1], row[2]))

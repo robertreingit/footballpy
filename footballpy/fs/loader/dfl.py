@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-dfl_parser: Module which provides parsing function for Soccer
+dfl: Module which provides parsing function for Soccer
             position data. Individual parsers are provided for
             general match information data, match event data,
             and match position data.
@@ -11,21 +11,23 @@ dfl_parser: Module which provides parsing function for Soccer
 """
 
 from __future__ import print_function
-import xml.sax, xml.sax.handler
+from xml.sax import make_parser, ContentHandler
+from xml.sax.handler import feature_external_ges
 import datetime as dt
 import dateutil.parser as dup
 import numpy as np
-#import ragged_array as ra
 
-class MatchInformationParser(xml.sax.handler.ContentHandler):
+class MatchInformationParser(ContentHandler):
     """A XML parser for DFL match information files.
     
     Pulls out the pitch dimensions, and player information.
     Args:
+    Returns:
     """
 
     def __init__(self):
         """Initialization of attributes."""
+        ContentHandler.__init__(self)
         self.inTeam = False
         self.inHomeTeam = False
         self.teams = {'home': [], 'guest': [] }
@@ -77,7 +79,7 @@ class MatchInformationParser(xml.sax.handler.ContentHandler):
     
     def run(self,fname):
         """Runs the parse on fname."""
-        parser = xml.sax.make_parser()
+        parser = make_parser()
         parser.setContentHandler(self)
         parser.parse(fname)
         print('finished parsing match information')
@@ -113,11 +115,12 @@ class Substitution:
             (self.time, self.teamID, self.pin, self.pout, self.position))
 
 
-class MatchEventParser(xml.sax.handler.ContentHandler):
+class MatchEventParser(ContentHandler):
     """
     Parses the event data for substitutions.
     """
     def __init__(self):
+        ContentHandler.__init__(self)
         self.eventTime = ""
         self.playing_time = { 
                 "firstHalf": ["",""], "secondHalf": ["",""] }
@@ -143,7 +146,7 @@ class MatchEventParser(xml.sax.handler.ContentHandler):
             self.playing_time[section][1] = convertTime(self.eventTime)
     
     def run(self,fname):
-        parser = xml.sax.make_parser()
+        parser = make_parser()
         parser.setContentHandler(self)
         parser.parse(fname)
         print('finished parsing event data')
@@ -159,7 +162,7 @@ def calculate_frame_estimate(playing_time,padding_time = 5*60, freq = 25):
     return int(no_frames)
 
         
-class MatchPositionParser(xml.sax.handler.ContentHandler):
+class MatchPositionParser(ContentHandler):
     """
     A parser for the position data.
     Attributes:
@@ -177,6 +180,7 @@ class MatchPositionParser(xml.sax.handler.ContentHandler):
         teams
     """
     def __init__(self,match,teams,no_frames = 200000):
+        ContentHandler.__init__(self)
         self.currentID = ""
         self.currentPos = np.zeros((no_frames,6),dtype='float32')
         self.timeStamps = [[],[]]
@@ -264,7 +268,7 @@ class MatchPositionParser(xml.sax.handler.ContentHandler):
         Returns:
             Nothing
         """
-        parser = xml.sax.make_parser()
+        parser = make_parser()
         parser.setContentHandler(self)
         parser.parse(fname)
         print('finished parsing position data')

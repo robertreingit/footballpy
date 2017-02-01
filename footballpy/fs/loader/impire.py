@@ -57,6 +57,7 @@ class MatchInformationParser(ContentHandler):
                 self.match['guest'] = teamID
             else:
                 raise NameError("Couldn't determine role")
+
         elif name == 'player':
             self.inPlayer = True
 
@@ -109,7 +110,7 @@ def read_in_position_data(fname):
     Args:
 		fname: name of the position data file.
     Returns:
-		List with four entries:
+		tuple with four entries:
 		[0] = data for home team
 		[1] = data for guest team
 		[2] = data for ball

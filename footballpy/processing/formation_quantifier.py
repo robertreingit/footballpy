@@ -9,7 +9,7 @@ Created on 26.10.2016.
 Some small utility functions to generate time sliced average formations
 from impire position data.
 """
-import makepath
+#import makepath
 import footballpy.fs.loader.impire as imp
 import numpy as np
 import matplotlib.pyplot as plt
@@ -24,7 +24,7 @@ def reshape_pos_data(pos_data, ball, game):
             game: game half indicator
         Returns:
             Returns a new matrix with the data.
-            The frist 5 columns contain some meta-data for the game
+            The first 5 columns contain game meta-data
             [:,0] = frame indicator
             [:,1] = possession indicator {0,1,2}
             [:,2] = game status {0,1}
@@ -62,8 +62,13 @@ def rescale_global_matrix(pos_data, stadium):
     return new_pos_data
 
 
-def determine_cutting_points(pos_data):
-    """
+def determine_cutting_frames(pos_data):
+    """Determines the frames were the times-series is split into segments.
+
+        Takes into account the game running status, the possession status, and
+        the half-time status. Thus, when ever the games is stopped or the
+        possession changes a frame indicator is set.
+
         Args:
             pos_data: global position matrix as generate from reshape_pos_data
             reshape_pos_data.
@@ -73,7 +78,11 @@ def determine_cutting_points(pos_data):
             the last entries.
     """
     def get_pts(dat):
-        """ short-cut function
+        """ short-cut function to determine when state in dat changes
+            Args:
+                A numpy vector
+            Returns:
+                Boolean vector
         """
         return np.where(np.abs(np.diff(dat)) > 0)[0]+1
 
@@ -97,6 +106,8 @@ def segment_position_data(pos_data, cut_pts):
     segments = [None]*(len(cut_pts)-1)
     for (i, j) in enumerate(cut_pts[:-1]):
         segments[i] = pos_data[np.arange(cut_pts[i], cut_pts[i+1]), :]
+    # Data is filtered for possession indicated by 2nd columm {0, 1, 2}
+    # and game status indicated by the 3rd columm {0, 1}
     segments = [segment for segment in segments if np.mean(segment[:, 1]) >= 1.0 and
                 np.mean(segment[:, 2]) >= 1.0]
     return segments[1:-1]
@@ -127,4 +138,10 @@ def segment_into_time_slices(segments, win_size=125):
                 time_slices.append(np.concatenate([segment[0, :4], av_formation, [i+1]]))
     return time_slices
 
+if __name__ == '__main__':
+    home_reshaped = reshape_pos_data(home, ball, game)
+    home_s = rescale_global_matrix(home_reshaped, stadium)
+    cutting_frames = determine_cutting_frames(home_s)
+    home_segments = segment_position_data(home_s, cutting_frames)
+    home_slices = segment_into_time_slices(home_segments)
 

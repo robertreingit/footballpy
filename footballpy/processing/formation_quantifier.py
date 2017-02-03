@@ -24,7 +24,7 @@ def reshape_pos_data(pos_data, ball, game):
             game: game half indicator
         Returns:
             Returns a new matrix with the data.
-            The first 5 columns contain game meta-data
+            The first 4 columns contain game meta-data
             [:,0] = frame indicator
             [:,1] = possession indicator {0,1,2}
             [:,2] = game status {0,1}

@@ -124,6 +124,7 @@ def segment_into_time_slices(segments, win_size=125):
     """
     # iterate through each individual segment
     time_slices = []
+    possession_status = []
     for (i, segment) in enumerate(segments):
         # determine the number of time slices
         no_frames = segment.shape[0]
@@ -134,14 +135,16 @@ def segment_into_time_slices(segments, win_size=125):
             stop = min((sl+1)*win_size, no_frames)
             if start < stop:
                 win = slice(sl*win_size, min((sl+1)*win_size, no_frames))
+                possession = segment[sl,1]
+                possession_status.append(possession)
                 av_formation = np.mean(segment[win, 4:], axis=0)
                 time_slices.append(np.concatenate([segment[0, :4], av_formation, [i+1]]))
-    return time_slices
+    return time_slices, possession_status
 
 if __name__ == '__main__':
     home_reshaped = reshape_pos_data(home, ball, game)
     home_s = rescale_global_matrix(home_reshaped, stadium)
     cutting_frames = determine_cutting_frames(home_s)
     home_segments = segment_position_data(home_s, cutting_frames)
-    home_slices = segment_into_time_slices(home_segments)
+    home_slices, possession_slices = segment_into_time_slices(home_segments)
 

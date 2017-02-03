@@ -10,4 +10,4 @@ might change in the future.
 
 - [x] DFL format
 - [ ] raw format (soon)
-- [ ] Impire format (soon)
+- [x] Impire format

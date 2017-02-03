@@ -11,19 +11,25 @@ impire_parser : Module which provides parsing function for Soccer
 @license: MIT
 @version 0.1
 """
-import xml.sax, xml.sax.handler
+from xml.sax import make_parser, ContentHandler
+from xml.sax.handler import feature_external_ges
 import numpy as np
-import pdb
+# import pdb
 
-class MatchInformationParser(xml.sax.handler.ContentHandler):
+class MatchInformationParser(ContentHandler):
     """A XML parser for DFL match information files.
     
     Pulls out the pitch dimensions, and player information.
     Args:
+        None
+    Returns:
+        None
+        
     """
 
     def __init__(self):
         """Initialization of attributes."""
+        ContentHandler.__init__(self) 
         self.inTeam = False
         self.inHomeTeam = False
         self.inPlayer = False
@@ -51,6 +57,7 @@ class MatchInformationParser(xml.sax.handler.ContentHandler):
                 self.match['guest'] = teamID
             else:
                 raise NameError("Couldn't determine role")
+
         elif name == 'player':
             self.inPlayer = True
 
@@ -82,17 +89,18 @@ class MatchInformationParser(xml.sax.handler.ContentHandler):
             self.inTeam = False
         elif name == 'player':
             self.inPlayer = False
-    
+
     def getTeamInformation(self):
         """Extractor function."""
         return self.teams, self.match
-    
+
     def run(self, fname):
         """Runs the parse on fname."""
-        parser = xml.sax.make_parser()
+        print('Start reading in match information')
+        parser = make_parser()
         parser.setContentHandler(self)
         # prevent external DTD load
-        parser.setFeature(xml.sax.handler.feature_external_ges, False)
+        parser.setFeature(feature_external_ges, False)
         parser.parse(fname)
         print('finished parsing match information')
 
@@ -100,14 +108,22 @@ class MatchInformationParser(xml.sax.handler.ContentHandler):
 def read_in_position_data(fname):
     """Reads in a pos file and extract the ball/player data
     Args:
+		fname: name of the position data file.
     Returns:
+		tuple with four entries:
+		[0] = data for home team
+		[1] = data for guest team
+		[2] = data for ball
+		[3] = half time index
     """
+
+    print('Start reading in position data...')
 
     # MAGIC NUMBERS
     _MISSING_ = -10000.0
     NO_PLAYER = 11
     NO_DIM = 3      # FRAME, X, Z
-    NO_DIM_BALL = 6     # FRAME, X, Y, Z, POSSESSION, STATUS
+    # NO_DIM_BALL = 6     # FRAME, X, Y, Z, POSSESSION, STATUS
 
     no_frames = sum([1 for f in open(fname)])
 
@@ -118,7 +134,7 @@ def read_in_position_data(fname):
 
     def process_player(player):
         """Extracts information from player-pos string.
-	
+
             Simple routines to just split up the string.
             Args:
                 player: String from pos file.
@@ -154,6 +170,7 @@ def read_in_position_data(fname):
         status = float(ball_data[4])
         ball[i,:] = [frame,x,y,z,poss,status]
 
+    print('finished.')
     return home_team, guest_team, ball, half_time_id
 
 def split_positions_into_game_halves(pos,ht,ball):
@@ -193,7 +210,7 @@ def sort_position_data(pos,id=1):
 
 def read_stadium_dimensions_from_pos(fname):
     """Gets the stadium specifications from the pos file.
-    
+
         Args:
             fname: name of position file including path.
         Returns:
@@ -211,7 +228,8 @@ def combine_position_with_role(pos, team):
     """Combines the position data with the players role and pid data.
 
         Args:
-            pos: Position data as obtained thorugh the read_in_position_data_chain.
+            pos: Position data as obtained thorugh the
+                 read_in_position_data_chain.
             team: Team specifications as obtained from MatchInformationParser.
         Returns:
     """
@@ -231,12 +249,21 @@ def combine_position_with_role(pos, team):
 
 def run(data_path, fname_specs, fname_pos):
     """Driver function to run data loading.
-    
+
         Args:
             data_path: path to folder with files
             fname_specs: matchfacts file
             fname_pos: position data file.
         Returns:
+          pos_data: position data struct with keys ['home','guest']
+                    with sub struct ['1st','2nd'] for game halves
+                    containing list with player entries.
+                    [0]: player id
+                    [1]: numpy array with frame, x, y data
+                    [1]: player role
+          ball: numpy array containing the ball data
+          match: 
+          teams: 
     """
     # sanity check
     fname_1 = fname_specs.split('-')[2].split('.')[0]
@@ -247,14 +274,16 @@ def run(data_path, fname_specs, fname_pos):
     mip = MatchInformationParser()
     mip.run(data_path + fname_specs)
     teams, match = mip.getTeamInformation()
-    match['stadium'] = read_stadium_dimensions_from_pos(data_path + fname_pos)
+    match['stadium'] = read_stadium_dimensions_from_pos(
+            data_path + fname_pos)
     home, guest, ball, half_time_id = read_in_position_data(data_path + fname_pos)
 
     def process_teams(team,type):
         """Just to work through the team data."""
         periods = split_positions_into_game_halves(team,half_time_id,ball)
         periods_sorted = [sort_position_data(p) for p in periods]
-        position_arr = [combine_position_with_role(ps,teams[type]) for ps in periods_sorted]
+        position_arr = [combine_position_with_role(ps,teams[type])
+                            for ps in periods_sorted]
         return position_arr
 
     home_data = process_teams(home,'home')

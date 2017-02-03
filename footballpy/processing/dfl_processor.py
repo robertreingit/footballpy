@@ -9,7 +9,7 @@ Created on Thu Jun 18 23:54:17 2015
 
 from __future__ import print_function
 import numpy as np
-import ragged_array as ra
+import footballpy.processing.ragged_array as ra
 
 """ Ranking dictionary necessary to determine the column number
     of each player.

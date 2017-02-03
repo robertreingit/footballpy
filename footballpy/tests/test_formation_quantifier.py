@@ -17,6 +17,11 @@ class TestReshapePosData(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.__test_pos = np.ones((100,11,3))
+        tmp1 = np.arange(22)
+        tmp1.shape = (1,22)
+        tmp2 = np.ones((100,1)).dot(tmp1)
+        tmp2.shape = (100,11,2)
+        cls.__test_pos[:,:,1:3] = tmp2
         cls.__test_ball = np.ones((100,6))
         cls.__test_ball[10,4] = -13
         cls.__test_ball[15,5] = -23
@@ -40,3 +45,10 @@ class TestReshapePosData(unittest.TestCase):
         self.assertEqual(res[15,2], -23)
         self.assertTrue(np.all(res[50:,3] == 2))
 
+    def test_correct_positiondata(self):
+        """
+        """
+        res = fq.reshape_pos_data(TestReshapePosData.__test_pos,
+            TestReshapePosData.__test_ball, TestReshapePosData.__test_half)
+        self.assertTrue(np.all(res[:,10:12] == (6,7)))
+        self.assertTrue(np.all(res[:,12:14] == (8,9)))

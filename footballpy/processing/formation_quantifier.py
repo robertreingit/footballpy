@@ -43,7 +43,8 @@ def reshape_pos_data(pos_data, ball, game):
 
     new_pos = pos_data.copy()
     new_pos.shape = (no_frames, second_dim)
-    new_pos = np.delete(new_pos, slice(0, second_dim, 3), axis=1) # throw away trikot numbers
+    # throw away trikot numbers
+    new_pos = np.delete(new_pos, slice(0, second_dim, 3), axis=1) 
     new_pos = np.hstack((frames, game_status, game_half, new_pos))
     return new_pos
 

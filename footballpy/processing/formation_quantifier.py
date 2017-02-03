@@ -88,8 +88,8 @@ def determine_cutting_frames(pos_data):
 
     # cutting points according to game status
     max_frame = pos_data.shape[0]-1
-    status_cts = get_pts(pos_data[:, 2])
     poss_cts = get_pts(pos_data[:, 1])
+    status_cts = get_pts(pos_data[:, 2])
     half_cts = get_pts(pos_data[:, 3])
     cut_pts = np.unique(np.concatenate([[0], status_cts, half_cts, poss_cts, [max_frame]]))
     return cut_pts
@@ -128,7 +128,7 @@ def segment_into_time_slices(segments, win_size=125):
     for (i, segment) in enumerate(segments):
         # determine the number of time slices
         no_frames = segment.shape[0]
-        no_slices = no_frames/win_size + 1
+        no_slices = no_frames//win_size + 1
         # interate over each slice
         for sl in range(no_slices):
             start = sl*win_size
@@ -142,7 +142,7 @@ def segment_into_time_slices(segments, win_size=125):
     return time_slices, possession_status
 
 if __name__ == '__main__':
-    home_reshaped = reshape_pos_data(home, ball, game)
+    home_reshaped = reshape_pos_data(home, ball, ht)
     home_s = rescale_global_matrix(home_reshaped, stadium)
     cutting_frames = determine_cutting_frames(home_s)
     home_segments = segment_position_data(home_s, cutting_frames)

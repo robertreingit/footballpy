@@ -43,6 +43,7 @@ class TestReshapePosData(unittest.TestCase):
             TestReshapePosData.__test_ball, TestReshapePosData.__test_half)
         self.assertEqual(res[10,1], -13)
         self.assertEqual(res[15,2], -23)
+        self.assertTrue(np.all(res[:50,3] == 1))
         self.assertTrue(np.all(res[50:,3] == 2))
 
     def test_correct_positiondata(self):

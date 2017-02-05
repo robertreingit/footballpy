@@ -55,7 +55,7 @@ class TestReshapePosData(unittest.TestCase):
         self.assertTrue(np.all(res[:,12:14] == (8,9)))
 
 class TestsRescaleMatrix(unittest.TestCase):
-    """Unit test class for the rescale_global_matrix function."
+    """Unit test class for the rescale_global_matrix function.
     """
     def test_rescaling(self):
         test_case = np.ones((10,26))
@@ -67,4 +67,32 @@ class TestsRescaleMatrix(unittest.TestCase):
         # Testing scaling
         self.assertTrue(np.all(np.all(res[:,4::2] == 2.0)))
         self.assertTrue(np.all(np.all(res[:,5::2] == 3.0)))
+
+class TestDetermineCuttingFrames(unittest.TestCase):
+    """Unit test class for the determine_cutting_frames function.
+    """
+    @classmethod
+    def setUpClass(cls):
+        cls.__testdata = np.ones((50, 26))
+
+    def test_half_time(self):
+        """
+        """
+        testMatrix = TestDetermineCuttingFrames.__testdata.copy()
+        testMatrix[25:, 3] = 2
+        res = fq.determine_cutting_frames(testMatrix)
+        self.assertTrue(np.all((0, 25, 49) == res))
+
+    def test_possession(self):
+        """
+        """
+        testMatrix = TestDetermineCuttingFrames.__testdata.copy()
+        testMatrix[:, 1] = 0.0
+        testMatrix[5:10, 1] = 1
+        testMatrix[22:27, 1] = 1
+        res = fq.determine_cutting_frames(testMatrix)
+        test_vector = np.array([0, 5, 10, 22, 27, 49])
+        print(res)
+        print(test_vector)
+        self.assertTrue(np.all(test_vector == res))
 

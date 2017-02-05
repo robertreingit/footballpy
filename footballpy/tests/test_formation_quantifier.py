@@ -53,3 +53,18 @@ class TestReshapePosData(unittest.TestCase):
             TestReshapePosData.__test_ball, TestReshapePosData.__test_half)
         self.assertTrue(np.all(res[:,10:12] == (6,7)))
         self.assertTrue(np.all(res[:,12:14] == (8,9)))
+
+class TestsRescaleMatrix(unittest.TestCase):
+    """Unit test class for the rescale_global_matrix function."
+    """
+    def test_rescaling(self):
+        test_case = np.ones((10,26))
+        test_case[:,:4] = -13.0
+        test_specs = { 'length': 4.0, 'width': 6.0 }
+        res = fq.rescale_global_matrix(test_case, test_specs)
+        # Testing meta-data untouched
+        self.assertTrue(np.all(np.all(res[:,:4] == -13.0)))
+        # Testing scaling
+        self.assertTrue(np.all(np.all(res[:,4::2] == 2.0)))
+        self.assertTrue(np.all(np.all(res[:,5::2] == 3.0)))
+

@@ -102,7 +102,8 @@ def segment_position_data(pos_data, cut_pts):
             cut_pts: list containing the cutting points required to
                      segment the data.
         Returns:
-            A list with individual position data segments for analysis.
+            A list with individual position data segments for analysis. The first
+            and the last segment are thrown away.
     """
     segments = [None]*(len(cut_pts)-1)
     for (i, j) in enumerate(cut_pts[:-1]):

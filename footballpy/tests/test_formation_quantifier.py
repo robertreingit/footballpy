@@ -92,7 +92,32 @@ class TestDetermineCuttingFrames(unittest.TestCase):
         testMatrix[22:27, 1] = 1
         res = fq.determine_cutting_frames(testMatrix)
         test_vector = np.array([0, 5, 10, 22, 27, 49])
-        print(res)
-        print(test_vector)
         self.assertTrue(np.all(test_vector == res))
 
+class TestSegmentPositionData(unittest.TestCase):
+    """Unit test class for the segment_position_data function.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        test_cutting_pts = (0, 10, 12, 19, 25, 45)
+        test_array = np.ones((45,3))
+        test_array[10:12,:] = 2.0
+        test_array[12:19,:] = 3.0
+        test_array[19:25,:] = 4.0
+        test_array[25:,:] = 5.0
+        cls.__pos_data = test_array
+        cls.__cut_pts = test_cutting_pts
+
+    def test_segmentation_length(self):
+        res = fq.segment_position_data(
+                TestSegmentPositionData.__pos_data,
+                TestSegmentPositionData.__cut_pts)
+        self.assertEqual(len(res), len(TestSegmentPositionData.__cut_pts)-3)
+
+    def test_segmentation_content(self):
+        res = fq.segment_position_data(
+            TestSegmentPositionData.__pos_data,
+            TestSegmentPositionData.__cut_pts)
+        for i, segment in enumerate(res):
+            self.assertTrue(np.all(np.all(segment == i+2.0)))

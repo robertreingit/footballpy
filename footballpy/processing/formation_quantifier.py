@@ -120,9 +120,8 @@ def segment_into_time_slices(segments, win_size=125):
             segments: A list with game phases.
             win_size: Number of frames for time slice, default=125
         Returns:
-            List with continuously stream of time slices. The last
-            matrix entries specifies form which possession phase
-            this segment came from.
+            A touple with a list with subsequent time slices and 
+            vector which indicates ball possession {1 = home, 2 = guest}
     """
     # iterate through each individual segment
     time_slices = []
@@ -137,11 +136,11 @@ def segment_into_time_slices(segments, win_size=125):
             stop = min((sl+1)*win_size, no_frames)
             if start < stop:
                 win = slice(sl*win_size, min((sl+1)*win_size, no_frames))
-                possession = segment[sl,1]
+                possession = segment[win.start,1]
                 possession_status.append(possession)
                 av_formation = np.mean(segment[win, 4:], axis=0)
                 time_slices.append(np.concatenate([segment[0, :4], av_formation, [i+1]]))
-    return time_slices, possession_status
+    return time_slices, np.array(possession_status)
 
 if __name__ == '__main__':
     home_reshaped = reshape_pos_data(home, ball, ht)

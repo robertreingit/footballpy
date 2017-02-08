@@ -121,3 +121,32 @@ class TestSegmentPositionData(unittest.TestCase):
             TestSegmentPositionData.__cut_pts)
         for i, segment in enumerate(res):
             self.assertTrue(np.all(np.all(segment == i+2.0)))
+
+class TestSegmentIntoTimeSlices(unittest.TestCase):
+    """Unit test class for the segment_into_time_slices function.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        sl1 = np.ones((5,5))
+        sl1[:,1] = 1
+        sl2 = np.ones((7,5))
+        sl2[:,1] = 2
+        test_slices = [sl1, sl2]
+        cls.__slices = test_slices
+    
+    def test_slice_size(self):
+        res_slice, res_possession = fq.segment_into_time_slices(
+                TestSegmentIntoTimeSlices.__slices, 3)
+        self.assertEqual(len(res_slice), 5)
+
+
+    def test_slice_possession(self):
+        res_slice, res_possession = fq.segment_into_time_slices(
+                TestSegmentIntoTimeSlices.__slices, 3)
+        print(res_slice)
+        print('-'*10)
+        print(res_possession)
+        self.assertTrue(np.all(res_possession[:2] == 1))
+        self.assertTrue(np.all(res_possession[2:] == 2))
+

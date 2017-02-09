@@ -19,7 +19,6 @@ class TestGetTeamCentroid(unittest.TestCase):
         testData[:,0::2] = 10.0
         testData[:,1::2] = 20.0
         res = gr.get_team_centroid(testData)
-        print res
         self.assertTrue(np.all(res[:,0] == 10.0))
         self.assertTrue(np.all(res[:,1] == 20.0))
 

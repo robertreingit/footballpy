@@ -1,6 +1,9 @@
 # -*- encoding: utf-8 -*-
 """
 A collection of functions to perform groups statistics on position data.
+
+@author: Robert Rein
+@version: 0.1
 """
 import numpy as np
 

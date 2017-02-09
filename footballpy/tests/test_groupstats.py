@@ -32,6 +32,5 @@ class TestGetTeamCentroid(unittest.TestCase):
         testData[7,4] = np.NaN
         testData[8,7] = np.NaN
         res = gr.get_team_centroid(testData)
-        print res
         self.assertTrue(np.all(res[:,0] == 13.3))
         self.assertTrue(np.all(res[:,1] == 27.1))

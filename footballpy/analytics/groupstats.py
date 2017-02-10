@@ -37,7 +37,6 @@ def get_team_length_and_width(pos_data):
             width [:,1].
     """
     no_frames = pos_data.shape[0]
-    print(no_frames)
     res = np.zeros((no_frames,2))
     res[:,0] = np.max(pos_data[:, 0::2], 1) - np.min(pos_data[:, 0::2], 1)
     res[:,1] = np.max(pos_data[:, 1::2], 1) - np.min(pos_data[:, 1::2], 1)

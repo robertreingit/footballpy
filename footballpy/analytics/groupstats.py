@@ -31,7 +31,7 @@ def get_team_length_and_width(pos_data):
         European Journal of Sport Science, 11(4), 215-223. 
 
         Args:
-            pos_data: numpy marix (x X 22) of x-y position data
+            pos_data: numpy martix (no_frames X 22) of x-y position data
         Returns:
             Matrix (x X s) containing the length [:,0] and
             width [:,1].
@@ -40,4 +40,23 @@ def get_team_length_and_width(pos_data):
     res = np.zeros((no_frames,2))
     res[:,0] = np.max(pos_data[:, 0::2], 1) - np.min(pos_data[:, 0::2], 1)
     res[:,1] = np.max(pos_data[:, 1::2], 1) - np.min(pos_data[:, 1::2], 1)
+    return res
+
+def get_team_surface(pos_data):
+    """Calculates the team surface using the convex hull.
+
+        Again follows the routines descibed in Frencken et al. (2011).
+        Uses the scipy.spatial.ConvexHull function to calculate the
+        area.
+
+        Args:
+            pos_data: numpy matrix (no_frames x 22) of x-y position data.
+        Returns:
+            Vector containing the area for each frame.
+    """
+    from scipy.spatial import ConvexHull
+    no_frames = pos_data.shape[0]
+    res = np.zeros(no_frames, dtype='float64')
+    for i in np.arange(no_frames):
+        res[i] = ConvexHull(pos_data[i,:].reshape((11,2))).area
     return res

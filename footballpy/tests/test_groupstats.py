@@ -58,3 +58,16 @@ class TestTeamLengthWidth(unittest.TestCase):
         res = gr.get_team_length_and_width(testData)
         self.assertTrue(np.all(res[:,1] == test_y))
 
+class TestTeamSurface(unittest.TestCase):
+    """Unit test class for the get_team_surface function.
+    """
+
+    def test_correct_area(self):
+        testData = np.random.rand(10,22)
+        testData[:, :2] = (-2, 2)
+        testData[:, 2:4] = (-2, -2)
+        testData[:, 4:6] = (2, 2)
+        testData[:, 6:8] = (2, -2)
+        res = gr.get_team_surface(testData)
+        self.assertTrue(np.all(res == 16))
+

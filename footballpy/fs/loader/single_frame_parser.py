@@ -123,18 +123,21 @@ class FloodArray:
         current_row: running counter storing current position
     """
 
-    def __init__(self,max_rows=10000,no_cols=4):
+    def __init__(self, max_rows=10000, no_cols=4, expand_step=1000):
         """ Constructor method.
 
         Args:
             max_rows: number of rows { default: 10000 }
-            no_cols: = number of columns { default: 4}
+            no_cols: number of columns { default: 4}
+            expand_step: number of rows the matrix is expanded when maximum
+                      row size is reached. { default: 1000 }
         Returns:
             Nothing
         """
         self.max_rows = max_rows
+        self.expand = expand_step 
         self.no_cols = no_cols
-        self.array = -13*np.ones((max_rows,no_cols))
+        self.array = -13 * np.ones((max_rows, no_cols))
         self.current_row = 0
 
     def push(self, data):
@@ -145,6 +148,9 @@ class FloodArray:
         Returns:
             Nothing
         """
+        if self.current_row + 2 == self.max_rows:
+            no_rows, no_cols = self.array.shape
+            self.array.resize((no_rows + self.expand, no_cols), refcheck=False)
         self.array[self.current_row,:] = data
         self.current_row += 1
 
@@ -155,7 +161,7 @@ class FloodArray:
         Returns:
             A numpy matrix containing the data.
         """
-        return self.array[:self.current_row,:]
+        return self.array[:self.current_row,:].copy()
 
 
 def process_line(line):

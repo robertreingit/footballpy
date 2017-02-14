@@ -166,8 +166,9 @@ class FloodArray:
 
 def process_line(line):
     """ Processes a single line from a put file.
-    Args:
-    Returns:
+        Broken, relies on global variables. No-no!!!!
+        Args:
+        Returns:
     """
     frame_specs,players,ball = line.split('#')
     # processing player
@@ -178,15 +179,17 @@ def process_line(line):
         x = float(xs)
         y = float(ys)
         pid = pid[1:]
+        """
         if pid in guest_col_id.keys():
             guest_res[guest_col_id[pid]].push(np.array([frame,x,y,0.0]))
         else:
             home_res[home_col_id[pid]].push(np.array([frame,x,y,0.0]))
+        """
     # processing ball
     xs,ys,zs = ball.split(',')[:3]
     x = float(xs)
     y = float(ys)
     z = float(zs)
-    ball_res.push(np.array([frame,x,y,z]))
+    return np.array([frame,x,y,z])
 
 

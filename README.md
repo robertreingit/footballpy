@@ -5,7 +5,7 @@
 A collection of Python functions to analyse football (as soccer) positional data.
 At the moment only functionality to read in different raw position files is implemented but additional functions are been added on a as needed basis.
 
-At present the libraray is tested against Python 2.7 and 3.5.
+The library supports Python versions 2.7 and 3.5.
 
 ## Supported file types:
 

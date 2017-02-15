@@ -7,23 +7,26 @@ single_frame_parser: Loads the raw position data and game data using
 @license: MIT
 @version: 0.1
 """
-import xml.sax, xml.sax.handler
 import numpy as np
+from xml.sax import make_parser, ContentHandler
 import os
 
 def get_data_files(folder):
     """Determines the position data files.
     Args:
+    	folder: folder containing the position data files.
     Returns:
+    	The names of the position data files and the maximum number of
+	frames in a 2-tuple.
     """
-    raw_pos_files = [f for f in os.listdir(data_folder) if f.startswith('Put')]
+    raw_pos_files = [f for f in os.listdir(folder) if f.startswith('Put')]
     raw_pos_files.sort()
     no_files = len(raw_pos_files)
     max_no_frames = no_files * 25
     return raw_pos_files, max_no_frames
 
 
-class GameStatsParser(xml.sax.handler.ContentHandler):
+class GameStatsParser(ContentHandler):
     """A XML parser for the game stats xml file.
 
     The parser pulls out the information about the teams, including
@@ -36,7 +39,7 @@ class GameStatsParser(xml.sax.handler.ContentHandler):
         self.match = {'stadium': {'length': 111.0, 'width': 88.0 },
                         'home': '', 'guest': '' }
     
-    def startElement(self,name,attrs):
+    def startElement(self, name, attrs):
         if name ==  "Team":
             role = attrs['sType']
             teamID = attrs['iTeamId']
@@ -63,20 +66,20 @@ class GameStatsParser(xml.sax.handler.ContentHandler):
             else:
                 self.teams['guest'].append(player)
 
-    def endElement(self,name):
+    def endElement(self, name):
         if name == "Lineup":
             self.inLineup = False
 
     def getTeamInformation(self):
         return self.teams, self.match
 
-    def run(self,name):
-        parser = xml.sax.make_parser()
+    def run(self, name):
+        parser = make_parser()
         parser.setContentHandler(self)
         parser.parse(fname)
 
 
-class PositionFileParser(xml.sax.handler.ContentHandler):
+class PositionFileParser(ContentHandler):
     """A XML Parser for a PutPositionalDataRequest file.
 
     Parses out the position data.
@@ -87,11 +90,11 @@ class PositionFileParser(xml.sax.handler.ContentHandler):
         self.counter = 0
         self.line = ''
 
-    def startElement(self,name,attrs):
+    def startElement(self, name, attrs):
         if name == "Positions":
             self.inPosition = True
     
-    def characters(self,data):
+    def characters(self, data):
         if self.inPosition:
             if not data or (data == "\n") or (data == ']'):
                 return
@@ -101,12 +104,12 @@ class PositionFileParser(xml.sax.handler.ContentHandler):
                 return
             process_line(data)
 
-    def endElement(self,name):
+    def endElement(self, name):
         if name == "Positions":
             self.inPosition = False
 
-    def run(self,fname):
-        parser = xml.sax.make_parser()
+    def run(self, fname):
+        parser = make_parser()
         parser.setContentHandler(self)
         parser.parse(fname)
 
@@ -179,7 +182,7 @@ def process_line(line):
     # result dictionary
     pos_data = {}
 
-    frame_specs,players,ball = line.split('#')
+    frame_specs, players,ball = line.split('#')
     # extracting frame counter
     frame = int(frame_specs.split(',')[0])
     pos_data['frame'] = frame

@@ -168,17 +168,30 @@ def process_line(line):
     """ Processes a single line from a put file.
         Broken, relies on global variables. No-no!!!!
         Args:
+            line: A string containing the one line of data. CDATA is
+                  already cleaned out.
         Returns:
+            Tuples with player_res is a dictionary containing a mapping
+            from player ids to (x,y)-position tuples. Ball data is return
+            in the second column as a numpy array containing:
+
     """
+    # result dictionary
+    pos_data = {}
+
     frame_specs,players,ball = line.split('#')
+    # extracting frame counter
+    frame = int(frame_specs.split(',')[0])
+    pos_data['frame'] = frame
     # processing player
-    frame = float(frame_specs.split(',')[0])
+    # filtering out all entries starting with p which is the
+    # indicator for a player. Player entries are separated by ";".
     players = filter(lambda x: x.startswith('p'), players.split(';'))
     for player in players:
         pid,xs,ys,vels = player.split(',')
         x = float(xs)
         y = float(ys)
-        pid = pid[1:]
+        pos_data[pid] = (x,y)
         """
         if pid in guest_col_id.keys():
             guest_res[guest_col_id[pid]].push(np.array([frame,x,y,0.0]))
@@ -189,7 +202,7 @@ def process_line(line):
     xs,ys,zs = ball.split(',')[:3]
     x = float(xs)
     y = float(ys)
-    z = float(zs)
-    return np.array([frame,x,y,z])
+    pos_data['ball'] = (x,y)
+    return pos_data
 
 

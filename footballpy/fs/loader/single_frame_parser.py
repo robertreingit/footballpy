@@ -98,10 +98,14 @@ class PositionFileParser(ContentHandler):
         if self.inPosition:
             if not data or (data == "\n") or (data == ']'):
                 return
+            # cut out CDATA part
             if data.startswith('CDATA'):
                 data = data[6:]
+            # if remaining parts starts with
+            # -1 than game is not running yet.
             if data.startswith('-1'):
                 return
+            # TODO store data in structure
             process_line(data)
 
     def endElement(self, name):
@@ -185,7 +189,6 @@ def process_line(line):
     frame_specs, players,ball = line.split('#')
     # extracting frame counter
     frame = int(frame_specs.split(',')[0])
-    pos_data['frame'] = frame
     # processing player
     # filtering out all entries starting with p which is the
     # indicator for a player. Player entries are separated by ";".
@@ -194,7 +197,7 @@ def process_line(line):
         pid,xs,ys,vels = player.split(',')
         x = float(xs)
         y = float(ys)
-        pos_data[pid] = (x,y)
+        pos_data[pid] = (frame, x,y)
         """
         if pid in guest_col_id.keys():
             guest_res[guest_col_id[pid]].push(np.array([frame,x,y,0.0]))
@@ -205,7 +208,7 @@ def process_line(line):
     xs,ys,zs = ball.split(',')[:3]
     x = float(xs)
     y = float(ys)
-    pos_data['ball'] = (x,y)
+    pos_data['ball'] = (frame, x,y)
     return pos_data
 
 

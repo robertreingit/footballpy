@@ -86,15 +86,15 @@ class MatchInformationParser(ContentHandler):
 
 
 def convertTime(tstring):
-    """ Converts time stamps into datetimes.
+    """Converts time stamps into datetimes.
     
-    convertTime converts the time string into a datetime.datetime
-    object with added timezone information.
-    
-    Args:
-        tstring: timestamp string
-    Returns:
-        A datetime object representing the timestamp.
+        convertTime converts the time string into a datetime.datetime
+        object with added timezone information.
+        
+        Args:
+            tstring: timestamp string
+        Returns:
+            A datetime object representing the timestamp.
     """    
     return dup.parse(tstring) 
 
@@ -103,12 +103,24 @@ class Substitution:
     """
     A simple wrapper object for substitution events.
     """
-    def __init__(self,time,teamID, pin,pout,position):
+    def __init__(self, time, teamID, pin, pout, position, hid = None):
         self.time = time
         self.teamID = teamID
         self.pin = pin
         self.pout = pout
         self.position = position
+        self.halftime = hid
+
+    def update_halftime(self, play_time):
+        """Updates the halftime index.
+
+            Args:
+            Returns:
+        """
+        if self.time > play_time['secondHalf'][0]: 
+            self.halftime = 2
+        else:
+            self.halftime = 1
     
     def __repr__(self):
         return ('%s: %s= ->%s - %s->, %s' %  
@@ -135,7 +147,7 @@ class MatchEventParser(ContentHandler):
             pout = attrs['PlayerOut']
             position = attrs['PlayingPosition']
             stime = convertTime(self.eventTime)
-            sub = Substitution(stime,teamID,pin,pout,position)
+            sub = Substitution(stime, teamID, pin, pout, position)
             self.subs.append(sub)            
         elif name == "KickoffWhistle":
             section = attrs['GameSection']
@@ -283,11 +295,18 @@ class MatchPositionParser(ContentHandler):
             The player position data and the ball data.
         """
         return self.position_data, self.ball, self.timeStamps
-        
+
+def correct_substitions():
+    """Correct position data overlap during substitions.
+
+        Args:
+        Returns:
+    """
+
 #######################################
 if __name__ == "__main__":
     
-    data_path = "./test/dfl/"
+    data_path = "footballpy/testfiles/dfl/"
     fname = 'test.xml'
     
     print("Parsing match information")

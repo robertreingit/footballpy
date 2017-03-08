@@ -90,7 +90,7 @@ class TestMatchPosition(unittest.TestCase):
         self.assertEqual(len(guest_1st),3)
         self.assertEqual(len(guest_2nd),4)
         self.assertEqual(len(home_1st),3)
-        self.assertEqual(len(home_2nd),4)
+        self.assertEqual(len(home_2nd),5)
 
     def test_xy_data(self):
         # Testing guest data
@@ -126,6 +126,25 @@ class TestSanity(unittest.TestCase):
         print(TestSanity._timestamps)
         self.assertEqual(TestSanity._timestamps[0][0],TestSanity._play_time['firstHalf'][0])
 
+class TestSubstition(unittest.TestCase):
+    """Unit test for substition events.
+    """
+    def setUp(self):
+        mep = dfl_parser.MatchEventParser()
+        mep.run('./footballpy/testfiles/dfl/EventData/test.xml')
+        self.play_time, self.subs = mep.getEventInformation()
+        for sub in self.subs:
+            sub.update_halftime(self.play_time)
+
+    def testNumberOfSubstitions(self):
+        self.assertEqual(len(self.subs), 2)
+
+    def testSubstitutionIds(self):
+        self.assertEqual(self.subs[0].pin, "DFL-OBJ-a00004")
+        self.assertEqual(self.subs[0].pout, "DFL-OBJ-a00003")
+
+    def testHalftime(self):
+        self.assertEqual([s.halftime for s in self.subs], [2,2])
 
 if __name__ == '__main__':
     unittest.main()

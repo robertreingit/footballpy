@@ -50,3 +50,12 @@ class TestProcessLine(unittest.TestCase):
         self.assertEqual(players['p21'], (10008, 33.50, 4.45))
         self.assertEqual(players['p26'], (10008, -21.25, 6.65))
 
+class TestGetDataFiles(unittest.TestCase):
+    """Unit tests for the get_data_folder function.
+    """
+
+    def test_file_count(self):
+        test_folder = 'footballpy/testfiles/single/'
+        (res_files, res_frames) = sp.get_data_files(test_folder)
+        self.assertEqual(len(res_files), 2)
+

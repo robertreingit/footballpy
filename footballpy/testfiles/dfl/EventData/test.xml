@@ -13,5 +13,8 @@
 	</Event>
 	<Event EventTime="2015-05-16T16:32:40.640+02:00" EventId="7589330016000616" InternalMatchId="DFL-MAT-1234AB">
 		<FinalWhistle GameSection="secondHalf" FinalResult="2:1" BreakingOff="false"/>
-	</Event>	
+	</Event>
+	<Event EventTime="2015-05-16T16:32:40.480+02:00" EventId="7589330016000459" InternalMatchId="DFL-MAT-1234AB">
+		<Substitution Team="DFL-ABC-12345A" PlayerIn="DFL-OBJ-a00006" PlayerOut="DFL-OBJ-a00002" PlayingPosition="RV"/>
+	</Event>
 </PutDataRequest>

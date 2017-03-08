@@ -142,6 +142,20 @@ def segment_into_time_slices(segments, win_size=125):
                 time_slices.append(np.concatenate([segment[0, :4], av_formation, [i+1]]))
     return time_slices, np.array(possession_status)
 
+def run(pos_data, ball_data, ht, stadium):
+    """Simplifying API routine to call functions as intended.
+
+        Args:
+        Returns:
+    """
+    pos_data_reshaped = reshape_pos_data(home, ball, ht)
+    pos_data_rescaled = rescale_global_matrix(pos_data_reshaped, stadium)
+    cutting_frames = determine_cutting_frames(pos_data_rescaled)
+    segments = segment_position_data(pos_data_rescaled, cutting_frames)
+    slices, possession_slices = segment_into_time_slices(segments)
+    return slices, possession_slices
+
+
 if __name__ == '__main__':
     home_reshaped = reshape_pos_data(home, ball, ht)
     home_s = rescale_global_matrix(home_reshaped, stadium)

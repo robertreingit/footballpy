@@ -14,6 +14,15 @@ import numpy as np
 class TestGetTeamCentroid(unittest.TestCase):
     """Unit test class for the get_team_centroid function.
     """
+
+    def test_correct_shape(self):
+        testData = np.ones((10,22))
+        testData[:,0::2] = 10.0
+        testData[:,1::2] = 20.0
+        res = gr.get_team_centroid(testData)
+        self.assertTrue(np.all((10, 2) == res.shape))
+
+
     def test_correctedness_with_good_matrix(self):
         testData = np.ones((10,22))
         testData[:,0::2] = 10.0
@@ -70,4 +79,21 @@ class TestTeamSurface(unittest.TestCase):
         testData[:, 6:8] = (2, -2)
         res = gr.get_team_surface(testData)
         self.assertTrue(np.all(res == 16))
+
+class TestStretchIndex(unittest.TestCase):
+    """Unit test class for the stretch_index function.
+    """
+    def setUp(self):
+        self.no_frames = 10
+        arr = np.array([[1.0, 1.0, 3.0, 1.0, 1.0, 3.0, 3.0, 3.0]])
+        self.testData = np.repeat(arr, 10, axis=0)
+
+    def test_correct_shape(self):
+        res = gr.get_stretch_index(self.testData)
+        self.assertTrue(np.all(res.shape == (self.no_frames, 1)))
+
+    def test_correct_SI(self):
+        res = gr.get_stretch_index(self.testData)
+        self.assertTrue(np.all(res == np.sqrt(2.0)))
+
 

@@ -60,3 +60,26 @@ def get_team_surface(pos_data):
     for i in np.arange(no_frames):
         res[i] = ConvexHull(pos_data[i,:].reshape((11,2))).area
     return res
+
+def get_stretch_index(pos_data):
+    """Calculates the team's stretch index following:
+        Silva, Travassos, Vilar, Aguiar, Davids, Araújo & Gargata (2014),
+        Numerical Relations and Skill Level Constraint Co-Adaptie Behaviors
+        of Agents in Sport Teams, PlosONE, 9(9):e107112
+
+        Args:
+            pos_data: numpy matrix (no_frames x X) of x-y position data.
+        Returns:
+    """
+    no_frames, no_player = pos_data.shape
+    no_player = no_player // 2
+    centroid = get_team_centroid(pos_data)
+    centroid_exp = np.repeat(centroid, no_player, axis=1)
+    tmp = np.zeros((no_frames, no_player))
+    for p in np.arange(no_player):
+        tmp[:,p] = np.sqrt(np.sum((pos_data[:, (p*2):((p+1)*2)] - centroid)**2, axis=1))
+    si = np.mean(tmp, axis=1)
+    si.shape = (no_frames, 1)
+    return si
+
+    

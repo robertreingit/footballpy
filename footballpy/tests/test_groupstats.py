@@ -96,4 +96,27 @@ class TestStretchIndex(unittest.TestCase):
         res = gr.get_stretch_index(self.testData)
         self.assertTrue(np.all(res == np.sqrt(2.0)))
 
+class TestTeamRanges(unittest.TestCase):
+    """Unit test class for the get_team_ranges function.
+    """
 
+    def setUp(self):
+        self.no_players = 5
+        self.no_frames = 10
+        arr = np.ones((self.no_frames, self.no_players * 2))
+        arr[0, :] = 10.0
+        arr[1, :] = 3.0
+        arr[2, :] = 10.0
+        self.testData = arr
+        self.res = gr.get_team_ranges(self.testData)
+    
+    def test_correct_shape(self):
+        self.assertTrue(np.all(self.res.shape == (self.no_players, 4)))
+
+    def test_correct_midpoint(self):
+        test_val = np.mean(self.testData[:,1])
+        self.assertTrue(np.all(self.res[:,:2] == test_val))
+
+    def test_correct_std(self):
+        test_val = np.std(self.testData[:,1])
+        self.assertTrue(np.all(self.res[:,2:] == test_val))

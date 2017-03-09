@@ -82,4 +82,18 @@ def get_stretch_index(pos_data):
     si.shape = (no_frames, 1)
     return si
 
-    
+def get_team_ranges(pos_data):
+    """Calculates the player's ranges following:
+        Silva, Travassos, Vilar, Aguiar, Davids, Araújo & Gargata (2014),
+        Numerical Relations and Skill Level Constraint Co-Adaptie Behaviors
+        of Agents in Sport Teams, PlosONE, 9(9):e107112
+
+        Args:
+            pos_data: numpy matrix (no_players x 4) of mid_x, mid_y, std_x, std_y
+        Returns:
+    """
+    no_frames, no_players = pos_data.shape
+    no_players = no_players // 2
+    mid = np.mean(pos_data, axis=0)
+    std = np.std(pos_data, axis=0)
+    return np.hstack((mid.reshape((no_players, 2)), std.reshape((no_players, 2))))

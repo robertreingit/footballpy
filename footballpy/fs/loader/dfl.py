@@ -215,7 +215,7 @@ class MatchPositionParser(ContentHandler):
             self.currentID = attrs['PersonId']
             self.gameSection = attrs["GameSection"]
             self.teamID = attrs['TeamId']
-            if self.teamID == "Ball":
+            if self.teamID.upper() == "BALL":
                 self.isBall = True
                 print("Ball")
             print(self.currentID)

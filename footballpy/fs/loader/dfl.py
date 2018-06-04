@@ -334,11 +334,9 @@ if __name__ == "__main__":
     mep.run(fname_info)
     play_time, subs = mep.getEventInformation()
     
-    """
     print("Parsing position data")
     mpp = MatchPositionParser(match,teams)
     fname_pos = data_path + "/ObservedPositionalData/" + fname
     mpp.run(fname_pos)
     pos_data,ball_data,timestamps = mpp.getPositionInformation()
-    """
     

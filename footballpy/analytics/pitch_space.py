@@ -35,6 +35,20 @@ def create_pitch_grid(pitch, side_length = 0.5):
 
     return pitch, side_length**2
 
+def translate_grid(pitch_grid, dx, dy):
+    """ Shifts the grid points by dx and dy.
+
+    Args:
+        dx: Translation in x direction
+        dy: Translation in y direction
+    Returns:
+        The same grid with grid points translated.
+    """
+    new_grid = pitch_grid.copy()
+    new_grid[:,0] += dx
+    new_grid[:,1] += dy
+    return new_grid
+
 
 def assign_grid_pts_to_players(pitch_grid, players):
     """Assigns grid points to players according to the smallest euclidean distance.
@@ -60,7 +74,8 @@ def calculate_pitch_space_per_player(winner, no_players, cell_area):
 
     Args:
         winner: assignment of pitch space to player.
-        no_players: number of players to generate space map.
+        no_players: number of players to generate space map. Is required as sometimes
+                    not all players might control any space.
         cell_area: area of each individual space.
     Returns:
     """
@@ -90,16 +105,30 @@ def clip_pitch_grid(grid, length_cut_off, width_cut_off, high_pass = True):
 
     return grid[mask,], mask
 
+def normalized_space_controlled(space_controlled):
+    """ Calculates the normalized space controlled.
+
+    Args:
+        space_controlled: a numpy array with the space controlled for each players.
+
+    Returns:
+        a numpy array with the space controlled normalized to range between 0 and 1.
+
+    """
+    return space_controlled / np.sum(space_controlled, axis = 0)
+
 
 if __name__ == '__main__':
     grid, grid_cell_area = create_pitch_grid((10,3), 1)
-    print(grid)
+    #print(grid)
     players = np.array(
-            [[[.2, .2],[2.0,1.0],[3.2,1.2]],
-            [[.1, .1], [.3,.3],[2.1,1.1]]])
+            [[[.2, .2], [2.0, 1.0], [3.2, 1.2], [1.3, 2.5]],
+            [[.1, .1], [.3, .3], [2.1, 1.1], [1.3, 2.5]]])
     winner = assign_grid_pts_to_players(grid, players)
-    print(winner)
+    #print(winner)
     grid_clipped, mask = clip_pitch_grid(grid, 1.0, 1.0)
-    space_controlled = calculate_pitch_space_per_player(winner, 3, grid_cell_area)
+    space_controlled = calculate_pitch_space_per_player(winner, 4, grid_cell_area)
     print(space_controlled)
+    print(normalized_space_controlled(space_controlled))
+    grid2 = translate_grid(grid, 10, 100)
 

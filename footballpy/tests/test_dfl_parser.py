@@ -52,6 +52,14 @@ class TestMatchInformation(unittest.TestCase):
         self.assertEqual(barney['position'], 'MZ')
         self.assertEqual(barney['trikot'],4)
 
+    def test_game_name(self):
+        match = TestMatchInformation._match
+        self.assertEqual(match['game_name'], 'FC Looney Tunes:FC Flintstones')
+
+    def test_match_day(self):
+        match = TestMatchInformation._match
+        self.assertEqual(match['match_day'], '1')
+
 class TestMatchEvent(unittest.TestCase):
     """Unit test class for the MatchEventParser.
     """

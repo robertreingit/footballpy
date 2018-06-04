@@ -68,13 +68,26 @@ class MatchInformationParser(ContentHandler):
             else:
                 self.teams['guest'].append(player)
 
+        elif name == 'General':
+            # get game name
+            game_name_index = ('MatchTitle' if 'MatchTitle' in
+                    attrs.keys() else 'GameTitle')
+            game_name = attrs[game_name_index]
+            self.game_name = game_name
+            self.match_day = attrs['MatchDay']
+
     def endElement(self,name):
         """Gets called for every closing tag."""
         if name == "Team":
             self.inTeam = False
+
+    def build_result_structure(self):
+        self.match['game_name'] = self.game_name
+        self.match['match_day'] = self.match_day
     
     def getTeamInformation(self):
         """Extractor function."""
+        self.build_result_structure()
         return self.teams, self.match
     
     def run(self,fname):
@@ -321,9 +334,11 @@ if __name__ == "__main__":
     mep.run(fname_info)
     play_time, subs = mep.getEventInformation()
     
+    """
     print("Parsing position data")
     mpp = MatchPositionParser(match,teams)
     fname_pos = data_path + "/ObservedPositionalData/" + fname
     mpp.run(fname_pos)
     pos_data,ball_data,timestamps = mpp.getPositionInformation()
+    """
     

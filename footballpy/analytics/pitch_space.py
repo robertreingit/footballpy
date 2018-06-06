@@ -99,9 +99,9 @@ def clip_pitch_grid(grid, length_cut_off, width_cut_off, high_pass = True):
         a mask to identify assigned players.
     """
     if high_pass:
-        mask  = np.logical_and(grid[:,0] >= width_cut_off,  grid[:,1] >= length_cut_off)
+        mask  = np.logical_and(grid[:,0] >= length_cut_off,  grid[:,1] >= width_cut_off)
     else:
-        mask = np.logical_and(grid[:,0] < width_cut_off,  grid[:,1] < length_cut_off)
+        mask = np.logical_and(grid[:,0] < length_cut_off,  grid[:,1] < width_cut_off)
 
     return grid[mask,], mask
 

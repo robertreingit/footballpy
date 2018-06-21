@@ -14,6 +14,7 @@ impire_parser : Module which provides parsing function for Soccer
 from xml.sax import make_parser, ContentHandler
 from xml.sax.handler import feature_external_ges
 import numpy as np
+import dateutil.parser as dup
 # import pdb
 
 class MatchInformationParser(ContentHandler):
@@ -34,19 +35,31 @@ class MatchInformationParser(ContentHandler):
         self.inHomeTeam = False
         self.inPlayer = False
         self.currentPlayer = None
+        self.HomeTeamName = ''
+        self.GuestTeamName = ''
         self.teams = {'home': [], 'guest': [] }
-        self.match = {'match-id': 0, 'home':'', 'guest':''}
+        self.match = {
+                'match-id': 0,
+                'home':'',
+                'guest':'',
+                'match_day': '',
+                'game_name': '',
+                'start_date': ''}
 
     def startElement(self,name,attrs):
         """Gets called for every starting tag."""
 
-        if name == 'event-metadata':
+        if name == 'tournament-round':
+            self.match['match_day'] = attrs['round-number']
+
+        elif name == 'event-metadata':
             self.match['match-id'] = attrs['event-key']
+            self.match['start_date'] = dup.parse(attrs['start-date-time'])
 
         elif name == "team":
             self.inTeam = True
 
-        elif name =='team-metadata' and self.inTeam:
+        elif name == 'team-metadata' and self.inTeam:
             role = attrs['alignment']
             teamID = attrs['team-key']
             if role == "home":
@@ -57,6 +70,15 @@ class MatchInformationParser(ContentHandler):
                 self.match['guest'] = teamID
             else:
                 raise NameError("Couldn't determine role")
+
+        elif name == 'name' and self.inTeam and not self.inPlayer:
+            if 'imp:dfl-3-letter-code' in attrs.keys():
+                full_name = attrs['full']
+                if self.inHomeTeam:
+                    self.HomeTeamName = full_name
+                else:
+                    self.GuestTeamName = full_name
+
 
         elif name == 'player':
             self.inPlayer = True
@@ -92,6 +114,7 @@ class MatchInformationParser(ContentHandler):
 
     def getTeamInformation(self):
         """Extractor function."""
+        self.match['game_name'] = self.HomeTeamName + ':' + self.GuestTeamName
         return self.teams, self.match
 
     def run(self, fname):
@@ -300,17 +323,15 @@ def run(data_path, fname_specs, fname_pos):
 
 #######################################
 if __name__ == "__main__":
-    
-#    data_path = '../data/neu/impire/130649/'
-#    fname_specs = 'vistrack-matchfacts-130649.xml'
-#    fname_pos =  '130649.pos'
-    data_path = '../data/neu/impire/130330/'
-    fname_specs = 'vistrack-matchfacts-130330.xml'
-    fname_pos =  '130330.pos'
+    from os import path
+
+    data_path = '../data/neu/impire/130649/'
+    fname_specs = 'vistrack-matchfacts-130649.xml'
+    fname_pos =  '130649.pos'
+    fname_match = path.join(data_path, fname_specs)
 
     print("Parsing match information")
     mip = MatchInformationParser()
-    fname_match = data_path + fname_specs
     mip.run(fname_match)
     teams, match = mip.getTeamInformation()
     match['stadium'] = read_stadium_dimensions_from_pos(data_path + fname_pos)

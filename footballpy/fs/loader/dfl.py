@@ -326,6 +326,8 @@ def collect_pos_data_into_dataframe(pos_data, half_tresh = 100000):
             First half frames usually start with 10000, second half frames start from 100000 but
             can be changed using the half_tresh for the second half.
     """
+    import pandas as pd
+
     def util_1(dataset):
         """Processes team by half position data. """
         dummy_ = []
@@ -342,7 +344,7 @@ def collect_pos_data_into_dataframe(pos_data, half_tresh = 100000):
         """Concatenate 1st and 2nd halves."""
         data_1st = util_1(pos_data[team]['1st'])
         data_2nd = util_1(pos_data[team]['2nd'])
-        return pd.concat([data_1st, data_2nd])
+        return pd.concat([data_1st, data_2nd], sort=False)
     
     home_df = util_2(pos_data, 'home')
     guest_df = util_2(pos_data, 'guest')
@@ -357,6 +359,8 @@ def collect_ball_data_into_dataframe(ball_data):
     Args:
     Returns:
     """
+    import pandas as pd
+
     def util_(ball):
         ball_df = pd.DataFrame(
                 ball[:,[1,2,4,5]],
@@ -376,6 +380,7 @@ def pos_data_to_df(pos_data, ball_data):
         
     Returns:
     """
+    import pandas as pd
     player_df = collect_pos_data_into_dataframe(pos_data)
     ball_df = collect_ball_data_into_dataframe(ball_data)
     assert(player_df.shape[0] == ball_df.shape[0])
@@ -391,16 +396,18 @@ def get_df_from_files(match_info_file, match_pos_file):
         match_info_file: full path to the MatchInformation file.
         match_pos_file: full path to the PositionData file.
     Returns:
-        Pandas dataframe with the position data.
+        A tuple with a Pandas dataframe with the position data,
+        the teams information dictionary, and
+        the match information dictionary
     """
-    mip = dfl_parser.MatchInformationParser()
+    mip = MatchInformationParser()
     mip.run(match_info_file)
     teams, match = mip.getTeamInformation()
 
-    mpp = dfl_parser.MatchPositionParser(match, teams)
+    mpp = MatchPositionParser(match, teams)
     mpp.run(match_pos_file)
     pos_data, ball_data, timestamps = mpp.getPositionInformation()
-    return pos_data_to_df(pos_data, ball_data)
+    return pos_data_to_df(pos_data, ball_data), teams, match
 
 #######################################
 if __name__ == "__main__":

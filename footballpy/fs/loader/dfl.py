@@ -45,12 +45,15 @@ class MatchInformationParser(ContentHandler):
             self.inTeam = True
             role = attrs['Role']
             teamID = attrs['TeamId']
+            color = attrs['PlayerMainColorOfShirt']
             if role == "home":
                 self.inHomeTeam = True
                 self.match['home'] = teamID
+                self.match['team_color_home'] = color
             elif role == "guest":
                 self.inHomeTeam = False
                 self.match['guest'] = teamID
+                self.match['team_color_guest'] = color
             else:
                 raise NameError("Couldn't determine role")
 
@@ -75,6 +78,12 @@ class MatchInformationParser(ContentHandler):
             game_name = attrs[game_name_index]
             self.game_name = game_name
             self.match_day = attrs['MatchDay']
+            self.match['league'] = attrs['Competition']
+            self.match['season'] = attrs['Season']
+            self.match['team_name_home'] = attrs['HomeTeamName']
+            self.match['team_name_guest'] = attrs['AwayTeamName']
+            self.match['tracking_source'] = 'dfl'
+            self.match['start_date'] = dup.parse(attrs['KickoffTime'])
 
     def endElement(self,name):
         """Gets called for every closing tag."""
@@ -420,7 +429,9 @@ if __name__ == "__main__":
     fname_match = data_path + "MatchInformation/" + fname
     mip.run(fname_match)
     teams, match = mip.getTeamInformation()
+    print(match)
     
+    """
     print("Parsing event data")
     mep = MatchEventParser()
     fname_info = data_path + "EventData/" + fname
@@ -432,4 +443,5 @@ if __name__ == "__main__":
     fname_pos = data_path + "/ObservedPositionalData/" + fname
     mpp.run(fname_pos)
     pos_data,ball_data,timestamps = mpp.getPositionInformation()
+    """
     

@@ -356,8 +356,6 @@ if __name__ == "__main__":
     fname_pos =  '130649.pos'
     fname_match = path.join(data_path, fname_specs)
     """
-    game_name = '138191'
-    path_to_file = 'D:\\research_projects\\DFG_soccer\\fussball_daten_raw\\complete\\2012-13 BL 8.Sp. Dortmund vs. Schalke 04\\'
     match_info_name = 'vistrack-matchfacts-' + game_name + '.xml'
     fname_match = path.join(path_to_file, match_info_name)
     fname_pos = path.join(path_to_file, game_name + '.pos')

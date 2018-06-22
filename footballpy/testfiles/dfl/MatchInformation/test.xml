@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <PutDataRequest>
 	<MatchInformation>
-		<General TypeOfSport="Fußball" Competition="Bundesliga" CompetitionId="DFL-COM-123456" Host="Tattooine League" Type="usual" Season="2020/2021" MatchDay="1" MatchId="DFL-MAT-1234AB" DL-PROVIDER-ID="g123456" GameTitle="FC Looney Tunes:FC Flintstones" HomeTeamName="FC Looney Tunes" HomeTeamId="DFL-ABC-12345A" AwayTeamName="FC Flintstones" AwayTeamId="DFL-ABC-12345B" />
+		<General TypeOfSport="Fußball" Competition="Bundesliga" CompetitionId="DFL-COM-123456" Host="Tattooine League" Type="usual" Season="2020/2021" MatchDay="1" KickoffTime="2030-05-16T15:30:41.247+02:00" MatchId="DFL-MAT-1234AB" DL-PROVIDER-ID="g123456" GameTitle="FC Looney Tunes:FC Flintstones" HomeTeamName="FC Looney Tunes" HomeTeamId="DFL-ABC-12345A" AwayTeamName="FC Flintstones" AwayTeamId="DFL-ABC-12345B" />
 		<Environment Country="Germany" StadiumId="DFL-STA-123456" StadiumName="Dagobert" Address="Looney Street 5, 12345 Looney Town" Roof="open" Floodlight="on" Temperature="27" AirHumidity="47" AirPressure="1000" PitchErosion="none" NumberOfSpectators="10000" StadiumCapacity="10000" Precipitation="none" SoldOut="true" PitchX="105.00" PitchY="69.00" />
 		<Teams>
 			<Team TeamId="DFL-ABC-12345A" TeamName="FC Looney Tunes" Role="home" PlayerMainColorOfShirt="#FF1122" PlayerOtherColorOfShirt="#FFFFFF">

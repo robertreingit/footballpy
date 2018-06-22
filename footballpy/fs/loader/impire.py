@@ -44,13 +44,18 @@ class MatchInformationParser(ContentHandler):
                 'guest':'',
                 'match_day': '',
                 'game_name': '',
-                'start_date': ''}
+                'start_date': '',
+                'league': ''}
 
     def startElement(self,name,attrs):
         """Gets called for every starting tag."""
 
         if name == 'tournament-round':
             self.match['match_day'] = attrs['round-number']
+
+        elif name == 'tournament-metadata':
+            self.match['league'] = attrs['tournament-name'].split(' ')[1]
+            self.match['tracking_source'] = attrs['tournament-source'].split('.')[0]
 
         elif name == 'event-metadata':
             self.match['match-id'] = attrs['event-key']
@@ -62,12 +67,15 @@ class MatchInformationParser(ContentHandler):
         elif name == 'team-metadata' and self.inTeam:
             role = attrs['alignment']
             teamID = attrs['team-key']
+            color = attrs['imp:uniform-color-hex']
             if role == "home":
                 self.inHomeTeam = True
                 self.match['home'] = teamID
+                self.match['team_color_home'] = color
             elif role == "away":
                 self.inHomeTeam = False
                 self.match['guest'] = teamID
+                self.match['team_color_guest'] = color
             else:
                 raise NameError("Couldn't determine role")
 
@@ -78,7 +86,6 @@ class MatchInformationParser(ContentHandler):
                     self.HomeTeamName = full_name
                 else:
                     self.GuestTeamName = full_name
-
 
         elif name == 'player':
             self.inPlayer = True
@@ -97,8 +104,7 @@ class MatchInformationParser(ContentHandler):
                     }
 
         elif name == 'name' and self.inPlayer:
-            name = attrs['nickname']
-            self.currentPlayer['name'] = name
+            self.currentPlayer['name'] = attrs['full']
             if self.inHomeTeam:
                 self.teams['home'].append(self.currentPlayer.copy())
             else:
@@ -114,6 +120,8 @@ class MatchInformationParser(ContentHandler):
 
     def getTeamInformation(self):
         """Extractor function."""
+        self.match['team_name_home'] = self.HomeTeamName
+        self.match['team_name_guest'] = self.GuestTeamName
         self.match['game_name'] = self.HomeTeamName + ':' + self.GuestTeamName
         return self.teams, self.match
 
@@ -320,21 +328,47 @@ def run(data_path, fname_specs, fname_pos):
     return pos_data, ball, match, teams
 
 
+def get_impire_match_information(match_info_file, pos_data_file):
+    """Simple interface to read in impire matchfacts and team data.
+
+        Args:
+            match_info_file: path to the vistrack-matchfacts xml file.
+            pos_data_file: path to the position data pos file.
+        Returns:
+            A tuple with the match info dictionary and the
+            teams dictionary.
+    """
+    mip = MatchInformationParser()
+    mip.run(match_info_file)
+    teams, match = mip.getTeamInformation()
+    match['stadium'] = read_stadium_dimensions_from_pos(pos_data_file)
+    return match, teams
+
+
 
 #######################################
 if __name__ == "__main__":
     from os import path
 
+    """
     data_path = '../data/neu/impire/130649/'
     fname_specs = 'vistrack-matchfacts-130649.xml'
     fname_pos =  '130649.pos'
     fname_match = path.join(data_path, fname_specs)
+    """
+    game_name = '138191'
+    path_to_file = 'D:\\research_projects\\DFG_soccer\\fussball_daten_raw\\complete\\2012-13 BL 8.Sp. Dortmund vs. Schalke 04\\'
+    match_info_name = 'vistrack-matchfacts-' + game_name + '.xml'
+    fname_match = path.join(path_to_file, match_info_name)
+    fname_pos = path.join(path_to_file, game_name + '.pos')
 
     print("Parsing match information")
+    match, teams = get_impire_match_information(fname_match, fname_pos)
+    """
     mip = MatchInformationParser()
     mip.run(fname_match)
     teams, match = mip.getTeamInformation()
-    match['stadium'] = read_stadium_dimensions_from_pos(data_path + fname_pos)
+    match['stadium'] = read_stadium_dimensions_from_pos(fname_pos)
     
     home,guest,ball,half_time_id = read_in_position_data(data_path + fname_pos)
     home_1, home_2 = split_positions_into_game_halves(home,half_time_id,ball)
@@ -343,3 +377,4 @@ if __name__ == "__main__":
     
     pos_data_home_1 = combine_position_with_role(home_1s,teams['home'])
     pos_data, ball_data, match, teams = run(data_path, fname_specs, fname_pos)
+    """

@@ -421,6 +421,7 @@ def get_df_from_files(match_info_file, match_pos_file):
 #######################################
 if __name__ == "__main__":
     
+	"""
     data_path = "footballpy/testfiles/dfl/"
     fname = 'test.xml'
     
@@ -431,7 +432,7 @@ if __name__ == "__main__":
     teams, match = mip.getTeamInformation()
     print(match)
     
-    """
+    
     print("Parsing event data")
     mep = MatchEventParser()
     fname_info = data_path + "EventData/" + fname
@@ -444,4 +445,5 @@ if __name__ == "__main__":
     mpp.run(fname_pos)
     pos_data,ball_data,timestamps = mpp.getPositionInformation()
     """
+	df, teams, match = get_df_from_files(match_info_file, match_pos_file)
     

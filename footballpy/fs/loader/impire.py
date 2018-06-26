@@ -153,7 +153,7 @@ def read_in_position_data(fname):
     # MAGIC NUMBERS
     _MISSING_ = -10000.0
     NO_PLAYER = 11
-    NO_DIM = 3      # FRAME, X, Z
+    NO_DIM = 3      # FRAME, X, Y
     # NO_DIM_BALL = 6     # FRAME, X, Y, Z, POSSESSION, STATUS
 
     no_frames = sum([1 for f in open(fname)])
@@ -291,23 +291,24 @@ def run(data_path, fname_specs, fname_pos):
                     containing list with player entries.
                     [0]: player id
                     [1]: numpy array with frame, x, y data
-                    [1]: player role
+                    [1]: player role.
+                    Position data is not scaled according to pitch dimensions!!!
           ball: numpy array containing the ball data
-          match: 
-          teams: 
+          match: match information dictionary
+          teams: team information dictionary
     """
+    from os import path
+
     # sanity check
     fname_1 = fname_specs.split('-')[2].split('.')[0]
     fname_2 = fname_pos.split('.')[0]
     if fname_1 != fname_2:
         raise ValueError('fname_specs and fname_pos refer to different games.')
 
-    mip = MatchInformationParser()
-    mip.run(data_path + fname_specs)
-    teams, match = mip.getTeamInformation()
-    match['stadium'] = read_stadium_dimensions_from_pos(
-            data_path + fname_pos)
-    home, guest, ball, half_time_id = read_in_position_data(data_path + fname_pos)
+    match_info_file = path.join(data_path, fname_specs)
+    match_pos_file = path.join(data_path, fname_pos)
+    match, teams = get_impire_match_information(match_info_file, match_pos_file)
+    home, guest, ball, half_time_id = read_in_position_data(match_pos_file)
 
     def process_teams(team,type):
         """Just to work through the team data."""
@@ -321,6 +322,7 @@ def run(data_path, fname_specs, fname_pos):
     guest_data = process_teams(guest,'guest')
     ball_1 = ball[half_time_id==1,:]
     ball_2 = ball[half_time_id==2,:]
+    # Normalize to same dataformat like DFL
     pos_data = dict(
             home = {'1st' : home_data[0], '2nd' : home_data[1]},
             guest = {'1st' : guest_data[0], '2nd' : guest_data[1]})
@@ -344,6 +346,61 @@ def get_impire_match_information(match_info_file, pos_data_file):
     match['stadium'] = read_stadium_dimensions_from_pos(pos_data_file)
     return match, teams
 
+def rescale_xy_positions(position_data, ball_data, length, width):
+    """Rescales the ball and position data according to the pitch dimensions.
+
+        Args:
+            position_data: player position data list
+            ball_data: ball position data list
+            length: length of pitch 
+            width: width of pitch
+        Returns:
+            The position data list with xy_position scaled accordingly and them
+            same for the ball data list
+
+    """
+    ball_data_scaled = [ball_data[0].copy(), ball_data[1].copy()]
+    position_data_scaled = position_data
+
+    x_scale = length / 2.0
+    y_scale = width / 2.0
+
+    for half in ball_data_scaled:
+        half[:,1] *= x_scale
+        half[:,2] *= y_scale
+
+    for key_t, team_pos_data in position_data_scaled.items():
+        for key_h, half in team_pos_data.items():
+            for player in half:
+                player[1][:,1] = player[1][:,1] * x_scale
+                player[1][:,2] = player[1][:,2] * y_scale
+
+    return position_data_scaled, ball_data_scaled
+
+
+def increase_frame_counter(position_data, ball_data, fh_frame_start = 10000, sh_frame_start = 100000):
+    """Changes the frame counter for the first and second half of the ball_data
+        Args:
+            ball_data: ball data list with first [0] and second half [1]
+            fh_frame_start: first half frame counter start
+            sh_frame_strat: second half frame counter start 
+        Returns:
+    """
+    ball_data_nf = []
+    position_data_nf = position_data
+
+    for half in ball_data:
+        ball_data_nf.append(half.copy())
+    ball_data_nf[0][:,0] += fh_frame_start 
+    ball_data_nf[1][:,0] += sh_frame_start
+
+    for key_t, team_pos_data in position_data_nf.items():
+        for key_h, half in team_pos_data.items():
+            new_start = fh_frame_start if (key_h == '1st') else sh_frame_start
+            for player in half:
+                player[1][:,0] = player[1][:,0] + new_start
+
+    return position_data_nf, ball_data_nf
 
 
 #######################################
@@ -374,5 +431,7 @@ if __name__ == "__main__":
     home_2s = sort_position_data(home_2)
     
     pos_data_home_1 = combine_position_with_role(home_1s,teams['home'])
-    pos_data, ball_data, match, teams = run(data_path, fname_specs, fname_pos)
+    pos_data, ball_data, match, teams = run(path_to_file, match_info_name, match_pos_name)
     """
+    pos_data_sc, ball_data_sc = rescale_xy_positions(pos_data, ball_data, **match['stadium'])
+    pos_dat_reindex, ball_data_reindex = increase_frame_counter(pos_data_sc, ball_data_sc)

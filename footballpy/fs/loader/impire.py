@@ -278,13 +278,12 @@ def combine_position_with_role(pos, team):
                     trikot_to_role[trikot]))
     return res
 
-def run(data_path, fname_specs, fname_pos):
-    """Driver function to run data loading.
+def run(match_info_file, match_pos_file):
+    """Driver function to run data loading of impire data.
 
         Args:
-            data_path: path to folder with files
-            fname_specs: matchfacts file
-            fname_pos: position data file.
+            match_info_file: matchfacts file
+            match_pos_file: position data file.
         Returns:
           pos_data: position data struct with keys ['home','guest']
                     with sub struct ['1st','2nd'] for game halves
@@ -299,14 +298,12 @@ def run(data_path, fname_specs, fname_pos):
     """
     from os import path
 
-    # sanity check
-    fname_1 = fname_specs.split('-')[2].split('.')[0]
-    fname_2 = fname_pos.split('.')[0]
+    # sanity check wheter match info and pos file match up
+    fname_1 = path.split(match_info_file)[-1].split('-')[2].split('.')[0]
+    fname_2 = path.split(match_pos_file)[-1].split('.')[0]
     if fname_1 != fname_2:
         raise ValueError('fname_specs and fname_pos refer to different games.')
 
-    match_info_file = path.join(data_path, fname_specs)
-    match_pos_file = path.join(data_path, fname_pos)
     match, teams = get_impire_match_information(match_info_file, match_pos_file)
     home, guest, ball, half_time_id = read_in_position_data(match_pos_file)
 
@@ -322,6 +319,7 @@ def run(data_path, fname_specs, fname_pos):
     guest_data = process_teams(guest,'guest')
     ball_1 = ball[half_time_id==1,:]
     ball_2 = ball[half_time_id==2,:]
+
     # Normalize to same dataformat like DFL
     pos_data = dict(
             home = {'1st' : home_data[0], '2nd' : home_data[1]},
@@ -402,24 +400,42 @@ def increase_frame_counter(position_data, ball_data, fh_frame_start = 10000, sh_
 
     return position_data_nf, ball_data_nf
 
+def get_df_from_files(match_info_file, match_pos_file):
+    """Wrapper function to get a pandas dataframe from DFl position data. 
+
+    This function is meant as an outside API to load position data from
+    impire files.
+
+    Args:
+        match_info_file: full path to the MatchInformation file.
+        match_pos_file: full path to the PositionData file.
+    Returns:
+        A tuple with a Pandas dataframe with the position data,
+        the teams information dictionary, and
+        the match information dictionary
+    """
+    import papi
+    # read in position data
+    pos_data, ball_data, match, teams = run(match_info_file, match_pos_file)
+    # rescale to actual meters
+    pos_data_sc, ball_data_sc = rescale_xy_positions(pos_data, ball_data, **match['stadium'])
+    # add frame counters
+    pos_data_reindex, ball_data_reindex = increase_frame_counter(pos_data_sc, ball_data_sc)
+    # transform to pandas dataframe
+    pos_df = papi.pos_data_to_df(pos_data_reindex, ball_data_reindex)
+    return pos_df
 
 #######################################
 if __name__ == "__main__":
+    """
     from os import path
 
-    """
-    data_path = '../data/neu/impire/130649/'
-    fname_specs = 'vistrack-matchfacts-130649.xml'
-    fname_pos =  '130649.pos'
-    fname_match = path.join(data_path, fname_specs)
-    """
     match_info_name = 'vistrack-matchfacts-' + game_name + '.xml'
     fname_match = path.join(path_to_file, match_info_name)
     fname_pos = path.join(path_to_file, game_name + '.pos')
 
     print("Parsing match information")
     match, teams = get_impire_match_information(fname_match, fname_pos)
-    """
     mip = MatchInformationParser()
     mip.run(fname_match)
     teams, match = mip.getTeamInformation()
@@ -432,6 +448,7 @@ if __name__ == "__main__":
     
     pos_data_home_1 = combine_position_with_role(home_1s,teams['home'])
     pos_data, ball_data, match, teams = run(path_to_file, match_info_name, match_pos_name)
-    """
     pos_data_sc, ball_data_sc = rescale_xy_positions(pos_data, ball_data, **match['stadium'])
-    pos_dat_reindex, ball_data_reindex = increase_frame_counter(pos_data_sc, ball_data_sc)
+    pos_data_reindex, ball_data_reindex = increase_frame_counter(pos_data_sc, ball_data_sc)
+    """
+    pos_df = get_df_from_files(match_info_file, match_pos_file)

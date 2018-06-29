@@ -135,6 +135,53 @@ class MatchInformationParser(ContentHandler):
         parser.parse(fname)
         print('finished parsing match information')
 
+class MatchEventParser(ContentHandler):
+    """XML parser for the event(action) impire data.
+    """
+
+    def __init__(self):
+        """Initialization attributes."""
+        ContentHandler.__init__(self) 
+        self.result = dict()
+        self.result['shots'] = []
+
+    def startElement(self, name, attrs):
+        """Called for every starting element encountered."""
+        if name == 'action-soccer-score-attempt':
+            shot = dict()
+            shot['time'] = dup.parse(attrs['imp:timestamp'])
+            shot['team_id'] = attrs['team-idref']
+            shot['player_id'] = attrs['player-idref']
+            shot['shot_result'] = attrs['score-attempt-result']
+            shot['period'] = attrs['period-value']
+            shot['x1'] = attrs['imp:x1']
+            shot['y1']= attrs['imp:y1']
+            shot['x2']= attrs['imp:x2']
+            shot['y2'] = attrs['imp:y2']
+            self.result['shots'].append(shot)
+
+    def endElement(self, name):
+        """Called for every closing element encoutered."""
+        pass
+
+    def run(self, match_event_file):
+        """Runs the parser on the match_event_file.
+
+            Args:
+                match_event_file: full path to event file.
+            Returns:
+                None
+        """
+        parser = make_parser()
+        parser.setContentHandler(self)
+        parser.setFeature(feature_external_ges, False)
+        parser.parse(match_event_file)
+
+    def getEvents(self):
+        """Returns the parsed data."""
+        return self.result
+
+
 
 def read_in_position_data(fname):
     """Reads in a pos file and extract the ball/player data
@@ -450,5 +497,8 @@ if __name__ == "__main__":
     pos_data, ball_data, match, teams = run(path_to_file, match_info_name, match_pos_name)
     pos_data_sc, ball_data_sc = rescale_xy_positions(pos_data, ball_data, **match['stadium'])
     pos_data_reindex, ball_data_reindex = increase_frame_counter(pos_data_sc, ball_data_sc)
-    """
     pos_df = get_df_from_files(match_info_file, match_pos_file)
+    """
+    mep = MatchEventParser()
+    mep.run(match_event_file)
+    events = mep.getEvents()

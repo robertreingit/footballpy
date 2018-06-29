@@ -423,7 +423,7 @@ def get_df_from_files(match_info_file, match_pos_file):
     pos_data_reindex, ball_data_reindex = increase_frame_counter(pos_data_sc, ball_data_sc)
     # transform to pandas dataframe
     pos_df = papi.pos_data_to_df(pos_data_reindex, ball_data_reindex)
-    return pos_df
+    return pos_df, teams, match
 
 #######################################
 if __name__ == "__main__":

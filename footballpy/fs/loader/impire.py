@@ -152,6 +152,8 @@ class MatchEventParser(ContentHandler):
             shot['time'] = dup.parse(attrs['imp:timestamp'])
             shot['team_id'] = attrs['team-idref']
             shot['player_id'] = attrs['player-idref']
+            shot['second_player_id'] = attrs['imp:second-player-idref']
+            shot['attempt-method'] = attrs['score-attempt-method']
             shot['shot_result'] = attrs['score-attempt-result']
             shot['period'] = attrs['period-value']
             shot['x1'] = attrs['imp:x1']

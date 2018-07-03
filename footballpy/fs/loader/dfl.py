@@ -189,6 +189,38 @@ class MatchEventParser(ContentHandler):
         return self.playing_time, self.subs
 
 
+def get_match_events(match_event_file):
+    """Function to parse dfl match events.
+
+        Args:
+            match_event_file: full path to match event file.
+        Returns:
+            a dictionary with event entries.
+    """
+    from lxml import etree
+
+    def prepend_name_to_itemlist(name, item_lst):
+        """Prepends a name to items"""
+        return [(name + item[0], item[1]) for item in item_lst]
+    
+    def process_goal_shot(shot):
+        """Small formatter for goal shots:
+            Args:
+            Returns:
+        """
+        event_entries = shot.xpath('./ancestor::Event')[0].items()
+        shot_entries = shot.items()
+        result_entries = prepend_name_to_itemlist('Result:', shot.getchildren()[0].items())
+        result_type = [('ResultType', shot.getchildren()[0].tag)]
+        return dict(event_entries + shot_entries + result_entries + result_type)
+
+    result = dict()
+
+    root = etree.parse(match_event_file)
+    result['goal_shots'] = [process_goal_shot(shot) for shot in root.xpath('//ShotAtGoal')]
+    return result
+
+
 def calculate_frame_estimate(playing_time,padding_time = 5*60, freq = 25):
     secs_1st = (playing_time['firstHalf'][1] - playing_time['firstHalf'][0]).seconds
     secs_2nd = (playing_time['secondHalf'][1] - playing_time['secondHalf'][0]).seconds
@@ -324,6 +356,7 @@ def correct_substitions():
         Args:
         Returns:
     """
+    pass
 
 def get_df_from_files(match_info_file, match_pos_file):
     """Wrapper function to get a pandas dataframe from DFl position data. 
@@ -353,7 +386,7 @@ def get_df_from_files(match_info_file, match_pos_file):
 #######################################
 if __name__ == "__main__":
     
-	"""
+    """
     data_path = "footballpy/testfiles/dfl/"
     fname = 'test.xml'
     
@@ -376,6 +409,6 @@ if __name__ == "__main__":
     fname_pos = data_path + "/ObservedPositionalData/" + fname
     mpp.run(fname_pos)
     pos_data,ball_data,timestamps = mpp.getPositionInformation()
+    df, teams, match = get_df_from_files(match_info_file, match_pos_file)
     """
-	df, teams, match = get_df_from_files(match_info_file, match_pos_file)
-    
+    events = get_match_events(match_event_file)

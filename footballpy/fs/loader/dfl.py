@@ -212,11 +212,13 @@ def get_match_events(match_event_file):
         shot_entries = shot.items()
         result_entries = prepend_name_to_itemlist('Result:', shot.getchildren()[0].items())
         result_type = [('ResultType', shot.getchildren()[0].tag)]
-        return dict(event_entries + shot_entries + result_entries + result_type)
+        shot_dict = dict(event_entries + shot_entries + result_entries + result_type)
+        shot_dict['EventTime'] = dup.parse(shot_dict['EventTime'])
+        return shot_dict
 
     result = dict()
 
-    root = etree.parse(match_event_file)
+    root = etree.parse(match_event_file).getroot()
     result['goal_shots'] = [process_goal_shot(shot) for shot in root.xpath('//ShotAtGoal')]
     return result
 

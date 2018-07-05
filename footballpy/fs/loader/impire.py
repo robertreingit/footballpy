@@ -474,6 +474,55 @@ def get_df_from_files(match_info_file, match_pos_file):
     pos_df = papi.pos_data_to_df(pos_data_reindex, ball_data_reindex)
     return pos_df, teams, match
 
+def get_match_events(match_event_file):
+    """Function to parse dfl match events.
+
+        Args:
+            match_event_file: full path to match event file.
+        Returns:
+            a dictionary with event entries.
+    """
+    from lxml import etree
+
+    def remove_ns_prefix(element_list, ns):
+        """Cleans out the namepace of the element list.
+
+            Args:
+            Returns:
+        """
+        new_list = [] 
+        for pair in element_list:
+            new_list.append((pair[0].replace('{' + ns + '}', ''), pair[1]))
+        return new_list
+   
+    def get_goal_shots(root):
+        """Extract the goal shot events. """
+        shots = ([remove_ns_prefix(shot.items(), root.nsmap['imp']) 
+            for shot in root.xpath('//action-soccer-score-attempt')])
+        return shots
+
+    def get_kick_off_whistles(root):
+        """Extract the kick-off and final whistles. """
+        def extract(root, time, period):
+            query_str = '//action-soccer-other[@action-type="period-{0}" and @period-value="{1}"]/@imp:timestamp'
+            return root.xpath(query_str.format(time, period), namespaces = root.nsmap)[0]
+        whistle_on_first = extract(root, 'start', '1')
+        whistle_off_first = extract(root, 'end', '1') 
+        whistle_on_second = extract(root, 'start', '2') 
+        whistle_off_second = extract(root, 'end', '2')
+        return { 'whistle_on_first': whistle_on_first, 'whistle_off_first': whistle_off_first,
+                'whistle_on_second': whistle_on_second, 'whistle_off_second': whistle_off_second }
+
+    root = etree.parse(match_event_file).getroot()
+    timezone = dup.parse(root.xpath('//sports-event/event-metadata/@start-date-time')[0]).tzinfo
+    result = dict()
+
+    result['goal_shots'] = get_goal_shots(root)
+    result['whistle_on_off'] = get_kick_off_whistles(root)
+
+    return result
+    
+
 #######################################
 if __name__ == "__main__":
     """
@@ -503,4 +552,5 @@ if __name__ == "__main__":
     """
     mep = MatchEventParser()
     mep.run(match_event_file)
-    events = mep.getEvents()
+    #events = mep.getEvents()
+    imp_events = get_match_events(match_events_file)

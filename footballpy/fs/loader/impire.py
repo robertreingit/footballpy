@@ -45,6 +45,7 @@ class MatchInformationParser(ContentHandler):
                 'match_day': '',
                 'game_name': '',
                 'start_date': '',
+                'season': '',
                 'league': ''}
 
     def startElement(self,name,attrs):
@@ -59,7 +60,12 @@ class MatchInformationParser(ContentHandler):
 
         elif name == 'event-metadata':
             self.match['match-id'] = attrs['event-key']
-            self.match['start_date'] = dup.parse(attrs['start-date-time'])
+            start_date = dup.parse(attrs['start-date-time'])
+            self.match['start_date'] = start_date 
+            if start_date.month < 8:
+                self.match['season'] = '{0}/{1}'.format(start_date.year - 1, start_date.year)
+            else:
+                self.match['season'] = '{0}/{1}'.format(start_date.year, start_date.year + 1)
 
         elif name == "team":
             self.inTeam = True
@@ -450,7 +456,7 @@ def increase_frame_counter(position_data, ball_data, fh_frame_start = 10000, sh_
     return position_data_nf, ball_data_nf
 
 def get_df_from_files(match_info_file, match_pos_file):
-    """Wrapper function to get a pandas dataframe from DFl position data. 
+    """Wrapper function to get a pandas dataframe from impire position data. 
 
     This function is meant as an outside API to load position data from
     impire files.
@@ -463,7 +469,8 @@ def get_df_from_files(match_info_file, match_pos_file):
         the teams information dictionary, and
         the match information dictionary
     """
-    import papi
+    import footballpy.fs.loader.papi as papi
+
     # read in position data
     pos_data, ball_data, match, teams = run(match_info_file, match_pos_file)
     # rescale to actual meters
@@ -514,9 +521,9 @@ def get_match_events(match_event_file):
                 'whistle_on_second': whistle_on_second, 'whistle_off_second': whistle_off_second }
 
     root = etree.parse(match_event_file).getroot()
-    timezone = dup.parse(root.xpath('//sports-event/event-metadata/@start-date-time')[0]).tzinfo
     result = dict()
 
+    result['timezone'] = dup.parse(root.xpath('//sports-event/event-metadata/@start-date-time')[0]).tzinfo
     result['goal_shots'] = get_goal_shots(root)
     result['whistle_on_off'] = get_kick_off_whistles(root)
 
@@ -549,7 +556,6 @@ if __name__ == "__main__":
     pos_data_sc, ball_data_sc = rescale_xy_positions(pos_data, ball_data, **match['stadium'])
     pos_data_reindex, ball_data_reindex = increase_frame_counter(pos_data_sc, ball_data_sc)
     pos_df = get_df_from_files(match_info_file, match_pos_file)
-    """
     mep = MatchEventParser()
     mep.run(match_event_file)
     #events = mep.getEvents()

@@ -374,7 +374,8 @@ def get_df_from_files(match_info_file, match_pos_file):
         the teams information dictionary, and
         the match information dictionary
     """
-    import papi
+    import footballpy.fs.loader.papi as papi
+
     mip = MatchInformationParser()
     mip.run(match_info_file)
     teams, match = mip.getTeamInformation()
@@ -411,6 +412,6 @@ if __name__ == "__main__":
     fname_pos = data_path + "/ObservedPositionalData/" + fname
     mpp.run(fname_pos)
     pos_data,ball_data,timestamps = mpp.getPositionInformation()
-    df, teams, match = get_df_from_files(match_info_file, match_pos_file)
     """
+    df, teams, match = get_df_from_files(match_info_file, match_pos_file)
     events = get_match_events(match_event_file)

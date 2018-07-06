@@ -34,6 +34,7 @@ class MatchInformationParser(ContentHandler):
         self.inTeam = False
         self.inHomeTeam = False
         self.inPlayer = False
+        self.inCoach = False
         self.currentPlayer = None
         self.HomeTeamName = ''
         self.GuestTeamName = ''
@@ -57,6 +58,9 @@ class MatchInformationParser(ContentHandler):
         elif name == 'tournament-metadata':
             self.match['league'] = attrs['tournament-name'].split(' ')[1]
             self.match['tracking_source'] = attrs['tournament-source'].split('.')[0]
+
+        elif name == 'associate':
+            self.inCoach = True
 
         elif name == 'event-metadata':
             self.match['match-id'] = attrs['event-key']
@@ -85,8 +89,9 @@ class MatchInformationParser(ContentHandler):
             else:
                 raise NameError("Couldn't determine role")
 
-        elif name == 'name' and self.inTeam and not self.inPlayer:
-            if 'imp:dfl-3-letter-code' in attrs.keys():
+        elif name == 'name' and self.inTeam and not self.inPlayer and not self.inCoach:
+            #if 'imp:dfl-3-letter-code' in attrs.keys():
+            if not 'lastname' in attrs.keys():
                 full_name = attrs['full']
                 if self.inHomeTeam:
                     self.HomeTeamName = full_name
@@ -123,6 +128,8 @@ class MatchInformationParser(ContentHandler):
             self.inTeam = False
         elif name == 'player':
             self.inPlayer = False
+        elif name == 'associate':
+            self.inCoach = False
 
     def getTeamInformation(self):
         """Extractor function."""
@@ -541,10 +548,13 @@ if __name__ == "__main__":
 
     print("Parsing match information")
     match, teams = get_impire_match_information(fname_match, fname_pos)
+    """
     mip = MatchInformationParser()
-    mip.run(fname_match)
+    mip.run(match_info_file)
     teams, match = mip.getTeamInformation()
+    """
     match['stadium'] = read_stadium_dimensions_from_pos(fname_pos)
+
     
     home,guest,ball,half_time_id = read_in_position_data(data_path + fname_pos)
     home_1, home_2 = split_positions_into_game_halves(home,half_time_id,ball)

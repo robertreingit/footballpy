@@ -560,3 +560,4 @@ if __name__ == "__main__":
     mep.run(match_event_file)
     #events = mep.getEvents()
     imp_events = get_match_events(match_events_file)
+	"""

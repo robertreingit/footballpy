@@ -376,6 +376,6 @@ if __name__ == "__main__":
     fname_pos = data_path + "/ObservedPositionalData/" + fname
     mpp.run(fname_pos)
     pos_data,ball_data,timestamps = mpp.getPositionInformation()
-    """
 	df, teams, match = get_df_from_files(match_info_file, match_pos_file)
+    """
     

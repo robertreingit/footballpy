@@ -1,0 +1,864 @@
+<?xml version="1.0" encoding="UTF-8" standalone='no'?>
+<!DOCTYPE sports-content SYSTEM "../specification/dtd/sportsml-core.dtd" >
+<!--
+    Copyright (c) 2003 - 2012 proFILE Computersysteme GmbH.
+    All Rights Reserved.
+    proFILE MAKES NO REPRESENTATIONS OR WARRANTIES ABOUT THE SUITABILITY OF
+    THE SOFTWARE, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+    IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
+    OR NON-INFRINGEMENT. proFILE SHALL NOT BE LIABLE FOR ANY DAMAGES SUFFERED
+    BY LICENSEE AS A RESULT OF USING, MODIFYING OR DISTRIBUTING THIS SOFTWARE
+    OR ITS DERIVATIVES.
+-->
+<sports-content xmlns:imp="http://web.impire.de/SportsML/v1.5/doc/index.html">
+    <sports-metadata date-time="20120825T000000+0200"
+                     doc-id="match_facts_20120101T000000+0100_51_date20120825T000000+0200_spnr138105"
+                     language="de-DE">
+        <sports-title> Match Facts Bundesliga</sports-title>
+        <sports-content-codes>
+            <sports-content-code code-type="sport"
+                                 code-key="15054000"
+                                 code-source="iptc.org"
+                                 code-name="soccer"/>
+            <sports-content-code code-type="league"
+                                 code-key="soccer.l_51"
+                                 code-source="impire.tv"
+                                 code-name="Bundesliga"/>
+            <sports-content-code code-type="team"
+                                 code-key="soccer.t_12"
+                                 code-source="impire.tv"
+                                 code-name="Eintracht Frankfurt"/>
+            <sports-content-code code-type="team"
+                                 code-key="soccer.t_16"
+                                 code-source="impire.tv"
+                                 code-name="Bayer 04 Leverkusen"/>
+        </sports-content-codes>
+    </sports-metadata>
+    <tournament>
+        <tournament-metadata tournament-name="Fussball Bundesliga"
+                             tournament-key="51"
+                             tournament-source="impire.tv"
+                             date-coverage-type="season-full"
+                             date-coverage-value="20120101T000000+0100"
+                         />
+        <tournament-division>
+            <tournament-division-metadata division-name="Hinrunde"
+                                          division-key="1"
+                                          division-source="impire.tv"/>
+            <tournament-round round-number="1"
+                              round-name="round_1"
+                              round-key="1"
+                              round-source="impire.tv">
+                <sports-event>
+                    <event-metadata id="E_138105"
+                                    event-key="138105"
+                                    event-status="post-event"
+                                    start-date-time="20120825T183000+0200"
+                                    start-weekday="saturday"
+                                    heat-number="1"
+                                    date-coverage-type="event"
+                                    date-coverage-value="20120825T183000+0200"
+                                    site-attendance="27950"
+                                    imp:soldout="0"
+                                    imp:live-period="2"
+                                    imp:has-overtime="0"
+                                    imp:has-overtime2="0"
+                                    imp:has-penalty-shootout="0"
+                                    >
+                        <event-metadata-soccer period-value="2"
+                                               minutes-elapsed="90"
+                                               period-minute-elapsed="45"
+                                               >
+                            <time-adjustment period-extra-time-elapsed="0300"/>
+                        </event-metadata-soccer>
+                        <sports-property formal-name="quality" value="1"/>
+                        <sports-property formal-name="tracking-live-home" value="1"/>
+                        <sports-property formal-name="tracking-live-away" value="1"/>
+                        <sports-property formal-name="tracking-live-ball" value="1"/>
+                        <sports-property formal-name="tracking-live-referee" value="1"/>
+                    </event-metadata>
+                    <team>
+                        <team-metadata id="O_12"
+                                       team-key="12"
+                                       alignment="home"
+                                       imp:uniform-color-name="rot"
+                                       imp:uniform-color-hex="#ff0000">
+                            <name full="Eintracht Frankfurt"
+                                  nickname="E. Frankfurt"/>
+                        </team-metadata>
+                        <team-stats score="2">
+                                <sub-score period-value="period-1" score="0"/>
+                                <sub-score period-value="period-2" score="2"/>
+                        </team-stats>
+                        <player>
+                            <player-metadata id="P_138105_37876"
+                                             player-key="37876"
+                                             position-regular="goalie" 
+                                             position-event="goalie" 
+                                             imp:x-coordinate="10"
+                                             imp:y-coordinate="1"
+                                             imp:tracking-x-coordinate="-0.7613"
+                                             imp:tracking-y-coordinate="-0.0096"
+                                             imp:yellow-cards="0"
+                                             status="starter"
+                                             uniform-number="31">
+                                <name full="Kevin Trapp" 
+                                      nickname="K. Trapp"
+                                      last="Trapp"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_138105_38567"
+                                             player-key="38567"
+                                             position-regular="defenseman" 
+                                             position-event="defenseman" 
+                                             imp:x-coordinate="7"
+                                             imp:y-coordinate="4"
+                                             imp:tracking-x-coordinate="-0.2943"
+                                             imp:tracking-y-coordinate="0.1689"
+                                             imp:yellow-cards="1"
+                                             status="starter"
+                                             uniform-number="23">
+                                <name full="Bamba Anderson" 
+                                      nickname="B. Anderson"
+                                      last="Anderson"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_138105_39019"
+                                             player-key="39019"
+                                             position-regular="defenseman" 
+                                             position-event="defenseman" 
+                                             imp:x-coordinate="2"
+                                             imp:y-coordinate="4"
+                                             imp:tracking-x-coordinate="-0.1408"
+                                             imp:tracking-y-coordinate="0.5199"
+                                             imp:yellow-cards="0"
+                                             status="starter"
+                                             uniform-number="6">
+                                <name full="Bastian Oczipka" 
+                                      nickname="B. Oczipka"
+                                      last="Oczipka"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_138105_40152"
+                                             player-key="40152"
+                                             position-regular="defenseman" 
+                                             position-event="defenseman" 
+                                             imp:x-coordinate="18"
+                                             imp:y-coordinate="4"
+                                             imp:tracking-x-coordinate="-0.1109"
+                                             imp:tracking-y-coordinate="-0.5636"
+                                             imp:yellow-cards="0"
+                                             status="starter"
+                                             uniform-number="24">
+                                <name full="Sebastian Jung" 
+                                      nickname="S. Jung"
+                                      last="Jung"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_138105_37376"
+                                             player-key="37376"
+                                             position-regular="defenseman" 
+                                             position-event="defenseman" 
+                                             imp:x-coordinate="13"
+                                             imp:y-coordinate="4"
+                                             imp:tracking-x-coordinate="-0.3339"
+                                             imp:tracking-y-coordinate="-0.2125"
+                                             imp:yellow-cards="0"
+                                             status="starter"
+                                             uniform-number="2">
+                                <name full="Carlos Zambrano" 
+                                      nickname="C. Zambrano"
+                                      last="Zambrano"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_138105_32716"
+                                             player-key="32716"
+                                             position-regular="mid-fielder" 
+                                             position-event="mid-fielder" 
+                                             imp:x-coordinate="12"
+                                             imp:y-coordinate="6"
+                                             imp:tracking-x-coordinate="-0.1266"
+                                             imp:tracking-y-coordinate="-0.0691"
+                                             imp:yellow-cards="0"
+                                             status="starter"
+                                             uniform-number="27">
+                                <name full="Pirmin Schwegler" 
+                                      nickname="P. Schwegler"
+                                      last="Schwegler"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_138105_37902"
+                                             player-key="37902"
+                                             position-regular="mid-fielder" 
+                                             position-event="mid-fielder" 
+                                             imp:x-coordinate="8"
+                                             imp:y-coordinate="6"
+                                             imp:tracking-x-coordinate="-0.0828"
+                                             imp:tracking-y-coordinate="-0.0089"
+                                             imp:yellow-cards="0"
+                                             status="starter"
+                                             uniform-number="20">
+                                <name full="Sebastian Rode" 
+                                      nickname="S. Rode"
+                                      last="Rode"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_138105_33496"
+                                             player-key="33496"
+                                             position-regular="mid-fielder" 
+                                             position-event="mid-fielder" 
+                                             imp:x-coordinate="18"
+                                             imp:y-coordinate="10"
+                                             imp:tracking-x-coordinate="0.1120"
+                                             imp:tracking-y-coordinate="-0.2384"
+                                             imp:yellow-cards="0"
+                                             status="starter"
+                                             uniform-number="16">
+                                <name full="Stefan Aigner" 
+                                      nickname="S. Aigner"
+                                      last="Aigner"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_138105_19969"
+                                             player-key="19969"
+                                             position-regular="mid-fielder" 
+                                             position-event="mid-fielder" 
+                                             imp:x-coordinate="10"
+                                             imp:y-coordinate="10"
+                                             imp:tracking-x-coordinate="0.2047"
+                                             imp:tracking-y-coordinate="0.0490"
+                                             imp:yellow-cards="0"
+                                             status="starter"
+                                             uniform-number="14">
+                                <name full="Alexander Meier" 
+                                      nickname="A. Meier"
+                                      last="Meier"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_138105_45885"
+                                             player-key="45885"
+                                             position-regular="mid-fielder" 
+                                             position-event="mid-fielder" 
+                                             imp:x-coordinate="2"
+                                             imp:y-coordinate="10"
+                                             imp:tracking-x-coordinate="0.0919"
+                                             imp:tracking-y-coordinate="0.3585"
+                                             imp:yellow-cards="0"
+                                             status="starter"
+                                             uniform-number="8">
+                                <name full="Takashi Inui" 
+                                      nickname="T. Inui"
+                                      last="Inui"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_138105_42934"
+                                             player-key="42934"
+                                             position-regular="forward" 
+                                             position-event="forward" 
+                                             imp:x-coordinate="10"
+                                             imp:y-coordinate="12"
+                                             imp:tracking-x-coordinate="0.2714"
+                                             imp:tracking-y-coordinate="0.0239"
+                                             imp:yellow-cards="0"
+                                             status="starter"
+                                             uniform-number="9">
+                                <name full="Olivier Occean" 
+                                      nickname="O. Occean"
+                                      last="Occean"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_138105_7454"
+                                             player-key="7454"
+                                             position-regular="goalie" 
+                                             imp:x-coordinate="0"
+                                             imp:y-coordinate="0"
+                                             imp:yellow-cards="0"
+                                             status="bench"
+                                             uniform-number="1">
+                                <name full="Oka Nikolov" 
+                                      nickname="O. Nikolov"
+                                      last="Nikolov"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_138105_31814"
+                                             player-key="31814"
+                                             position-regular="defenseman" 
+                                             position-event="defenseman" 
+                                             imp:x-coordinate="0"
+                                             imp:y-coordinate="0"
+                                             imp:tracking-x-coordinate="-0.0106"
+                                             imp:tracking-y-coordinate="-0.4012"
+                                             imp:yellow-cards="0"
+                                             status="bench"
+                                             uniform-number="22">
+                                <name full="Stefano Celozzi" 
+                                      nickname="S. Celozzi"
+                                      last="Celozzi"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_138105_37821"
+                                             player-key="37821"
+                                             position-regular="defenseman" 
+                                             imp:x-coordinate="0"
+                                             imp:y-coordinate="0"
+                                             imp:yellow-cards="0"
+                                             status="bench"
+                                             uniform-number="4">
+                                <name full="Vadim Demidov" 
+                                      nickname="V. Demidov"
+                                      last="Demidov"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_138105_26762"
+                                             player-key="26762"
+                                             position-regular="mid-fielder" 
+                                             position-event="mid-fielder" 
+                                             imp:x-coordinate="0"
+                                             imp:y-coordinate="0"
+                                             imp:tracking-x-coordinate="-0.1061"
+                                             imp:tracking-y-coordinate="-0.0898"
+                                             imp:yellow-cards="0"
+                                             status="bench"
+                                             uniform-number="13">
+                                <name full="Martin Lanig" 
+                                      nickname="M. Lanig"
+                                      last="Lanig"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_138105_16770"
+                                             player-key="16770"
+                                             position-regular="mid-fielder" 
+                                             position-event="mid-fielder" 
+                                             imp:x-coordinate="0"
+                                             imp:y-coordinate="0"
+                                             imp:tracking-x-coordinate="0.0486"
+                                             imp:tracking-y-coordinate="0.2609"
+                                             imp:yellow-cards="0"
+                                             status="bench"
+                                             uniform-number="7">
+                                <name full="Benjamin K&#xF6;hler" 
+                                      nickname="B. K&#xF6;hler"
+                                      last="K&#xF6;hler"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_138105_29920"
+                                             player-key="29920"
+                                             position-regular="mid-fielder" 
+                                             imp:x-coordinate="0"
+                                             imp:y-coordinate="0"
+                                             imp:yellow-cards="0"
+                                             status="bench"
+                                             uniform-number="21">
+                                <name full="Karim Matmour" 
+                                      nickname="K. Matmour"
+                                      last="Matmour"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_138105_28913"
+                                             player-key="28913"
+                                             position-regular="forward" 
+                                             imp:x-coordinate="0"
+                                             imp:y-coordinate="0"
+                                             imp:yellow-cards="0"
+                                             status="bench"
+                                             uniform-number="10">
+                                <name full="Erwin Hoffer" 
+                                      nickname="E. Hoffer"
+                                      last="Hoffer"/>
+                            </player-metadata>
+                        </player>
+                        <associate>
+                            <associate-metadata id="PA_138105_1772"
+                                                associate-key="1772"
+                                                position="coach">
+                                <name full="Armin Veh" nickname="A. Veh"/>
+                            </associate-metadata>
+                        </associate>
+                    </team>
+                    <team>
+                        <team-metadata id="O_16"
+                                       team-key="16"
+                                       alignment="away"
+                                       imp:uniform-color-name="wei&#xDF;"
+                                       imp:uniform-color-hex="#ffffff">
+                            <name full="Bayer 04 Leverkusen"
+                                  nickname="Leverkusen"/>
+                        </team-metadata>
+                        <team-stats score="1">
+                                <sub-score period-value="period-1" score="1"/>
+                                <sub-score period-value="period-2" score="0"/>
+                        </team-stats>
+                        <player>
+                            <player-metadata id="P_138105_42113"
+                                             player-key="42113"
+                                             position-regular="goalie" 
+                                             position-event="goalie" 
+                                             imp:x-coordinate="10"
+                                             imp:y-coordinate="1"
+                                             imp:tracking-x-coordinate="0.7520"
+                                             imp:tracking-y-coordinate="-0.0066"
+                                             imp:yellow-cards="0"
+                                             status="starter"
+                                             uniform-number="1">
+                                <name full="Bernd Leno" 
+                                      nickname="B. Leno"
+                                      last="Leno"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_138105_36631"
+                                             player-key="36631"
+                                             position-regular="defenseman" 
+                                             position-event="defenseman" 
+                                             imp:x-coordinate="7"
+                                             imp:y-coordinate="4"
+                                             imp:tracking-x-coordinate="0.3066"
+                                             imp:tracking-y-coordinate="-0.1975"
+                                             imp:yellow-cards="0"
+                                             status="starter"
+                                             uniform-number="21">
+                                <name full="&#xD6;mer Toprak" 
+                                      nickname="&#xD6;. Toprak"
+                                      last="Toprak"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_138105_36010"
+                                             player-key="36010"
+                                             position-regular="defenseman" 
+                                             position-event="defenseman" 
+                                             imp:x-coordinate="13"
+                                             imp:y-coordinate="4"
+                                             imp:tracking-x-coordinate="0.2973"
+                                             imp:tracking-y-coordinate="0.1619"
+                                             imp:yellow-cards="0"
+                                             status="starter"
+                                             uniform-number="4">
+                                <name full="Philipp Wollscheid" 
+                                      nickname="P. Wollscheid"
+                                      last="Wollscheid"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_138105_15341"
+                                             player-key="15341"
+                                             position-regular="defenseman" 
+                                             position-event="defenseman" 
+                                             imp:x-coordinate="2"
+                                             imp:y-coordinate="4"
+                                             imp:tracking-x-coordinate="0.1384"
+                                             imp:tracking-y-coordinate="-0.4816"
+                                             imp:yellow-cards="0"
+                                             status="starter"
+                                             uniform-number="24">
+                                <name full="Michal Kadlec" 
+                                      nickname="M. Kadlec"
+                                      last="Kadlec"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_138105_34334"
+                                             player-key="34334"
+                                             position-regular="defenseman" 
+                                             position-event="defenseman" 
+                                             imp:x-coordinate="18"
+                                             imp:y-coordinate="4"
+                                             imp:tracking-x-coordinate="0.1602"
+                                             imp:tracking-y-coordinate="0.4829"
+                                             imp:yellow-cards="1"
+                                             status="starter"
+                                             uniform-number="2">
+                                <name full="Daniel Schwaab" 
+                                      nickname="D. Schwaab"
+                                      last="Schwaab"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_138105_34048"
+                                             player-key="34048"
+                                             position-regular="mid-fielder" 
+                                             position-event="mid-fielder" 
+                                             imp:x-coordinate="10"
+                                             imp:y-coordinate="6"
+                                             imp:tracking-x-coordinate="0.2105"
+                                             imp:tracking-y-coordinate="-0.0139"
+                                             imp:yellow-cards="0"
+                                             status="starter"
+                                             uniform-number="3">
+                                <name full="Stefan Reinartz" 
+                                      nickname="S. Reinartz"
+                                      last="Reinartz"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_138105_40419"
+                                             player-key="40419"
+                                             position-regular="mid-fielder" 
+                                             position-event="mid-fielder" 
+                                             imp:x-coordinate="12"
+                                             imp:y-coordinate="10"
+                                             imp:tracking-x-coordinate="-0.1131"
+                                             imp:tracking-y-coordinate="0.2309"
+                                             imp:yellow-cards="0"
+                                             status="starter"
+                                             uniform-number="38">
+                                <name full="Karim Bellarabi" 
+                                      nickname="K. Bellarabi"
+                                      last="Bellarabi"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_138105_33559"
+                                             player-key="33559"
+                                             position-regular="mid-fielder" 
+                                             position-event="mid-fielder" 
+                                             imp:x-coordinate="15"
+                                             imp:y-coordinate="8"
+                                             imp:tracking-x-coordinate="0.0717"
+                                             imp:tracking-y-coordinate="0.2035"
+                                             imp:yellow-cards="0"
+                                             status="starter"
+                                             uniform-number="8">
+                                <name full="Lars Bender" 
+                                      nickname="L. Bender"
+                                      last="Bender"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_138105_17778"
+                                             player-key="17778"
+                                             position-regular="mid-fielder" 
+                                             position-event="mid-fielder" 
+                                             imp:x-coordinate="5"
+                                             imp:y-coordinate="8"
+                                             imp:tracking-x-coordinate="0.0841"
+                                             imp:tracking-y-coordinate="-0.2971"
+                                             imp:yellow-cards="0"
+                                             status="starter"
+                                             uniform-number="6">
+                                <name full="Simon Rolfes" 
+                                      nickname="S. Rolfes"
+                                      last="Rolfes"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_138105_26213"
+                                             player-key="26213"
+                                             position-regular="forward" 
+                                             position-event="forward" 
+                                             imp:x-coordinate="10"
+                                             imp:y-coordinate="12"
+                                             imp:tracking-x-coordinate="-0.2334"
+                                             imp:tracking-y-coordinate="-0.0331"
+                                             imp:yellow-cards="1"
+                                             status="starter"
+                                             uniform-number="11">
+                                <name full="Stefan Kie&#xDF;ling" 
+                                      nickname="S. Kie&#xDF;ling"
+                                      last="Kie&#xDF;ling"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_138105_40625"
+                                             player-key="40625"
+                                             position-regular="forward" 
+                                             position-event="forward" 
+                                             imp:x-coordinate="8"
+                                             imp:y-coordinate="10"
+                                             imp:tracking-x-coordinate="-0.1367"
+                                             imp:tracking-y-coordinate="-0.1709"
+                                             imp:yellow-cards="0"
+                                             status="starter"
+                                             uniform-number="9">
+                                <name full="Andre Sch&#xFC;rrle" 
+                                      nickname="A. Sch&#xFC;rrle"
+                                      last="Sch&#xFC;rrle"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_138105_31385"
+                                             player-key="31385"
+                                             position-regular="goalie" 
+                                             imp:x-coordinate="0"
+                                             imp:y-coordinate="0"
+                                             imp:yellow-cards="0"
+                                             status="bench"
+                                             uniform-number="22">
+                                <name full="David Yelldell" 
+                                      nickname="D. Yelldell"
+                                      last="Yelldell"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_138105_29011"
+                                             player-key="29011"
+                                             position-regular="defenseman" 
+                                             position-event="defenseman" 
+                                             imp:x-coordinate="0"
+                                             imp:y-coordinate="0"
+                                             imp:tracking-x-coordinate="-0.1057"
+                                             imp:tracking-y-coordinate="0.2010"
+                                             imp:yellow-cards="0"
+                                             status="bench"
+                                             uniform-number="27">
+                                <name full="Gonzalo Castro" 
+                                      nickname="G. Castro"
+                                      last="Castro"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_138105_46752"
+                                             player-key="46752"
+                                             position-regular="defenseman" 
+                                             imp:x-coordinate="0"
+                                             imp:y-coordinate="0"
+                                             imp:yellow-cards="0"
+                                             status="bench"
+                                             uniform-number="20">
+                                <name full="Daniel Carvajal" 
+                                      nickname="D. Carvajal"
+                                      last="Carvajal"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_138105_15881"
+                                             player-key="15881"
+                                             position-regular="defenseman" 
+                                             imp:x-coordinate="0"
+                                             imp:y-coordinate="0"
+                                             imp:yellow-cards="0"
+                                             status="bench"
+                                             uniform-number="5">
+                                <name full="Manuel Friedrich" 
+                                      nickname="M. Friedrich"
+                                      last="Friedrich"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_138105_35591"
+                                             player-key="35591"
+                                             position-regular="mid-fielder" 
+                                             imp:x-coordinate="0"
+                                             imp:y-coordinate="0"
+                                             imp:yellow-cards="0"
+                                             status="bench"
+                                             uniform-number="13">
+                                <name full="Jens Hegeler" 
+                                      nickname="J. Hegeler"
+                                      last="Hegeler"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_138105_35146"
+                                             player-key="35146"
+                                             position-regular="mid-fielder" 
+                                             imp:x-coordinate="0"
+                                             imp:y-coordinate="0"
+                                             imp:yellow-cards="0"
+                                             status="bench"
+                                             uniform-number="14">
+                                <name full="Hajime Hosogai" 
+                                      nickname="H. Hosogai"
+                                      last="Hosogai"/>
+                            </player-metadata>
+                        </player>
+                        <player>
+                            <player-metadata id="P_138105_47574"
+                                             player-key="47574"
+                                             position-regular="forward" 
+                                             position-event="forward" 
+                                             imp:x-coordinate="0"
+                                             imp:y-coordinate="0"
+                                             imp:tracking-x-coordinate="-0.3300"
+                                             imp:tracking-y-coordinate="0.2683"
+                                             imp:yellow-cards="0"
+                                             status="bench"
+                                             uniform-number="7">
+                                <name full="Junior Fernandes" 
+                                      nickname="Jr. Fernandes"
+                                      last="Junior Fernandes"/>
+                            </player-metadata>
+                        </player>
+                        <associate>
+                            <associate-metadata id="PA_138105_47076"
+                                                associate-key="47076"
+                                                position="coach">
+                                <name full="Sascha Lewandowski" nickname="S. Lewandowski"/>
+                            </associate-metadata>
+                        </associate>
+                    </team>
+                    <officials>
+                        <official>
+                            <official-metadata official-key="P_138105_12251"
+                                               position="referee">
+                                <name full="Thorsten Kinh&#xF6;fer"
+                                      nickname="T. Kinh&#xF6;fer"
+                                      city="Herne"/>
+                                <home-location city="Herne"
+                                               country="GER"/>
+                                <sports-property formal-name="nationality" value="Deutschland"/>
+                            </official-metadata>
+                        </official>
+                    </officials>
+                    <event-actions>
+                        <event-actions-soccer>
+                            <action-soccer-substitution person-original-idref="P_138105_40419"
+                                                        person-replacing-idref="P_138105_29011"
+                                                        period-value="2"
+                                                        period-minute-elapsed="24"
+                                                        minutes-elapsed="69"
+                                                        imp:timestamp="19:55:26.89"
+                                                        team-idref="O_16" />
+                            <action-soccer-substitution person-original-idref="P_138105_45885"
+                                                        person-replacing-idref="P_138105_31814"
+                                                        period-value="2"
+                                                        period-minute-elapsed="31"
+                                                        minutes-elapsed="76"
+                                                        imp:timestamp="20:02:09.28"
+                                                        team-idref="O_12" />
+                            <action-soccer-substitution person-original-idref="P_138105_37902"
+                                                        person-replacing-idref="P_138105_26762"
+                                                        period-value="2"
+                                                        period-minute-elapsed="32"
+                                                        minutes-elapsed="77"
+                                                        imp:timestamp="20:03:47.26"
+                                                        team-idref="O_12" />
+                            <action-soccer-substitution person-original-idref="P_138105_34048"
+                                                        person-replacing-idref="P_138105_47574"
+                                                        period-value="2"
+                                                        period-minute-elapsed="39"
+                                                        minutes-elapsed="84"
+                                                        imp:timestamp="20:10:04.73"
+                                                        team-idref="O_16" />
+                            <action-soccer-substitution person-original-idref="P_138105_33496"
+                                                        person-replacing-idref="P_138105_16770"
+                                                        period-value="2"
+                                                        period-minute-elapsed="43"
+                                                        minutes-elapsed="88"
+                                                        imp:timestamp="20:14:05.32"
+                                                        team-idref="O_12" />
+                            <action-soccer-score player-idref="P_138105_26213"
+                                                 period-value="1"
+                                                 period-minute-elapsed="30"
+                                                 minutes-elapsed="30"
+                                                 imp:timestamp="18:59:43.73"
+                                                 score-team="1"
+                                                 score-team-opposing="0"
+                                                 team-idref="O_16"
+                                                 score-attempt-method="left-foot"
+                                                 score-attempt-type="regular"
+                                                 imp:score-attempt-position="near"
+                                                 imp:dfl-assist-idref="0"
+                                                 >
+                                <action-soccer-assisting-player player-idref="P_138105_40419"/>
+                            </action-soccer-score>
+                            <action-soccer-score player-idref="P_138105_33496"
+                                                 period-value="2"
+                                                 period-minute-elapsed="12"
+                                                 minutes-elapsed="57"
+                                                 imp:timestamp="19:43:45.02"
+                                                 score-team="1"
+                                                 score-team-opposing="1"
+                                                 team-idref="O_12"
+                                                 score-attempt-method="right-foot"
+                                                 score-attempt-type="regular"
+                                                 imp:score-attempt-position="near"
+                                                 imp:dfl-assist-idref="0"
+                                                 >
+                                <action-soccer-assisting-player player-idref="P_138105_45885"/>
+                            </action-soccer-score>
+                            <action-soccer-score player-idref="P_138105_26762"
+                                                 period-value="2"
+                                                 period-minute-elapsed="37"
+                                                 minutes-elapsed="82"
+                                                 imp:timestamp="20:08:11.21"
+                                                 score-team="2"
+                                                 score-team-opposing="1"
+                                                 team-idref="O_12"
+                                                 score-attempt-method="head"
+                                                 score-attempt-type="regular"
+                                                 imp:score-attempt-position="near"
+                                                 imp:dfl-assist-idref="31814"
+                                                 >
+                                <action-soccer-assisting-player player-idref="P_138105_31814"/>
+                            </action-soccer-score>
+                            <action-soccer-penalty recipient-type="player"
+                                                   recipient-idref="P_138105_38567"
+                                                   period-value="1"
+                                                   imp:timestamp="19:04:27.12"
+                                                   period-minute-elapsed="34"
+                                                   minutes-elapsed="34"
+                                                   penalty-level="yellow-card"
+                                                   comment="unknown"
+                                                    />
+                            <action-soccer-penalty recipient-type="player"
+                                                   recipient-idref="P_138105_34334"
+                                                   period-value="1"
+                                                   imp:timestamp="19:12:27.76"
+                                                   period-minute-elapsed="42"
+                                                   minutes-elapsed="42"
+                                                   penalty-level="yellow-card"
+                                                   comment="unknown"
+                                                    />
+                            <action-soccer-penalty recipient-type="player"
+                                                   recipient-idref="P_138105_26213"
+                                                   period-value="2"
+                                                   imp:timestamp="20:14:33.45"
+                                                   period-minute-elapsed="43"
+                                                   minutes-elapsed="88"
+                                                   penalty-level="yellow-card"
+                                                   comment="unknown"
+                                                    />
+                            <action-soccer-other action-type="period-start"
+                                                 period-value="1"
+                                                 imp:timestamp="18:30:41.34"
+                                                 imp:auto-text="Beginn 1. H&#x26;#xE4;lfte"
+                                                 />
+                            <action-soccer-other action-type="period-end"
+                                                 period-value="1"
+                                                 imp:timestamp="19:15:52.35"
+                                                 imp:auto-text="Ende 1. H&#x26;#xE4;lfte"
+                                                 imp:injury-time-elapsed="1"
+                                                 />
+                            <action-soccer-other action-type="period-start"
+                                                 period-value="2"
+                                                 imp:timestamp="19:32:03.18"
+                                                 imp:auto-text="Beginn 2. H&#x26;#xE4;lfte"
+                                                 />
+                            <action-soccer-other action-type="period-end"
+                                                 period-value="2"
+                                                 imp:timestamp="20:19:07.38"
+                                                 imp:auto-text="Ende 2. H&#x26;#xE4;lfte"
+                                                 imp:injury-time-elapsed="3"
+                                                 />
+                            <action-soccer-other action-type="event-end"
+                                                 period-value="2"
+                                                 imp:timestamp="20:19:07.38"
+                                                 imp:auto-text="Spielende"
+                                                 />
+                        </event-actions-soccer>
+                    </event-actions>
+                </sports-event>
+            </tournament-round>
+        </tournament-division>
+     </tournament>
+</sports-content>
+
+

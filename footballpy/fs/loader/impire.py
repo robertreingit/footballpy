@@ -34,6 +34,7 @@ class MatchInformationParser(ContentHandler):
         self.inTeam = False
         self.inHomeTeam = False
         self.inPlayer = False
+        self.inCoach = False
         self.currentPlayer = None
         self.HomeTeamName = ''
         self.GuestTeamName = ''
@@ -45,6 +46,7 @@ class MatchInformationParser(ContentHandler):
                 'match_day': '',
                 'game_name': '',
                 'start_date': '',
+                'season': '',
                 'league': ''}
 
     def startElement(self,name,attrs):
@@ -57,9 +59,17 @@ class MatchInformationParser(ContentHandler):
             self.match['league'] = attrs['tournament-name'].split(' ')[1]
             self.match['tracking_source'] = attrs['tournament-source'].split('.')[0]
 
+        elif name == 'associate':
+            self.inCoach = True
+
         elif name == 'event-metadata':
             self.match['match-id'] = attrs['event-key']
-            self.match['start_date'] = dup.parse(attrs['start-date-time'])
+            start_date = dup.parse(attrs['start-date-time'])
+            self.match['start_date'] = start_date 
+            if start_date.month < 8:
+                self.match['season'] = '{0}/{1}'.format(start_date.year - 1, start_date.year)
+            else:
+                self.match['season'] = '{0}/{1}'.format(start_date.year, start_date.year + 1)
 
         elif name == "team":
             self.inTeam = True
@@ -79,8 +89,9 @@ class MatchInformationParser(ContentHandler):
             else:
                 raise NameError("Couldn't determine role")
 
-        elif name == 'name' and self.inTeam and not self.inPlayer:
-            if 'imp:dfl-3-letter-code' in attrs.keys():
+        elif name == 'name' and self.inTeam and not self.inPlayer and not self.inCoach:
+            #if 'imp:dfl-3-letter-code' in attrs.keys():
+            if not 'lastname' in attrs.keys():
                 full_name = attrs['full']
                 if self.inHomeTeam:
                     self.HomeTeamName = full_name
@@ -117,6 +128,8 @@ class MatchInformationParser(ContentHandler):
             self.inTeam = False
         elif name == 'player':
             self.inPlayer = False
+        elif name == 'associate':
+            self.inCoach = False
 
     def getTeamInformation(self):
         """Extractor function."""
@@ -134,6 +147,55 @@ class MatchInformationParser(ContentHandler):
         parser.setFeature(feature_external_ges, False)
         parser.parse(fname)
         print('finished parsing match information')
+
+class MatchEventParser(ContentHandler):
+    """XML parser for the event(action) impire data.
+    """
+
+    def __init__(self):
+        """Initialization attributes."""
+        ContentHandler.__init__(self) 
+        self.result = dict()
+        self.result['shots'] = []
+
+    def startElement(self, name, attrs):
+        """Called for every starting element encountered."""
+        if name == 'action-soccer-score-attempt':
+            shot = dict()
+            shot['time'] = dup.parse(attrs['imp:timestamp'])
+            shot['team_id'] = attrs['team-idref']
+            shot['player_id'] = attrs['player-idref']
+            shot['second_player_id'] = attrs['imp:second-player-idref']
+            shot['attempt-method'] = attrs['score-attempt-method']
+            shot['shot_result'] = attrs['score-attempt-result']
+            shot['period'] = attrs['period-value']
+            shot['x1'] = attrs['imp:x1']
+            shot['y1']= attrs['imp:y1']
+            shot['x2']= attrs['imp:x2']
+            shot['y2'] = attrs['imp:y2']
+            self.result['shots'].append(shot)
+
+    def endElement(self, name):
+        """Called for every closing element encoutered."""
+        pass
+
+    def run(self, match_event_file):
+        """Runs the parser on the match_event_file.
+
+            Args:
+                match_event_file: full path to event file.
+            Returns:
+                None
+        """
+        parser = make_parser()
+        parser.setContentHandler(self)
+        parser.setFeature(feature_external_ges, False)
+        parser.parse(match_event_file)
+
+    def getEvents(self):
+        """Returns the parsed data."""
+        return self.result
+
 
 
 def read_in_position_data(fname):
@@ -401,7 +463,7 @@ def increase_frame_counter(position_data, ball_data, fh_frame_start = 10000, sh_
     return position_data_nf, ball_data_nf
 
 def get_df_from_files(match_info_file, match_pos_file):
-    """Wrapper function to get a pandas dataframe from DFl position data. 
+    """Wrapper function to get a pandas dataframe from impire position data. 
 
     This function is meant as an outside API to load position data from
     impire files.
@@ -414,7 +476,8 @@ def get_df_from_files(match_info_file, match_pos_file):
         the teams information dictionary, and
         the match information dictionary
     """
-    import papi
+    import footballpy.fs.loader.papi as papi
+
     # read in position data
     pos_data, ball_data, match, teams = run(match_info_file, match_pos_file)
     # rescale to actual meters
@@ -424,6 +487,55 @@ def get_df_from_files(match_info_file, match_pos_file):
     # transform to pandas dataframe
     pos_df = papi.pos_data_to_df(pos_data_reindex, ball_data_reindex)
     return pos_df, teams, match
+
+def get_match_events(match_event_file):
+    """Function to parse dfl match events.
+
+        Args:
+            match_event_file: full path to match event file.
+        Returns:
+            a dictionary with event entries.
+    """
+    from lxml import etree
+
+    def remove_ns_prefix(element_list, ns):
+        """Cleans out the namepace of the element list.
+
+            Args:
+            Returns:
+        """
+        new_list = [] 
+        for pair in element_list:
+            new_list.append((pair[0].replace('{' + ns + '}', ''), pair[1]))
+        return new_list
+   
+    def get_goal_shots(root):
+        """Extract the goal shot events. """
+        shots = ([remove_ns_prefix(shot.items(), root.nsmap['imp']) 
+            for shot in root.xpath('//action-soccer-score-attempt')])
+        return shots
+
+    def get_kick_off_whistles(root):
+        """Extract the kick-off and final whistles. """
+        def extract(root, time, period):
+            query_str = '//action-soccer-other[@action-type="period-{0}" and @period-value="{1}"]/@imp:timestamp'
+            return root.xpath(query_str.format(time, period), namespaces = root.nsmap)[0]
+        whistle_on_first = extract(root, 'start', '1')
+        whistle_off_first = extract(root, 'end', '1') 
+        whistle_on_second = extract(root, 'start', '2') 
+        whistle_off_second = extract(root, 'end', '2')
+        return { 'whistle_on_first': whistle_on_first, 'whistle_off_first': whistle_off_first,
+                'whistle_on_second': whistle_on_second, 'whistle_off_second': whistle_off_second }
+
+    root = etree.parse(match_event_file).getroot()
+    result = dict()
+
+    result['timezone'] = dup.parse(root.xpath('//sports-event/event-metadata/@start-date-time')[0]).tzinfo
+    result['goal_shots'] = get_goal_shots(root)
+    result['whistle_on_off'] = get_kick_off_whistles(root)
+
+    return result
+    
 
 #######################################
 if __name__ == "__main__":
@@ -436,10 +548,13 @@ if __name__ == "__main__":
 
     print("Parsing match information")
     match, teams = get_impire_match_information(fname_match, fname_pos)
+    """
     mip = MatchInformationParser()
-    mip.run(fname_match)
+    mip.run(match_info_file)
     teams, match = mip.getTeamInformation()
+    """
     match['stadium'] = read_stadium_dimensions_from_pos(fname_pos)
+
     
     home,guest,ball,half_time_id = read_in_position_data(data_path + fname_pos)
     home_1, home_2 = split_positions_into_game_halves(home,half_time_id,ball)
@@ -450,5 +565,9 @@ if __name__ == "__main__":
     pos_data, ball_data, match, teams = run(path_to_file, match_info_name, match_pos_name)
     pos_data_sc, ball_data_sc = rescale_xy_positions(pos_data, ball_data, **match['stadium'])
     pos_data_reindex, ball_data_reindex = increase_frame_counter(pos_data_sc, ball_data_sc)
-    """
     pos_df = get_df_from_files(match_info_file, match_pos_file)
+    mep = MatchEventParser()
+    mep.run(match_event_file)
+    #events = mep.getEvents()
+    imp_events = get_match_events(match_events_file)
+	"""

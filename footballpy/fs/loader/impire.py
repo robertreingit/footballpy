@@ -518,7 +518,8 @@ def get_match_events(match_event_file):
     def get_kick_off_whistles(root):
         """Extract the kick-off and final whistles. """
         def extract(root, time, period):
-            query_str = '//action-soccer-other[@action-type="period-{0}" and @period-value="{1}"]/@imp:timestamp'
+            query_str = ('//action-soccer-other[@action-type="period-{0}"' +
+            'and @period-value="{1}"]/@imp:timestamp')
             return root.xpath(query_str.format(time, period), namespaces = root.nsmap)[0]
         whistle_on_first = extract(root, 'start', '1')
         whistle_off_first = extract(root, 'end', '1') 
@@ -595,6 +596,8 @@ def get_team_info(match_info_file):
         Args:
         Returns:
     """
+    from lxml import etree
+
     def process_team(root, team):
         """Extracts the team entries from the matchinfo file.
 

@@ -418,6 +418,33 @@ def get_match_info(match_info_file):
     match['stadium'] = stadium
     return match
 
+def get_team_info(match_info_file):
+    """Caculates the team information from matchfacts file.
+        Args:
+            match_info_file: full path to the vistrack-matchfacts file
+        Returns:
+            a dictionary with the team lists
+    """
+    from lxml import etree
+
+    def process_player(element):
+        """
+        """
+        player_items = dict(element.items())
+        player = dict()
+        player['id'] = player_items['PersonId']
+        player['name'] = player_items['FirstName'] + ' ' + player_items['LastName']
+        player['trikot'] = player_items['ShirtNumber']
+        player['position'] = player_items['PlayingPosition'] if 'PlayingPosition' in player_items else ''
+        return player
+
+    root = etree.parse(match_info_file).getroot()
+    team = dict()
+    team['home'] = [process_player(player) for player in root.xpath('//Teams/Team[@Role="home"]/Players/Player')]
+    team['away'] = [process_player(player) for player in root.xpath('//Teams/Team[@Role="guest"]/Players/Player')]
+    return team
+
+
 #######################################
 if __name__ == "__main__":
     

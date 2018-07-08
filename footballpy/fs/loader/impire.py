@@ -536,6 +536,60 @@ def get_match_events(match_event_file):
 
     return result
     
+def get_match_info(match_info_file):
+    """Extracts match information data.
+
+        Args:
+            match_info_file: full path to vistrack-matchfacts file.
+        Returns:
+            a match information dictionary.
+    """
+    from lxml import etree
+
+    def get_team_info(root, team):
+        """Wrapper function to extract team metadata.
+
+            The resulting dictionary entries for the guest team is always "guest"
+            and not "away".
+
+            Args:
+                root: etree root elelment
+                team: indicator ['home' | ('away'|'guest')
+            Returns:
+                a dictionary with the according team entries.
+        """
+        team_entry = team
+        if team == 'away':
+            team_entry = 'guest'
+        team_name_query = '//team/team-metadata[@alignment="{0}"]/name/@full'
+        team_color_query = '//team/team-metadata[@alignment="{0}"]/@imp:uniform-color-hex'
+        team_id_query = '//team/team-metadata[@alignment="{0}"]/@team-key'
+        result = dict()
+        result['team_name_' + team_entry] = root.xpath(team_name_query.format(team))[0]
+        result['team_color_' + team_entry] = root.xpath(team_color_query.format(team),
+                namespaces=root.nsmap)[0]
+        result[team_entry] = root.xpath(team_id_query.format(team))[0]
+        return result
+
+
+    root = etree.parse(match_info_file).getroot()
+
+    match = dict()
+    match['match_day'] = root.xpath('//tournament-round/@round-number')[0]
+    match['match_id'] = root.xpath('//sports-event/event-metadata/@event-key')[0]
+    match['league'] = root.xpath('//sports-content-code[@code-type="league"]/@code-name')[0]
+    match['start_date'] = dup.parse(root.xpath('//sports-event/event-metadata/@start-date-time')[0])
+    match.update(get_team_info(root, 'home'))
+    match.update(get_team_info(root, 'away'))
+    match['game_name'] = match['team_name_home'] + ':' + match['team_name_guest']
+    match['tracking_source'] = 'impire'
+    if match['start_date'].month < 8:
+        match['season'] = '{0}/{1}'.format(match['start_date'].year - 1, match['start_date'].year)
+    else:
+        match['season'] = '{0}/{1}'.format(match['start_date'].year, match['start_date'].year + 1)
+
+    return match
+
 
 #######################################
 if __name__ == "__main__":

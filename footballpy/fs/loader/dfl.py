@@ -386,6 +386,38 @@ def get_df_from_files(match_info_file, match_pos_file):
     pos_df = papi.pos_data_to_df(pos_data, ball_data)
     return pos_df, teams, match
 
+def get_match_info(match_info_file):
+    """Extracts match information data.
+
+        Args:
+            match_info_file: full path to vistrack-matchfacts file.
+        Returns:
+            a match information dictionary.
+    """
+    from lxml import etree
+
+    root = etree.parse(match_info_file).getroot()
+    match = dict()
+    general_element = root.xpath('//MatchInformation/General')[0]
+    match['game_name'] = general_element.get('GameTitle')
+    match['match_id'] = general_element.get('MatchId')
+    match['match_day'] = general_element.get('MatchDay')
+    match['team_name_home'] = general_element.get('HomeTeamName')
+    match['team_name_away'] = general_element.get('AwayTeamName')
+    match['home'] = general_element.get('HomeTeamId')
+    match['away'] = general_element.get('AwayTeamId')
+    match['tracking_source'] = 'DFL'
+    match['start_date'] = dup.parse(general_element.get('KickoffTime'))
+    match['season'] = general_element.get('Season')
+    match['league'] = general_element.get('Competition')
+    match['team_color_home'] = root.xpath('//Teams/Team[@Role="home"]/@PlayerMainColorOfShirt')[0]
+    match['team_color_away'] = root.xpath('//Teams/Team[@Role="guest"]/@PlayerMainColorOfShirt')[0]
+    stadium = dict()
+    stadium['width'] = general_element.get('PitchY')
+    stadium['length'] = general_element.get('PitchX')
+    match['stadium'] = stadium
+    return match
+
 #######################################
 if __name__ == "__main__":
     

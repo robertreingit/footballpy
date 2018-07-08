@@ -590,6 +590,50 @@ def get_match_info(match_info_file):
 
     return match
 
+def get_team_info(match_info_file):
+    """
+        Args:
+        Returns:
+    """
+    def process_team(root, team):
+        """Extracts the team entries from the matchinfo file.
+
+            Args:
+                root: etree root element for matchinfo file
+                team: indicator ['home' | ('away'|'guest')]
+            Returns:
+                a dict with the according entries.
+        """
+        if team == 'guest':
+            team = 'away'
+        players = root.xpath('//team[team-metadata/@alignment="{0}"]/player'.format(team))
+        return [process_player(player) for player in players]
+
+    def process_player(element):
+        """Extracts the player entries from player elements.
+
+            Args:
+                element: etree player element
+            Returns:
+                a dict with the according entries.
+        """
+        player = dict()
+        player_items = dict(element.find('player-metadata').items())
+        player['id'] = player_items['player-key']
+        player['name'] = element.xpath('player-metadata/name/@full')[0]
+        player['trikot'] = player_items['uniform-number']
+        player['position'] = (player_items['position-event'] 
+                if 'position-event' in player_items.keys()
+                else player_items['position-regular'])
+        return player
+
+    root = etree.parse(match_info_file).getroot()
+
+    teams = dict()
+    teams['home'] = process_team(root, 'home')
+    teams['guest'] = process_team(root, 'guest')
+    return teams
+
 
 #######################################
 if __name__ == "__main__":

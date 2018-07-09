@@ -11,10 +11,13 @@ impire_parser : Module which provides parsing function for Soccer
 @license: MIT
 @version 0.1
 """
+
+import os
 from xml.sax import make_parser, ContentHandler
 from xml.sax.handler import feature_external_ges
 import numpy as np
 import dateutil.parser as dup
+from lxml import etree
 # import pdb
 
 class MatchInformationParser(ContentHandler):
@@ -307,7 +310,7 @@ def read_stadium_dimensions_from_pos(fname):
         Args:
             fname: name of position file including path.
         Returns:
-            Structs with width and length entries.
+            A dictionary with width and length entries.
     """
     fid = open(fname,'r')
     line = fid.readline()
@@ -496,8 +499,6 @@ def get_match_events(match_event_file):
         Returns:
             a dictionary with event entries.
     """
-    from lxml import etree
-
     def remove_ns_prefix(element_list, ns):
         """Cleans out the namepace of the element list.
 
@@ -537,16 +538,15 @@ def get_match_events(match_event_file):
 
     return result
     
-def get_match_info(match_info_file):
+def get_match_info(match_info_file, match_pos_file = ''):
     """Extracts match information data.
 
         Args:
             match_info_file: full path to vistrack-matchfacts file.
+            match_pos_file: is optional to determine the dimensions of the stadium.
         Returns:
             a match information dictionary.
     """
-    from lxml import etree
-
     def get_team_info(root, team):
         """Wrapper function to extract team metadata.
 
@@ -555,19 +555,17 @@ def get_match_info(match_info_file):
 
             Args:
                 root: etree root elelment
-                team: indicator ['home' | ('away'|'guest')
+                team: indicator ['home' | ('away')
             Returns:
                 a dictionary with the according team entries.
         """
         team_entry = team
-        if team == 'away':
-            team_entry = 'guest'
         team_name_query = '//team/team-metadata[@alignment="{0}"]/name/@full'
         team_color_query = '//team/team-metadata[@alignment="{0}"]/@imp:uniform-color-hex'
         team_id_query = '//team/team-metadata[@alignment="{0}"]/@team-key'
         result = dict()
-        result['team_name_' + team_entry] = root.xpath(team_name_query.format(team))[0]
-        result['team_color_' + team_entry] = root.xpath(team_color_query.format(team),
+        result['team_name_' + team] = root.xpath(team_name_query.format(team))[0]
+        result['team_color_' + team] = root.xpath(team_color_query.format(team),
                 namespaces=root.nsmap)[0]
         result[team_entry] = root.xpath(team_id_query.format(team))[0]
         return result
@@ -582,12 +580,21 @@ def get_match_info(match_info_file):
     match['start_date'] = dup.parse(root.xpath('//sports-event/event-metadata/@start-date-time')[0])
     match.update(get_team_info(root, 'home'))
     match.update(get_team_info(root, 'away'))
-    match['game_name'] = match['team_name_home'] + ':' + match['team_name_guest']
+    match['game_name'] = match['team_name_home'] + ':' + match['team_name_away']
     match['tracking_source'] = 'impire'
     if match['start_date'].month < 8:
         match['season'] = '{0}/{1}'.format(match['start_date'].year - 1, match['start_date'].year)
     else:
         match['season'] = '{0}/{1}'.format(match['start_date'].year, match['start_date'].year + 1)
+
+    # Get stadium dimensions info if possible
+    # Assumes that the pos file is in the same directory as the matchfacts file.
+    if not match_pos_file:
+        data_path = os.path.sep.join(match_info_file.split(os.path.sep)[:-1])
+        match_pos_file = os.path.join(data_path, match['match_id'] + '.pos')
+    if os.path.exists(match_pos_file):
+        stadium = read_stadium_dimensions_from_pos(match_pos_file)
+        match['stadium'] = stadium
 
     return match
 
@@ -603,12 +610,10 @@ def get_team_info(match_info_file):
 
             Args:
                 root: etree root element for matchinfo file
-                team: indicator ['home' | ('away'|'guest')]
+                team: indicator ('home' | 'away')
             Returns:
                 a dict with the according entries.
         """
-        if team == 'guest':
-            team = 'away'
         players = root.xpath('//team[team-metadata/@alignment="{0}"]/player'.format(team))
         return [process_player(player) for player in players]
 
@@ -634,41 +639,10 @@ def get_team_info(match_info_file):
 
     teams = dict()
     teams['home'] = process_team(root, 'home')
-    teams['guest'] = process_team(root, 'guest')
+    teams['away'] = process_team(root, 'away')
     return teams
 
 
 #######################################
 if __name__ == "__main__":
-    """
-    from os import path
-
-    match_info_name = 'vistrack-matchfacts-' + game_name + '.xml'
-    fname_match = path.join(path_to_file, match_info_name)
-    fname_pos = path.join(path_to_file, game_name + '.pos')
-
-    print("Parsing match information")
-    match, teams = get_impire_match_information(fname_match, fname_pos)
-    """
-    mip = MatchInformationParser()
-    mip.run(match_info_file)
-    teams, match = mip.getTeamInformation()
-    """
-    match['stadium'] = read_stadium_dimensions_from_pos(fname_pos)
-
-    
-    home,guest,ball,half_time_id = read_in_position_data(data_path + fname_pos)
-    home_1, home_2 = split_positions_into_game_halves(home,half_time_id,ball)
-    home_1s = sort_position_data(home_1)
-    home_2s = sort_position_data(home_2)
-    
-    pos_data_home_1 = combine_position_with_role(home_1s,teams['home'])
-    pos_data, ball_data, match, teams = run(path_to_file, match_info_name, match_pos_name)
-    pos_data_sc, ball_data_sc = rescale_xy_positions(pos_data, ball_data, **match['stadium'])
-    pos_data_reindex, ball_data_reindex = increase_frame_counter(pos_data_sc, ball_data_sc)
-    pos_df = get_df_from_files(match_info_file, match_pos_file)
-    mep = MatchEventParser()
-    mep.run(match_event_file)
-    #events = mep.getEvents()
-    imp_events = get_match_events(match_events_file)
-	"""
+    pass

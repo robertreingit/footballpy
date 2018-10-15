@@ -50,7 +50,7 @@ class TestMatchInformation(unittest.TestCase):
                     p['id'] == 'DFL-OBJ-b00004'][0]
         self.assertEqual(barney['name'],'B. Rubble')
         self.assertEqual(barney['position'], 'MZ')
-        self.assertEqual(barney['trikot'],4)
+        self.assertEqual(barney['jersey'],4)
 
     def test_game_name(self):
         match = TestMatchInformation._match

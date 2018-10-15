@@ -65,7 +65,7 @@ class MatchInformationParser(ContentHandler):
                         'PlayingPosition' in attrs.getNames() else 
                         'NA')
             player = {"id": pid, "name":name, \
-                    "trikot":trikot,"position":position}
+                    "jersey":trikot,"position":position}
             if self.inHomeTeam:
                 self.teams['home'].append(player)
             else:

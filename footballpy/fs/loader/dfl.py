@@ -173,8 +173,7 @@ class MatchEventParser(ContentHandler):
             self.subs.append(sub)            
         elif name == "KickoffWhistle":
             section = attrs['GameSection']
-            self.playing_time[section][0] = convertTime(
-                    self.eventTime)
+            self.playing_time[section][0] = convertTime(self.eventTime)
         elif name == "FinalWhistle":
             section = attrs['GameSection']
             self.playing_time[section][1] = convertTime(self.eventTime)
@@ -448,28 +447,22 @@ def get_team_info(match_info_file):
 #######################################
 if __name__ == "__main__":
     
-    """
-    data_path = "footballpy/testfiles/dfl/"
-    fname = 'test.xml'
-    
     print("Parsing match information")
     mip = MatchInformationParser()
-    fname_match = data_path + "MatchInformation/" + fname
-    mip.run(fname_match)
+    mip.run(match_info_file)
     teams, match = mip.getTeamInformation()
-    print(match)
     
+    """
     
     print("Parsing event data")
     mep = MatchEventParser()
     fname_info = data_path + "EventData/" + fname
     mep.run(fname_info)
     play_time, subs = mep.getEventInformation()
+    """
     
     print("Parsing position data")
     mpp = MatchPositionParser(match,teams)
-    fname_pos = data_path + "/ObservedPositionalData/" + fname
-    mpp.run(fname_pos)
-    pos_data,ball_data,timestamps = mpp.getPositionInformation()
+    mpp.run(match_pos_file)
+    #pos_data,ball_data,timestamps = mpp.getPositionInformation()
     df, teams, match = get_df_from_files(match_info_file, match_pos_file)
-    """

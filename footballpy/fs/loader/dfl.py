@@ -383,6 +383,9 @@ def get_df_from_files(match_info_file, match_pos_file):
     mpp.run(match_pos_file)
     pos_data, ball_data, timestamps = mpp.getPositionInformation()
     pos_df = papi.pos_data_to_df(pos_data, ball_data)
+    timestamps_concatenated = timestamps[0] + timestamps[1]
+    assert(len(timestamps_concatenated) == pos_df.shape[0])
+    pos_df['time'] = timestamps_concatenated
     return pos_df, teams, match
 
 def get_match_info(match_info_file):

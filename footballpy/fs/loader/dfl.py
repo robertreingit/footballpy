@@ -45,7 +45,10 @@ class MatchInformationParser(ContentHandler):
             self.inTeam = True
             role = attrs['Role']
             teamID = attrs['TeamId']
-            color = attrs['PlayerMainColorOfShirt']
+            if 'PlayerMainColorOfShirt' in attrs.keys():
+                color = attrs['PlayerMainColorOfShirt']
+            else:
+                color = attrs['PlayerShirtMainColor']
             if role == "home":
                 self.inHomeTeam = True
                 self.match['home'] = teamID
@@ -86,7 +89,10 @@ class MatchInformationParser(ContentHandler):
                 self.match['leagu'] = 'BL_I_guess'
             self.match['season'] = attrs['Season']
             self.match['team_name_home'] = attrs['HomeTeamName']
-            self.match['team_name_guest'] = attrs['AwayTeamName']
+            if 'AwayTeamName' in attrs.keys():
+                self.match['team_name_guest'] = attrs['AwayTeamName']
+            else:
+                self.match['team_name_guest'] = attrs['GuestTeamName']
             self.match['tracking_source'] = 'dfl'
             self.match['start_date'] = dup.parse(attrs['KickoffTime'])
 

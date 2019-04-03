@@ -78,7 +78,12 @@ class MatchInformationParser(ContentHandler):
             game_name = attrs[game_name_index]
             self.game_name = game_name
             self.match_day = attrs['MatchDay']
-            self.match['league'] = attrs['Competition']
+            if 'Competition' in attrs.keys():
+                self.match['league'] = attrs['Competition']
+            elif 'CompetitionName' in attrs.keys():
+                self.match['league'] = attrs['CompetitionName']
+            else:
+                self.match['leagu'] = 'BL_I_guess'
             self.match['season'] = attrs['Season']
             self.match['team_name_home'] = attrs['HomeTeamName']
             self.match['team_name_guest'] = attrs['AwayTeamName']

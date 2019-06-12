@@ -273,6 +273,7 @@ class MatchPositionParser(ContentHandler):
         self.ball = [0]*2
         self.match = match
         self.teams = teams
+        self.trace = True
 
     def startElement(self,name,attrs):
         if name == "FrameSet":
@@ -283,8 +284,10 @@ class MatchPositionParser(ContentHandler):
             self.teamID = attrs['TeamId']
             if self.teamID.upper() == "BALL":
                 self.isBall = True
-                print("Ball")
-            print(self.currentID)
+                if self.trace:
+                    print("Ball")
+            if self.trace:
+                print(self.currentID)
         elif (name == "Frame") & self.inFrameSet:
             x = float(attrs['X'])
             y = float(attrs['Y'])
@@ -305,7 +308,8 @@ class MatchPositionParser(ContentHandler):
 
     def endElement(self,name):
         if name == "FrameSet":
-            print("Processed %d frames" % (self.frameCounter))
+            if self.trace:
+                print("Processed %d frames" % (self.frameCounter))
             self.inFrameSet = False
             # get team: A or B            
             section = self.gameSection
@@ -338,14 +342,16 @@ class MatchPositionParser(ContentHandler):
             if self.isBall:                
                 self.isBall = False
 
-    def run(self,fname):
+    def run(self, fname, trace = True):
         """Starts parsing fname.
 
         Args:
-            fname is the name of the file.
+            fname: filepath of the file.
+            trace: flag whether to print reading statements.
         Returns:
             Nothing
         """
+        self.trace = trace
         parser = make_parser()
         parser.setContentHandler(self)
         print('Start parsing position data')
@@ -370,7 +376,7 @@ def correct_substitions():
     """
     pass
 
-def get_df_from_files(match_info_file, match_pos_file):
+def get_df_from_files(match_info_file, match_pos_file, trace = True):
     """Wrapper function to get a pandas dataframe from DFl position data. 
 
     This function is meant as an outside API to load position data from
@@ -379,6 +385,7 @@ def get_df_from_files(match_info_file, match_pos_file):
     Args:
         match_info_file: full path to the MatchInformation file.
         match_pos_file: full path to the PositionData file.
+        trace: Enable loading trace on dfl-parser.
     Returns:
         A tuple with a Pandas dataframe with the position data,
         the teams information dictionary, and
@@ -391,7 +398,7 @@ def get_df_from_files(match_info_file, match_pos_file):
     teams, match = mip.getTeamInformation()
 
     mpp = MatchPositionParser(match, teams)
-    mpp.run(match_pos_file)
+    mpp.run(match_pos_file, trace = trace)
     pos_data, ball_data, timestamps = mpp.getPositionInformation()
     pos_df = papi.pos_data_to_df(pos_data, ball_data)
     timestamps_concatenated = timestamps[0] + timestamps[1]

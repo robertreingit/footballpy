@@ -10,6 +10,7 @@ versions of original files.
 @version 0.1
 """
 
+import os
 import unittest
 import numpy as np
 import footballpy.fs.loader.impire as impire_parser

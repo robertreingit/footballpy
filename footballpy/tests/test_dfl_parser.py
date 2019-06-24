@@ -10,17 +10,23 @@ versions of original files.
 @version 0.1
 """
 
+import os
 import unittest
 import footballpy.fs.loader.dfl as dfl_parser
 from datetime import datetime
 import dateutil.parser as dup
 import numpy as np
 
+def path_to_tstfile(folder, fname):
+    """
+    """
+    return os.path.abspath(os.path.join(__file__, '../../testfiles/dfl/', folder, fname))
+
 class TestMatchInformation(unittest.TestCase):
     """Unit test class for the dfl_parser
     """
     @classmethod
-    def setUpClass(cls, fname='./footballpy/testfiles/dfl/MatchInformation/test.xml'):
+    def setUpClass(cls, fname=path_to_tstfile('MatchInformation', 'test.xml')):
         mip = dfl_parser.MatchInformationParser()
         mip.run(fname)
         cls._teams,cls._match = mip.getTeamInformation()
@@ -64,7 +70,8 @@ class TestMatchEvent(unittest.TestCase):
     """Unit test class for the MatchEventParser.
     """
     @classmethod
-    def setUpClass(cls, fname='./footballpy/testfiles/dfl/EventData/test.xml'):
+    def setUpClass(cls, 
+            fname=path_to_tstfile('EventData', 'test.xml')):
         mep = dfl_parser.MatchEventParser()
         mep.run(fname)
         cls._play_time, cls._subs = mep.getEventInformation()
@@ -80,9 +87,9 @@ class TestMatchPosition(unittest.TestCase):
     """Unit test class for the MatchPositionParser.
     """
     @classmethod
-    def setUpClass(cls, fname='./footballpy/testfiles/dfl/ObservedPositionalData/test.xml'):
+    def setUpClass(cls, fname=path_to_tstfile('ObservedPositionalData', 'test.xml')):
         mip = dfl_parser.MatchInformationParser()
-        fname_match = "./footballpy/testfiles/dfl/MatchInformation/test.xml"
+        fname_match = path_to_tstfile('MatchInformation', 'test.xml')
         mip.run(fname_match)
         teams, match = mip.getTeamInformation()
         mpp = dfl_parser.MatchPositionParser(match,teams)
@@ -120,14 +127,14 @@ class TestSanity(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         mep = dfl_parser.MatchEventParser()
-        mep.run('./footballpy/testfiles/dfl/EventData/test.xml')
+        mep.run(path_to_tstfile('EventData', 'test.xml'))
         cls._play_time, cls._subs = mep.getEventInformation()
         mip = dfl_parser.MatchInformationParser()
-        fname_match = "./footballpy/testfiles/dfl/MatchInformation/test.xml"
+        fname_match = path_to_tstfile('MatchInformation', 'test.xml')
         mip.run(fname_match)
         teams, match = mip.getTeamInformation()
         mpp = dfl_parser.MatchPositionParser(match,teams)
-        mpp.run('./footballpy/testfiles/dfl/ObservedPositionalData/test.xml')
+        mpp.run(path_to_tstfile('ObservedPositionalData', 'test.xml'))
         cls._pos_data, cls._ball_data, cls._timestamps = mpp.getPositionInformation()
 
     def test_time_sanity(self):
@@ -139,7 +146,7 @@ class TestSubstition(unittest.TestCase):
     """
     def setUp(self):
         mep = dfl_parser.MatchEventParser()
-        mep.run('./footballpy/testfiles/dfl/EventData/test.xml')
+        mep.run(path_to_tstfile('EventData', 'test.xml'))
         self.play_time, self.subs = mep.getEventInformation()
         for sub in self.subs:
             sub.update_halftime(self.play_time)

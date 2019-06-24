@@ -15,13 +15,19 @@ import unittest
 import numpy as np
 import footballpy.fs.loader.impire as impire_parser
 
+
+def path_to_tstfile(fname):
+    """
+    """
+    return os.path.abspath(os.path.join(__file__, '../../testfiles/impire/', fname))
+
 class TestMatchPosition(unittest.TestCase):
     """Unit test class for the MatchPositionParser.
     """
     @classmethod
     def setUpClass(cls):
-        cls.pos_file = './footballpy/testfiles/impire/123456.pos'
-        cls.match_file = './footballpy/testfiles/impire/vistrack-matchfacts-123456.xml'
+        cls.pos_file = path_to_tstfile('123456.pos')
+        cls.match_file = path_to_tstfile('vistrack-matchfacts-123456.xml')
 
     def test_read_in_position(self):
         """Asserts basic read-in functionality."""

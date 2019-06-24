@@ -6,6 +6,8 @@ test_formation_quantifier: unittests for the formation_quantifier functions
 @license: MIT
 @version 0.1
 """
+
+import os
 import unittest
 import footballpy.fs.loader.single_frame_parser as sp
 import numpy as np
@@ -55,7 +57,7 @@ class TestGetDataFiles(unittest.TestCase):
     """
 
     def test_file_count(self):
-        test_folder = 'footballpy/testfiles/single/'
+        test_folder = os.path.abspath(os.path.join(__file__, '../../testfiles/single/'))
         (res_files, res_frames) = sp.get_data_files(test_folder)
         self.assertEqual(len(res_files), 2)
 

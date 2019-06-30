@@ -80,6 +80,7 @@ class MatchInformationParser(ContentHandler):
                     attrs.keys() else 'GameTitle')
             game_name = attrs[game_name_index]
             self.game_name = game_name
+            self.match['match_id'] = attrs['MatchId']
             self.match_day = attrs['MatchDay']
             if 'Competition' in attrs.keys():
                 self.match['league'] = attrs['Competition']

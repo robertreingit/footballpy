@@ -36,6 +36,10 @@ class TestMatchInformation(unittest.TestCase):
         self.assertEqual(match['stadium']['length'],105.0)
         self.assertEqual(match['stadium']['width'],69.0);
 
+    def test_match_id(self):
+        match = TestMatchInformation._match
+        self.assertEqual(match['match_id'], "DFL-MAT-1234AB")
+
     def test_team_ids(self):
         match = TestMatchInformation._match
         self.assertEqual(match['home'],'DFL-ABC-12345A')

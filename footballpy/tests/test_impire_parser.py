@@ -21,6 +21,32 @@ def path_to_tstfile(fname):
     """
     return os.path.abspath(os.path.join(__file__, '../../testfiles/impire/', fname))
 
+class TestMatchInformation(unittest.TestCase):
+    """Unit test class for the matchinformation parser.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        mip = impire_parser.MatchInformationParser()
+        mip.run(path_to_tstfile('vistrack-matchfacts-123456.xml'))
+        cls._teams, cls._match = mip.getTeamInformation()
+
+    def test_match_id(self):
+        match = TestMatchInformation._match
+        print(match.keys())
+        self.assertEqual(match['match_id'], '123456')
+
+    def test_team_load(self):
+        """Tests teams loading."""
+        teams = TestMatchInformation._teams
+        self.assertTrue(len(teams['home']) == 18)
+        self.assertTrue(len(teams['guest']) == 18)
+        self.assertTrue(len([p for p in teams['home'] if p['id'] == '10000']) == 1)
+        self.assertTrue((next(p for p in teams['guest'] if p['id'] == '11003')
+            ['name'] == 'Cliegg Lars'))
+
+
+
 class TestMatchPosition(unittest.TestCase):
     """Unit test class for the MatchPositionParser.
     """
@@ -28,7 +54,7 @@ class TestMatchPosition(unittest.TestCase):
     def setUpClass(cls):
         cls.pos_file = path_to_tstfile('123456.pos')
         cls.match_file = path_to_tstfile('vistrack-matchfacts-123456.xml')
-
+    
     def test_read_in_position(self):
         """Asserts basic read-in functionality."""
         home,tmp2,tmp2,tmp3 = impire_parser.read_in_position_data(TestMatchPosition.pos_file)
@@ -71,17 +97,6 @@ class TestMatchPosition(unittest.TestCase):
         test_data = next(p for p in home_1s if p[0,1] == 2)
         self.assertTrue(np.all(test_data[:,1] == 2.0))
         self.assertTrue(test_data[0,2] == -11.9269)
-
-    def test_team_load(self):
-        """Tests teams loading."""
-        mip = impire_parser.MatchInformationParser()
-        mip.run(TestMatchPosition.match_file)
-        teams, match = mip.getTeamInformation()
-        self.assertTrue(len(teams['home']) == 18)
-        self.assertTrue(len(teams['guest']) == 18)
-        self.assertTrue(len([p for p in teams['home'] if p['id'] == '10000']) == 1)
-        self.assertTrue((next(p for p in teams['guest'] if p['id'] == '11003')
-            ['name'] == 'Cliegg Lars'))
 
     def test_stadium_specs(self):
         """Tests whether the stadium specs load function works"""

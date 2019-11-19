@@ -9,6 +9,7 @@ Created on Monday 07.05.2018
 
 from __future__ import print_function
 import numpy as np
+import matplotlib.pyplot as plt
 
 def create_pitch_grid(pitch, side_length = 0.5):
     """Create a pitch grid datastructure.
@@ -59,6 +60,7 @@ def assign_grid_pts_to_players(pitch_grid, players):
         players: numpy array with x frames by y rows and 2 columns each providing the 
                 position of a player for frame.
     Returns:
+        A numpy array with number of grid points rows and no of frames columns.
     """
     no_frames = players.shape[0]
     cell_to_player = np.zeros((pitch_grid.shape[0], no_frames), dtype=np.uint16)
@@ -117,6 +119,29 @@ def normalized_space_controlled(space_controlled):
     """
     return space_controlled / np.sum(space_controlled, axis = 0)
 
+def plot_grid(grid):
+    """A simple debugging function to plot the grid points.
+
+        Args:
+            grid: numpy array with x-y-positions of grid points in
+                    consecutive rows.
+        Returns: Nothing
+    """
+    no_pts = grid.shape[0]
+    fig, ax = plt.subplots()
+    ax.plot(grid[:,0], grid[:,1], 'ro')
+    if no_pts > 1000:
+        for i in range(0, no_pts, 90):
+            ax.text(grid[i, 0], grid[i, 1], str(i))
+    else:
+        for i in range(no_pts):
+            ax.text(grid[i,0], grid[i,1], str(i)) 
+    ax.set_aspect('equal')
+    ax.set_xlabel('Grid-X')
+    ax.set_ylabel('Grid-Y')
+    ax.set_title('Grid points')
+    plt.show()
+
 
 if __name__ == '__main__':
     grid, grid_cell_area = create_pitch_grid((10,3), 1)
@@ -131,4 +156,5 @@ if __name__ == '__main__':
     print(space_controlled)
     print(normalized_space_controlled(space_controlled))
     grid2 = translate_grid(grid, 10, 100)
+    plot_grid(translate_grid(grid, 5, 3))
 

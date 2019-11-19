@@ -43,7 +43,7 @@ class MatchInformationParser(ContentHandler):
         self.GuestTeamName = ''
         self.teams = {'home': [], 'guest': [] }
         self.match = {
-                'match-id': 0,
+                'match_id': 0,
                 'home':'',
                 'guest':'',
                 'match_day': '',
@@ -66,7 +66,7 @@ class MatchInformationParser(ContentHandler):
             self.inCoach = True
 
         elif name == 'event-metadata':
-            self.match['match-id'] = attrs['event-key']
+            self.match['match_id'] = attrs['event-key']
             start_date = dup.parse(attrs['start-date-time'])
             self.match['start_date'] = start_date 
             if start_date.month < 8:

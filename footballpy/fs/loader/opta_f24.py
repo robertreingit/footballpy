@@ -12,9 +12,15 @@ def parse_pass(el):
     x1 = float(get_q_value(el, 140))
     y1 = float(get_q_value(el, 141))
     outcome = el.get('outcome')
+    cross = check_q_element_present(el, 2)
+    free_kick = check_q_element_present(el, 5)
+    corner = check_q_element_present(el, 6)
     return {**{
             'evt_type': 'pass',
             'outcome': outcome,
+            'cross': cross,
+            'free_kick': free_kick,
+            'corner': corner,
             'x0': x0,
             'y0': y0,
             'x1': x1,
@@ -65,6 +71,7 @@ def parse_post(el):
         'outcome': outcome
         }, **basic_info }
 
+
 def parse_attempt(el):
     """
     """
@@ -73,7 +80,35 @@ def parse_attempt(el):
     x = float(el.get('x'))
     y = float(el.get('y'))
     outcome = el.get('outcome')
+    header = check_q_element_present(el, 15)
     return { **{
+        'x': x,
+        'y': y,
+        'header': header,
+        'outcome': outcome
+        }, **basic_info }
+
+
+def parse_goal(el):
+    """
+    """
+    evt_type = 'goal'
+    basic_info = get_basic_info(el)
+    x = float(el.get('x'))
+    y = float(el.get('y'))
+    outcome = el.get('outcome')
+    open_play = check_q_element_present(el, 22)
+    set_play = check_q_element_present(el, 24)
+    penalty = check_q_element_present(el, 9)
+    own_goal = check_q_element_present(el, 28)
+    header = check_q_element_present(el, 15)
+    return { **{
+        'evt_type': evt_type,
+        'open_play': open_play,
+        'set_play': set_play,
+        'penalty': penalty,
+        'own_goal': own_goal,
+        'header': header,
         'x': x,
         'y': y,
         'outcome': outcome
@@ -84,6 +119,11 @@ def get_q_value(el, id):
     """
     """
     return el.xpath('./Q[@qualifier_id="{0}"]'.format(id))[0].get('value')
+
+def check_q_element_present(el, id):
+    """
+    """
+    return len(el.xpath('./Q[@qualifier_id="{0}"]'.format(id))) > 0
 
 def get_basic_info(el):
     """
@@ -103,11 +143,13 @@ def get_basic_info(el):
             'timestamp': timestamp
             }
 
+
 if __name__ == '__main__':
     fname = 'f24-22-2016-861478-eventdetails.xml'
     tree = etree.parse(fname)
     root = tree.getroot()
-    passes = root.xpath('//Event[@type_id="1"]')
+    whistle_on = get_events(root, 32)
+    passes = get_events(root, 1) 
     passes_parsed = [parse_pass(ev) for ev in passes]
     print(passes_parsed[0])
     #df = pd.DataFrame(passes_parsed)
@@ -116,3 +158,4 @@ if __name__ == '__main__':
     posts = get_events(root, 14)
     attempts = get_events(root, 15)
     goals = get_events(root, 16)
+    goals_parsed = [parse_goal(ev) for ev in goals]

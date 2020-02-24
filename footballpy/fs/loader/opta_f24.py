@@ -5,6 +5,7 @@ import pandas as pd
 
 
 detailed_position_key = {
+        0: 'NA',
         1: 'goalkeeper',
         2: 'wing_back',
         3: 'full_back',
@@ -126,6 +127,7 @@ def parse_goal(el):
     penalty = check_q_element_present(el, 9)
     own_goal = check_q_element_present(el, 28)
     header = check_q_element_present(el, 15)
+    assist_id = get_q_value_safe(el, 55)
     return { **{
         'evt_type': evt_type,
         'open_play': open_play,
@@ -133,6 +135,7 @@ def parse_goal(el):
         'penalty': penalty,
         'own_goal': own_goal,
         'header': header,
+        'assist_id': assist_id,
         'x': x,
         'y': y,
         'outcome': outcome
@@ -147,15 +150,14 @@ def parse_sub(el):
         evt_type_qualified = 'player_off'
     elif type_id == 19:
         evt_type_qualified = 'player_on'
+    elif type_id == 20:
+        evt_type_qualified = 'player_retired'
     else:
         evt_type_qualified = 'NA'
     basic_info = get_basic_info(el)
     position = get_q_value(el, 44)
     connected_sub = get_q_value(el, 55)
-    if check_q_element_present(el, 292):
-        detailed_position = detailed_position_key[int(get_q_value(el, 292))]
-    else:
-        detailed_position = 'NA'
+    detailed_position = detailed_position_key[int(get_q_value_safe(el, 292, 0))]
     return { **{
         'evt_type': evt_type,
         'evt_type_qualified': evt_type_qualified,
@@ -178,6 +180,16 @@ def get_q_value(el, id):
             the according value as a string.
     """
     return el.xpath('./Q[@qualifier_id="{0}"]'.format(id))[0].get('value')
+
+def get_q_value_safe(el, id, default = 'NA'):
+    """
+    """
+    entry = el.xpath('./Q[@qualifier_id="{0}"]'.format(id))
+    if entry:
+        return entry[0].get('value')
+    else:
+        return default 
+            
 
 def check_q_element_present(el, id):
     """

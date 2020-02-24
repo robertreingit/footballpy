@@ -17,6 +17,16 @@ detailed_position_key = {
         10: 'second_striker'
         }
 
+def get_game_info(el):
+    """Return a dictionary with the match infos.
+
+        Args:
+            el: etree._Element of game tag
+        Returns:
+            a list with the information about the game.
+    """
+    return dict(list(map(lambda key: (key, el.get(key)), el.keys())))
+
 def parse_pass(el):
     """ Parsing passe element from F24
     """
@@ -199,11 +209,10 @@ if __name__ == '__main__':
     fname = 'f24-22-2016-861478-eventdetails.xml'
     tree = etree.parse(fname)
     root = tree.getroot()
+    game_info = get_game_info(root[0])
     whistle_on = get_events(root, 32)
     passes = get_events(root, 1) 
     passes_parsed = [parse_pass(ev) for ev in passes]
-    print(passes_parsed[0])
-    #df = pd.DataFrame(passes_parsed)
     misses = get_events(root, 13)
     misses_parsed = [parse_miss(ev) for ev in misses]
     posts = get_events(root, 14)

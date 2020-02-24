@@ -3,6 +3,20 @@
 from lxml import etree
 import pandas as pd
 
+
+detailed_position_key = {
+        1: 'goalkeeper',
+        2: 'wing_back',
+        3: 'full_back',
+        4: 'central_defender',
+        5: 'defensive_midfielder',
+        6: 'attacking_midfielder',
+        7: 'central_midfielder',
+        8: 'winger',
+        9: 'striker',
+        10: 'second_striker'
+        }
+
 def parse_pass(el):
     """ Parsing passe element from F24
     """
@@ -114,9 +128,44 @@ def parse_goal(el):
         'outcome': outcome
         }, **basic_info }
 
+def parse_sub(el):
+    """
+    """
+    evt_type = 'substitution'
+    type_id = int(el.get('type_id'))
+    if type_id == 18:
+        evt_type_qualified = 'player_off'
+    elif type_id == 19:
+        evt_type_qualified = 'player_on'
+    else:
+        evt_type_qualified = 'NA'
+    basic_info = get_basic_info(el)
+    position = get_q_value(el, 44)
+    connected_sub = get_q_value(el, 55)
+    if check_q_element_present(el, 292):
+        detailed_position = detailed_position_key[int(get_q_value(el, 292))]
+    else:
+        detailed_position = 'NA'
+    return { **{
+        'evt_type': evt_type,
+        'evt_type_qualified': evt_type_qualified,
+        'position': position,
+        'connected_sub': connected_sub,
+        'detailed_position': detailed_position
+        }, **basic_info }
 
 def get_q_value(el, id):
-    """
+    """Returns the q value from el children.
+
+        Warning: Assumes that the qualifier is present. Therefore, doesn't
+        do any checking throws an error checking and return the first entry
+        from the list returned by xpath.
+
+        Args:
+            el: etree._Element of event
+            id: number of q element to obtain. Can be string or integer
+        Returns:
+            the according value as a string.
     """
     return el.xpath('./Q[@qualifier_id="{0}"]'.format(id))[0].get('value')
 
@@ -128,6 +177,7 @@ def check_q_element_present(el, id):
 def get_basic_info(el):
     """
     """
+    evt_id = int(el.get('event_id'))
     period = int(el.get('period_id'))
     minute = int(el.get('min'))
     second = int(el.get('sec'))
@@ -135,6 +185,7 @@ def get_basic_info(el):
     player_id = el.get('player_id')
     team_id = el.get('team_id')
     return {
+            'evt_id': evt_id,
             'period': period,
             'minute': minute,
             'second': second,
@@ -159,3 +210,9 @@ if __name__ == '__main__':
     attempts = get_events(root, 15)
     goals = get_events(root, 16)
     goals_parsed = [parse_goal(ev) for ev in goals]
+    players_off = get_events(root, 18)
+    players_off_parsed = [parse_sub(ev) for ev in players_off]
+    players_on = get_events(root, 19)
+    players_on_parsed = [parse_sub(ev) for ev in players_on]
+    players_retired = get_events(root, 20)
+    players_retired_parsed = [parse_sub(ev) for ev in players_retired]
